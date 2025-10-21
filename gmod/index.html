@@ -152,12 +152,6 @@ a.button {
  <p>Hundreds of functions such as Aimbot, ESP, and Collective Security. Exechack is the best cheat available for Garry's Mod.</p>
  <a class="button button--primary rippleButton" href="https://x.exechack.cc/forum/subscriptions">GET EXECHACK ONLY FOR 6$/500₽ FOREVER</a>
 
-<!--
-<p style="color:yellow">SALE! until 18.09<br>
-<a class="button button--primary rippleButton" href="https://exechack.cc/forum/purchase/user_upgrade/?user_upgrade_id=1&amp;payment_profile_id=13" style="background:orange" target="_blank">CRYPTO 3.60$</a>
-<a class="button button--primary rippleButton" href="https://exechack.cc/forum/purchase/user_upgrade/?user_upgrade_id=1&amp;payment_profile_id=8" style="background:green" target="_blank">MIR 300₽</a>
-</p>
--->
 	
  </div>
  </div>
@@ -176,28 +170,32 @@ a.button {
 <div class="container">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<br><h4 class="bg-black d-inline-block h6 mb-2 p-2">MENU</h4>
-	<h2 class="text-center text-2xl md:text-3xl lg:text-4xl font-black pt-4 bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-200 text-transparent">Better premium solution</h2>
-	<script>
-		document.addEventListener("DOMContentLoaded", () => {
-			const cards = document.querySelectorAll(".card");
-			cards.forEach(card => {
-				card.addEventListener("mousemove", (e) => {
-					const rect = card.getBoundingClientRect();
-					const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-					const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
-					card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-				});
-				card.addEventListener("mouseleave", (e) => {
-					card.style.transition = "all 2s cubic-bezier(0.18, 1.4, 0.53, 1)";
-					card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-				});
-			});
-		});
-	</script>
+	<h2 class="text-center text-2xl md:text-3xl lg:text-4xl font-black pt-4 bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-200 text-transparent">Better premium solution</h2><br>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cards = document.querySelectorAll(".card");
+            cards.forEach(card => {
+                card.addEventListener("mousemove", (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;   // 0..1
+                    const y = (e.clientY - rect.top)  / rect.height;  // 0..1
+
+                    const rx = -(0.5 - y) * (28);   // корректный наклон X
+                    const ry = -(x - 0.5) * (28);   // корректный наклон Y
+                    card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.05, 1.05, 1.05)`;
+
+                });
+                card.addEventListener("mouseleave", (e) => {
+                    card.style.transition = "all 2s cubic-bezier(0.18, 1.4, 0.53, 1)";
+                    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+                });
+            });
+        });
+    </script>
 	<style>
 	.card {
-		background-color: #292E39;
-		border: #292E39;
+		background-color: #00000000;
+		border: #00000000;
 		width: 800px;
 		height: 499px;
 		width: 100%;
