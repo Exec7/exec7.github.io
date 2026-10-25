@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#313742" />
+  <title>exechack.cc lua api</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#313742',
+              card: '#22272e',
+              cardHover: '#2a3038',
+              surface: '#3b4252',
+              accent: '#5e81ac',
+              accentHover: '#81a1c1',
+              highlight: '#88c0d0',
+              text: '#d8dee9',
+              muted: '#e5e9f0',
+              subtext: '#8892b0',
+              danger: '#bf616a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #313742;
+      color: #d8dee9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #22272e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4c566a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #5e81ac;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Mobile Navigation & Backdrop Behavior */
+    .navigation_backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 102;
+      display: none;
+    }
+
+    body.navigation_opened .navigation_backdrop {
+      display: block;
+    }
+
+    body.navigation_opened .navigation-button_opened,
+    body:not(.navigation_opened) .navigation-button_closed {
+      display: block;
+    }
+
+    body.navigation_opened .navigation-button_closed,
+    body:not(.navigation_opened) .navigation-button_opened {
+      display: none;
+    }
+
+    @media (max-width: 1023px) {
+      .navigation_sticky {
+        display: none;
+      }
+      body.navigation_opened .navigation_sticky {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        bottom: 5rem;
+        left: 1rem;
+        right: 1rem;
+        z-index: 103;
+        max-height: calc(100vh - 8rem);
+        overflow-y: auto;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .navigation_sticky {
+        position: sticky;
+        top: 1.5rem;
+        display: flex;
+        flex-direction: column;
+      }
+      .navigation-button {
+        display: none !important;
+      }
+    }
+
+    .navigation_link.active {
+      color: #88c0d0 !important;
+      font-weight: 600;
+      background-color: #3b4252;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col p-3 sm:p-6 md:p-8">
+
+  <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col space-y-6">
+
+    <!-- Header -->
+    <header class="bg-brand-card p-4 sm:p-6 rounded-xl border border-gray-700/50 shadow-lg">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+            <i data-lucide="book-open" class="text-brand-highlight w-7 h-7 inline-block"></i>
+            exechack lua api
+          </h1>
+          <p class="text-xs sm:text-sm text-brand-subtext mt-1">
+            lua api for integation with exechack
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+      <!-- Navigation Sidebar -->
+      <aside class="navigation lg:col-span-1 order-2 lg:order-1">
+        <div class="navigation_sticky bg-brand-card p-4 rounded-xl border border-gray-700/50 shadow-md">
+          <div class="text-sm font-bold text-white uppercase tracking-wider mb-3 pb-2 border-b border-gray-700/50 flex items-center gap-2">
+            <i data-lucide="menu" class="w-4 h-4 text-brand-highlight"></i> Navigation
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <a href="#" onclick="renderMainPage(); return false;" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all text-xs text-brand-subtext font-semibold flex items-center gap-1.5">
+                <i data-lucide="home" class="w-3.5 h-3.5"></i> Main
+              </a>
+            </div>
+
+            <!-- ClientSide Section -->
+            <div>
+              <div class="text-xs font-bold text-white uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <i data-lucide="monitor" class="w-3.5 h-3.5 text-brand-accent"></i> ClientSide
+              </div>
+              <ul id="clientside-list" class="space-y-0.5 text-xs text-brand-subtext pl-2"></ul>
+            </div>
+
+            <!-- MenuState Section -->
+            <div>
+              <div class="text-xs font-bold text-white uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <i data-lucide="layout" class="w-3.5 h-3.5 text-brand-accent"></i> MenuState
+              </div>
+              <ul id="menustate-list" class="space-y-0.5 text-xs text-brand-subtext pl-2"></ul>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="lg:col-span-3 order-1 lg:order-2 space-y-6">
+        <div id="content-area" class="bg-brand-card rounded-xl border border-gray-700/50 shadow-md p-4 sm:p-6">
+          <!-- Динамическое содержимое -->
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Mobile Floating Navigation Button & Backdrop -->
+  <div class="navigation_backdrop"></div>
+  <button class="navigation-button fixed bottom-6 right-6 bg-brand-accent hover:bg-brand-accentHover text-white p-3.5 rounded-full shadow-2xl z-50 focus:outline-none" title="Toggle Navigation">
+    <span class="navigation-button_closed">
+      <i data-lucide="menu" class="w-6 h-6"></i>
+    </span>
+    <span class="navigation-button_opened">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </span>
+  </button>
+
+  <script>
+    // Данные API
+    const clientapi = {
+      "exechack_api.Notification": {
+        "Description": "Used to display notifications on the screen.",
+        "Arguments": { "string": "text" },
+        "Example": { "code": 'exechack_api.Notification("My nick "..LocalPlayer():Name())', "desc": "Notification: my nick", "output": "My nick Exec" },
+        "goodname": "Notification"
+      },
+      "exechack_api.SetCheatAngle": {
+        "Description": "Sets the direction the client wants to move in.",
+        "Arguments": { "Angle": "viewAngle" },
+        "Example": { "code": 'exechack_api.SetCheatAngle(Angle(0,0,90))', "desc": "Locks the player's view to only vertical movement." },
+        "goodname": "SetCheatAngle"
+      },
+      "exechack_api.GetCheatAngle": {
+        "Description": "Returns the direction a localplayer with cheat.",
+        "Returns": { "Angle": "*" },
+        "Example": { "code": 'print(exechack_api.GetCheatAngle())', "desc": "Print the local player's angles.", "output": "When looking straight down, it might return Angle(89, -175.38, 0)" },
+        "goodname": "GetCheatAngle"
+      },
+      "exechack_api.CalcViewOverlayHook": {
+        "Description": "Analog hook CalcView with cheat sync https://wiki.facepunch.com/gmod/GM:CalcView",
+        "Returns": { "Entiy": "ply", "Vector": "Origin", "Angle": "Angles", "Number": "Fov", "Number": "znear", "Number": "zfar" },
+        "Example": {
+          "code": `exechack_api.CalcViewOverlayHook = function( ply, pos, angles, fov )
+	local view = {
+		origin = pos - ( angles:Forward() * 100 ),
+		angles = angles,
+		fov = fov,
+		drawviewer = true
+	}
+
+	return view
+end`, "desc": "hook CalcView.", "output": "Draws the LocalPlayer and sets the view behind."
+        },
+        "goodname": "CalcViewOverlayHook"
+      },
+      "exechack_api.IsFriend": {
+        "Description": "Return true if friend or false if not friend.",
+        "Arguments": { "Entity": "*" },
+        "Returns": { "Boolean": "true or false" },
+        "goodname": "IsFriend"
+      },
+      "exechack_api.GetUserName": {
+        "Description": "Return the login on the forum.",
+        "Returns": { "String": "Login" },
+        "Example": { "code": 'print(exechack_api.GetUserName())', "desc": "Print login", "output": "Exec" },
+        "goodname": "GetUserName"
+      },
+      "exechack_api.CleanGlobalTable": {
+        "Description": "Return original _G table with functions no modificate.",
+        "Example": {
+          "code": `print = function()end
+exechack_api.CleanGlobalTable.print("bypass")`, "desc": "using the original function"
+        },
+        "goodname": "CleanGlobalTable"
+      },
+      "exechack_api.cfg_SetValue": {
+        "Description": "Change cfg value",
+        "Arguments": { "string": "cfg name", "string/boolean/float/table": "new value" },
+        "Example": { "code": 'exechack_api.cfg_SetValue("AIM_ENABLED",false)', "desc": "Disable aimbot" },
+        "goodname": "cfg_SetValue"
+      },
+      "exechack_api.cfg_GetValue": {
+        "Description": "Return a cfg value",
+        "Arguments": { "string": "cfg name" },
+        "Returns": { "string/boolean/float/table": "value" },
+        "Example": { "code": 'print(exechack_api.cfg_GetValue("AIM_ENABLED"))', "desc": "Get aimbot enable", "output": "false" },
+        "goodname": "cfg_GetValue"
+      }
+    };
+
+    const menustateapi = {
+      "exec_background_render": {
+        "Description": "paint function called in background cheat menu",
+        "Example": {
+          "code": `exec_background_render = function()
+surface.SetFont( "Default" )
+surface.SetTextColor( 255, 255, 255 )
+surface.SetTextPos( 128, 128 ) 
+surface.DrawText( "Hello World" )
+end`, "desc": "Add text on background"
+        },
+        "goodname": "background_render"
+      },
+      "exec_Fetch": {
+        "Description": "analog of http.Fetch for menustate",
+        "Arguments": { "string": "url", "function1": "callback body", "function2": "callback error" },
+        "goodname": "exec_Fetch"
+      },
+      "exec_Post": {
+        "Description": "analog of http.Post for menustate",
+        "Arguments": { "string1": "url", "string2": "parameters", "function1": "callback body", "function2": "callback error" },
+        "goodname": "exec_Post"
+      },
+      "exec_cfg_GetValue": {
+        "Description": "Return a cfg value",
+        "Arguments": { "string": "cfg name" },
+        "Returns": { "string/boolean/float/table": "value" },
+        "Example": { "code": 'print(exec_cfg_GetValue("AIM_ENABLED"))', "desc": "Get aimbot enable", "output": "false" },
+        "goodname": "cfg_GetValue"
+      },
+      "exec_cfg_SetValue": {
+        "Description": "Change cfg value",
+        "Arguments": { "string": "cfg name", "string/boolean/float/table": "new value" },
+        "Example": { "code": 'exec_cfg_SetValue("AIM_ENABLED",false)', "desc": "Disable aimbot" },
+        "goodname": "cfg_SetValue"
+      },
+      "exec_menuaddtab": {
+        "Description": "Adds a tab to the lua cheat tab",
+        "Arguments": { "string": "tab name", "function": "(return vgui derma)" },
+        "Example": {
+          "code": `if not MENU_DLL then return end
+
+if exec_cfg_GetValue("PRINTONSPAWN")==nil then
+	exec_cfg_SetValue("PRINTONSPAWN",false)
+end
+
+local clientcode = [==[
+if exechack_api.cfg_GetValue("PRINTONSPAWN")then
+	print(1)
+end
+]==]
+
+local oldexec_newclientrunned = exec_newclientrunned
+exec_newclientrunned = function()
+	exec_runtoclientside(clientcode)
+	return oldexec_newclientrunned
+end
+ 
+exec_menuaddtab("my tab",function()
+	exec_menuaddcheckbox("print 1 on spawnserver",15,30,"PRINTONSPAWN","description")
+end)`, "desc": "Print to console with checkbox", "output": "1 if checkbox enable<br><img src='https://i.imgur.com/UnTTX1Z.png' class='mt-2 rounded border border-gray-700 max-w-full'/>"
+        },
+        "goodname": "menuaddtab"
+      },
+      "exec_menuaddbutton": {
+        "Description": "Adds button in script tab",
+        "Arguments": { "string": "button name", "number1": "pos1", "number2": "pos2", "function": "on click" },
+        "Example": {
+          "code": `exec_menuaddtab("Prints",function()
+	exec_menuaddbutton("print 1 to menustate",15,30,function()
+		print(1)
+	end)
+end)`, "desc": "Add button on Prints tab"
+        },
+        "goodname": "menuaddbutton"
+      },
+      "exec_menuaddbinder": {
+        "Description": "Adds key binder to script tab",
+        "Arguments": { "string1": "Name", "number1": "pos1", "number2": "pos2", "string2": "cfg name" },
+        "goodname": "menuaddbinder"
+      },
+      "exec_menuaddcheckbox": {
+        "Description": "Adds checkbox to script tab",
+        "Arguments": { "string1": "Name", "number1": "pos1", "number2": "pos2", "string2": "cfg name", "string3": "description" },
+        "goodname": "menuaddcheckbox"
+      },
+      "exec_menuaddlabel": {
+        "Description": "Adds label to script tab",
+        "Arguments": { "string1": "Text", "number1": "pos1", "number2": "pos2", "number3": "Fontsize(10-25)", "number4": "size1", "number5": "size2" },
+        "goodname": "menuaddlabel"
+      },
+      "exec_menuaddcolorpixer": {
+        "Description": "Adds label to script tab",
+        "Arguments": { "string": "cfg name", "number1": "pos1", "number2": "pos2" },
+        "goodname": "menuaddcolorpixer"
+      },
+      "exec_menuaddslider": {
+        "Description": "Adds slider to script tab",
+        "Arguments": { "string1": "Name", "number1": "pos1", "number2": "pos2", "number3": "Min", "number4": "Max", "string2": "Cfg name" },
+        "goodname": "menuaddslider"
+      },
+      "exec_menuaddtextentry": {
+        "Description": "Adds text entry to script tab",
+        "Arguments": { "number1": "pos1", "number2": "pos2", "number3": "size", "function": "on change(argument string:text)" },
+        "goodname": "menuaddtextentry"
+      },
+      "exec_combobox": {
+        "Description": "Adds combobox entry to script tab",
+        "Arguments": { "number1": "pos1", "number2": "pos2", "string1": "Cfg name", "table": "all options", "string2": "Name" },
+        "Example": {
+          "code": `exec_menuaddtab("My script",function()
+	exec_combobox(15,30,"MYSHAT",{"yes","no"},"Select")
+end)`, "desc": "Add combobox on My script tab"
+        },
+        "goodname": "combobox"
+      },
+      "exec_CreateDir": {
+        "Description": "Creates a directory that is relative to the folder.",
+        "Arguments": { "string": "directory" },
+        "goodname": "CreateDir"
+      },
+      "exec_Delete": {
+        "Description": "Deletes a file or empty folder that is relative to the folder. You can't remove any files outside of folders",
+        "Arguments": { "string": "filename or dir" },
+        "goodname": "Delete"
+      },
+      "exec_Exists": {
+        "Description": "Returns a boolean of whether the file or directory exists or not.",
+        "Arguments": { "string": "filename or dir" },
+        "Returns": { "boolean": "false or true" },
+        "goodname": "Exists"
+      },
+      "exec_IsDir": {
+        "Description": "Returns whether the given file is a directory or not.",
+        "Arguments": { "string": "dir" },
+        "Returns": { "boolean": "false or true" },
+        "goodname": "IsDir"
+      },
+      "exec_List": {
+        "Description": "Returns a list of files and directories inside a single folder.",
+        "Arguments": { "string": "directory" },
+        "Returns": { "table1": "*", "table2": "*" },
+        "goodname": "List"
+      },
+      "exec_Read": {
+        "Description": "Returns the content of a file.",
+        "Arguments": { "string": "directory and filename" },
+        "Returns": { "string": "*" },
+        "Example": { "code": 'print(exec_Read("C:\\exec.txt"))', "desc": "Get text form file", "output": "1" },
+        "goodname": "Read"
+      },
+      "exec_Write": {
+        "Description": "Create file or dir",
+        "Arguments": { "string1": "directory and filename", "string2": "content" },
+        "Example": { "code": 'exec_Write("C:/exechack/1.txt","lol")', "desc": "Create file " },
+        "goodname": "Write"
+      },
+      "exec_notification": {
+        "Description": "Used to display notifications on the screen.",
+        "Arguments": { "string": "text" },
+        "Example": { "code": 'exec_notification("exec")', "desc": "Notification: exec" },
+        "goodname": "notification"
+      },
+      "exec_runtoclientside": {
+        "Description": "Run code to client",
+        "Arguments": { "string": "code" },
+        "goodname": "runtoclientside"
+      },
+      "exec_addclientcodetoautorun": {
+        "Description": "Auto run code on server",
+        "Arguments": { "string1": "name", "string2": "code" },
+        "Example": {
+          "code": `exec_addclientcodetoautorun("myclientcode",[[
+	print(123)
+]])`, "desc": "Print 123 on join server", "output": "123"
+        },
+        "goodname": "addclientcodetoautorun"
+      },
+      "exec_newclientrunned": {
+        "Description": "Function called in new clientside",
+        "Example": {
+          "code": `local oldexec_newclientrunned = exec_newclientrunned
+exec_newclientrunned = function()
+	exec_runtoclientside([[
+		print(1)
+	]])
+	return oldexec_newclientrunned
+end`, "desc": "Autorun print(1) in client", "output": "1"
+        },
+        "goodname": "newclientrunned"
+      },
+      "luaruncontrol": {
+        "Description": "hook called when loading a new lua",
+        "Arguments": { "string1": "filedirectory", "string2": "code" },
+        "Returns": { "string": "code" },
+        "Example": {
+          "code": `hook.Add("bitch","name",function(file,code)
+	if file=="lua/autorun/client/rat.lua"then
+		return "print(1)"
+	end 
+end)`, "desc": "Replace code", "output": "code in 'lua/autorun/client/rat.lua' replaces on 'print(1)'"
+        },
+        "goodname": "lua run control"
+      },
+      "cfg nameing": {
+        "Description": 'All cfgs name, open *.cfgexec through editor and you will get all cfg names https://pastebin.com/V0XaXS24',
+        "goodname": "cfg nameing"
+      }
+    };
+
+    // Отрисовка бокового меню
+    function renderSidebar() {
+      const clientList = document.getElementById("clientside-list");
+      const menuList = document.getElementById("menustate-list");
+
+      clientList.innerHTML = Object.keys(clientapi).map(key => `
+        <li>
+          <a href="#${key}" onclick="renderFunction('${key}'); return false;" class="navigation_link nav-item block py-1 px-2 rounded hover:bg-brand-surface hover:text-white transition-all text-brand-subtext" data-func="${key}">
+            ${clientapi[key].goodname}
+          </a>
+        </li>
+      `).join('');
+
+      menuList.innerHTML = Object.keys(menustateapi).map(key => `
+        <li>
+          <a href="#${key}" onclick="renderFunction('${key}'); return false;" class="navigation_link nav-item block py-1 px-2 rounded hover:bg-brand-surface hover:text-white transition-all text-brand-subtext" data-func="${key}">
+            ${menustateapi[key].goodname}
+          </a>
+        </li>
+      `).join('');
+    }
+
+    // Подсветка активного пункта в меню
+    function updateActiveLink(funcName) {
+      document.querySelectorAll('.nav-item').forEach(el => {
+        if (el.getAttribute('data-func') === funcName) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    }
+
+    // Отрисовка главной страницы
+    function renderMainPage() {
+      updateActiveLink(null);
+      window.location.hash = '';
+
+      const contentArea = document.getElementById("content-area");
+      contentArea.innerHTML = `
+        <h1 class="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center gap-2">
+          <i data-lucide="sparkles" class="text-brand-highlight w-6 h-6"></i>
+          Welcome to the exechack.cc lua api!
+        </h1>
+        <div class="text-xs sm:text-sm text-brand-subtext space-y-4 leading-relaxed">
+          <p>
+            Lets start with the main thing, exechackapi is an addition to the standard API for developing addons(GLUA).<br>
+            <a href="https://wiki.facepunch.com/gmod" target="_blank" class="text-amber-400 hover:underline">https://wiki.facepunch.com/gmod</a>
+          </p>
+          <p>
+            there are 2 types of scripts, 1 popular - <a href="https://wiki.facepunch.com/gmod/States#client" target="_blank" class="text-amber-400 hover:underline">client</a>, and <a href="https://wiki.facepunch.com/gmod/States#menu" target="_blank" class="text-amber-400 hover:underline">menustate</a>.
+          </p>
+          <p>
+            To run clientside name <code class="bg-brand-bg px-2 py-0.5 rounded border border-gray-700 text-brand-highlight">*.lua</code>, for menustate name <code class="bg-brand-bg px-2 py-0.5 rounded border border-gray-700 text-brand-highlight">*.luamenu</code>.<br>
+            To autorun lua, add <code class="bg-brand-bg px-2 py-0.5 rounded border border-gray-700 text-brand-highlight">*广_autorun.lua</code> to the name.
+          </p>
+          <p>
+            dangerous functions are available in <a href="https://wiki.facepunch.com/gmod/States#menu" target="_blank" class="text-amber-400 hover:underline">menustate</a> that can change files on your computer, so launching in <a href="https://wiki.facepunch.com/gmod/States#menu" target="_blank" class="text-amber-400 hover:underline">menustate</a> is only possible with a cheat or changing game files, which the server cannot do.
+          </p>
+          <p>
+            <a href="https://wiki.facepunch.com/gmod/States#client" target="_blank" class="text-amber-400 hover:underline">client</a> scripts work in the same environment with addons and this environment is limited so that the creators cannot harm you.<br>
+            but in the environment <a href="https://wiki.facepunch.com/gmod/States#menu" target="_blank" class="text-amber-400 hover:underline">menustate</a> you can interact with the cheat menu and run scripts on the <a href="https://wiki.facepunch.com/gmod/States#client" target="_blank" class="text-amber-400 hover:underline">client</a> environment through the function <code class="bg-brand-bg px-2 py-0.5 rounded border border-gray-700 text-brand-highlight">runtoclientside</code>.
+          </p>
+          <p>
+            An example of the simplest script with the interaction of the menu and cfg cheat with launch on the <a href="https://wiki.facepunch.com/gmod/States#client" target="_blank" class="text-amber-400 hover:underline">client</a>:
+          </p>
+
+          <div class="relative bg-brand-bg p-4 rounded-lg border border-gray-700/60 font-mono text-xs overflow-x-auto text-brand-text">
+            <button onclick="copyToClipboard(this)" class="absolute top-2 right-2 p-1.5 rounded bg-brand-card hover:bg-brand-surface text-brand-subtext hover:text-white transition-all" title="Copy code">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <pre><code>if IsInGame()then Derma_Message("run only in main menu","1","OK")return end
+if exec_cfg_GetValue("PRINTONSPAWN")==nil then
+	exec_cfg_SetValue("PRINTONSPAWN",false)
+end
+exec_addclientcodetoautorun("printserver",[[
+if exechack_api.cfg_GetValue("PRINTONSPAWN")then
+	print(1)
+end
+]])
+exec_menuaddtab("my tab",function()
+	exec_menuaddcheckbox("print 1 on spawnserver",15,30,"PRINTONSPAWN","description")
+end)</code></pre>
+          </div>
+
+          <div class="mt-4">
+            <img src="https://i.imgur.com/UnTTX1Z.png" class="rounded border border-gray-700 max-w-full" alt="Example">
+          </div>
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+      document.body.classList.remove("navigation_opened");
+    }
+
+    // Отрисовка страницы конкретной функции
+    function renderFunction(funcName) {
+      const fu = clientapi[funcName] || menustateapi[funcName];
+      if (!fu) return;
+
+      updateActiveLink(funcName);
+      window.location.hash = funcName;
+
+      const contentArea = document.getElementById("content-area");
+
+      let html = `
+        <h1 class="text-xl sm:text-2xl font-bold text-white mb-2 flex items-center gap-2">
+          <i data-lucide="code" class="text-brand-highlight w-6 h-6"></i>
+          ${funcName}
+        </h1>
+        <p class="text-xs sm:text-sm text-brand-subtext mb-6">${fu.Description}</p>
+      `;
+
+      // Arguments
+      if (fu.Arguments) {
+        html += `
+          <div class="mb-6">
+            <h2 class="text-base font-semibold text-white mb-2 flex items-center gap-1.5">
+              <i data-lucide="list-tree" class="w-4 h-4 text-brand-accent"></i> Arguments
+            </h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm text-brand-text border-collapse">
+                <thead>
+                  <tr class="bg-brand-surface/60 border-b border-gray-700/50">
+                    <th class="p-2 sm:p-2.5 font-semibold">Type</th>
+                    <th class="p-2 sm:p-2.5 font-semibold">Description</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700/30">
+        `;
+        for (const [type, desc] of Object.entries(fu.Arguments)) {
+          html += `
+            <tr>
+              <td class="p-2 sm:p-2.5 font-mono text-brand-highlight">${type}</td>
+              <td class="p-2 sm:p-2.5 text-brand-subtext">${desc}</td>
+            </tr>
+          `;
+        }
+        html += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      // Returns
+      if (fu.Returns) {
+        html += `
+          <div class="mb-6">
+            <h2 class="text-base font-semibold text-white mb-2 flex items-center gap-1.5">
+              <i data-lucide="corner-down-right" class="w-4 h-4 text-brand-accent"></i> Returns
+            </h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm text-brand-text border-collapse">
+                <thead>
+                  <tr class="bg-brand-surface/60 border-b border-gray-700/50">
+                    <th class="p-2 sm:p-2.5 font-semibold">Type</th>
+                    <th class="p-2 sm:p-2.5 font-semibold">Description</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700/30">
+        `;
+        for (const [type, desc] of Object.entries(fu.Returns)) {
+          html += `
+            <tr>
+              <td class="p-2 sm:p-2.5 font-mono text-brand-highlight">${type}</td>
+              <td class="p-2 sm:p-2.5 text-brand-subtext">${desc}</td>
+            </tr>
+          `;
+        }
+        html += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      // Example
+      if (fu.Example) {
+        const tb = fu.Example;
+        html += `
+          <div class="mb-6">
+            <h2 class="text-base font-semibold text-white mb-2 flex items-center gap-1.5">
+              <i data-lucide="terminal" class="w-4 h-4 text-brand-accent"></i> Example
+            </h2>
+            <p class="text-xs sm:text-sm text-brand-subtext mb-2">${tb.desc}</p>
+
+            <div class="relative bg-brand-bg p-4 rounded-lg border border-gray-700/60 font-mono text-xs overflow-x-auto text-brand-text">
+              <button onclick="copyToClipboard(this)" class="absolute top-2 right-2 p-1.5 rounded bg-brand-card hover:bg-brand-surface text-brand-subtext hover:text-white transition-all" title="Copy code">
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+              <pre><code>${escapeHtml(tb.code)}</code></pre>
+            </div>
+        `;
+        if (tb.output) {
+          html += `
+            <div class="mt-3 text-xs sm:text-sm text-brand-subtext">
+              <span class="font-semibold text-white">Output:</span> ${tb.output}
+            </div>
+          `;
+        }
+        html += `</div>`;
+      }
+
+      contentArea.innerHTML = html;
+      if (window.lucide) lucide.createIcons();
+      document.body.classList.remove("navigation_opened");
+    }
+
+    // Вспомогательные функции
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function copyToClipboard(button) {
+      const code = button.nextElementSibling.innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const icon = button.querySelector('i');
+        button.classList.add('text-emerald-400');
+        setTimeout(() => {
+          button.classList.remove('text-emerald-400');
+        }, 1500);
+      });
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener("DOMContentLoaded", () => {
+      renderSidebar();
+
+      // Мобильная кнопка навигации
+      const btn = document.querySelector(".navigation-button");
+      const backdrop = document.querySelector(".navigation_backdrop");
+
+      if (btn) {
+        btn.addEventListener("click", () => {
+          document.body.classList.toggle("navigation_opened");
+        });
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener("click", () => {
+          document.body.classList.remove("navigation_opened");
+        });
+      }
+
+      // Роутинг по хешу в URL
+      const hash = decodeURIComponent(window.location.hash.replace('#', ''));
+      if (hash && (clientapi[hash] || menustateapi[hash])) {
+        renderFunction(hash);
+      } else {
+        renderMainPage();
+      }
+
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+
+    // Обработка перехода по кнопкам назад/вперед в браузере
+    window.addEventListener("hashchange", () => {
+      const hash = decodeURIComponent(window.location.hash.replace('#', ''));
+      if (hash && (clientapi[hash] || menustateapi[hash])) {
+        renderFunction(hash);
+      } else {
+        renderMainPage();
+      }
+    });
+  </script>
+</body>
+
+</html>
