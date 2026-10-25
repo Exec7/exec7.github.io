@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exechack</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        themeBg: '#313742',
+                        themeCard: '#272c35',
+                        themeHeader: '#20242c',
+                        themeBorder: '#3f4756',
+                        themeAccent: '#3b82f6',
+                        themeTextMuted: '#9ca3af'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .expandable-content {
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .expandable-content.open {
+            max-height: 1200px;
+            opacity: 1;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #20242c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f4756;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f586b;
+        }
+        .truncate-custom {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body class="bg-themeBg text-gray-100 min-h-screen font-sans flex flex-col antialiased selection:bg-blue-500 selection:text-white">
+
+    <!-- Header Section -->
+    <header class="bg-themeHeader border-b border-themeBorder sticky top-0 z-30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Title & Badge -->
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-blue-600/20 text-blue-400 rounded-xl border border-blue-500/30 shrink-0">
+                        <i data-lucide="server" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white uppercase">
+                            exechack servers addon database
+                        </h1>
+                        <p class="text-xs sm:text-sm text-themeTextMuted flex items-center gap-2 mt-0.5">
+                            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Live Net Functions & Addon Signature Inspector
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stats Badges -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+                    <div class="bg-themeCard px-3 py-1.5 rounded-lg border border-themeBorder flex items-center gap-2">
+                        <i data-lucide="server" class="w-4 h-4 text-blue-400"></i>
+                        <span>Servers: <strong id="totalServers" class="text-white">0</strong></span>
+                    </div>
+                    <div class="bg-themeCard px-3 py-1.5 rounded-lg border border-themeBorder flex items-center gap-2">
+                        <i data-lucide="package-check" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Addon DB: <strong id="totalAddonsDb" class="text-white">0</strong></span>
+                    </div>
+                    <div class="bg-themeCard px-3 py-1.5 rounded-lg border border-themeBorder flex items-center gap-2">
+                        <i data-lucide="filter" class="w-4 h-4 text-yellow-400"></i>
+                        <span>Filtered: <strong id="filteredServers" class="text-white">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+        
+        <!-- Search, Filter & Control Bar -->
+        <div class="mb-6 flex flex-col gap-3">
+            <div class="flex flex-col md:flex-row gap-3">
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-themeTextMuted">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        id="searchInput"
+                        placeholder="Search by Server Name, IP:Port, Net Function, or Addon Name..." 
+                        class="w-full pl-10 pr-10 py-3 bg-themeCard border border-themeBorder rounded-xl text-white placeholder-themeTextMuted focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all shadow-inner text-sm sm:text-base"
+                    >
+                    <button 
+                        id="clearSearchBtn" 
+                        class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-themeTextMuted hover:text-white transition-colors"
+                        title="Clear search"
+                    >
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                
+                <!-- Refresh Button -->
+                <button 
+                    id="refreshBtn"
+                    class="flex items-center justify-center gap-2 px-5 py-3 bg-themeCard hover:bg-themeBorder border border-themeBorder rounded-xl text-white text-sm font-medium transition-colors shadow-sm active:scale-95 shrink-0"
+                >
+                    <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
+                    <span>Reload Source</span>
+                </button>
+            </div>
+
+            <!-- Risk Tag & Page Size Controls -->
+            <div class="flex flex-wrap items-center justify-between gap-3 bg-themeCard/60 p-3 rounded-xl border border-themeBorder">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs text-themeTextMuted font-semibold uppercase tracking-wider mr-1">Filter Risk:</span>
+                    <button onclick="setRiskFilter('all')" id="btn-risk-all" class="risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-blue-500 bg-blue-600/30 text-blue-300">All</button>
+                    <button onclick="setRiskFilter('red')" id="btn-risk-red" class="risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-themeBorder bg-themeCard text-red-400 hover:border-red-500/50">High Risk (Red)</button>
+                    <button onclick="setRiskFilter('orange')" id="btn-risk-orange" class="risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-themeBorder bg-themeCard text-orange-400 hover:border-orange-500/50">Warning (Orange)</button>
+                    <button onclick="setRiskFilter('green')" id="btn-risk-green" class="risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-themeBorder bg-themeCard text-emerald-400 hover:border-emerald-500/50">Exploits (Green)</button>
+                    <button onclick="setRiskFilter('blue')" id="btn-risk-blue" class="risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-themeBorder bg-themeCard text-blue-400 hover:border-blue-500/50">Normal (Blue)</button>
+                </div>
+
+                <!-- Page Size Selector -->
+                <div class="flex items-center gap-2 text-xs text-themeTextMuted ml-auto">
+                    <span>Rows per page:</span>
+                    <select id="pageSizeSelect" onchange="changePageSize(this.value)" class="bg-themeCard border border-themeBorder text-white text-xs rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="contentArea" class="bg-themeCard rounded-xl border border-themeBorder shadow-xl overflow-hidden min-h-[350px] flex flex-col justify-center">
+            
+            <!-- Loading State -->
+            <div id="loadingState" class="flex flex-col items-center justify-center py-16 px-4">
+                <div class="relative w-12 h-12 mb-4">
+                    <div class="w-12 h-12 rounded-full border-4 border-themeBorder border-t-blue-500 animate-spin"></div>
+                </div>
+                <p class="text-gray-300 font-medium text-base">Fetching & Parsing Server JSON Database...</p>
+                <p class="text-themeTextMuted text-xs mt-1">Analyzing net functions and cross-referencing known Garry's Mod addons</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="hidden flex flex-col items-center justify-center py-16 px-4 text-center">
+                <div class="p-3 bg-red-500/10 text-red-400 rounded-full mb-3 border border-red-500/20">
+                    <i data-lucide="alert-circle" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-white mb-1">Failed to load server database</h3>
+                <p id="errorMessage" class="text-themeTextMuted text-sm max-w-md mb-4">Could not retrieve or parse the dataset from GitHub.</p>
+                <button 
+                    onclick="fetchData()" 
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors shadow-md"
+                >
+                    Try Again
+                </button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center py-16 px-4 text-center">
+                <div class="p-3 bg-themeBorder/40 text-themeTextMuted rounded-full mb-3">
+                    <i data-lucide="search-x" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-base font-medium text-white mb-1">No matching GMod servers found</h3>
+                <p class="text-themeTextMuted text-xs">Try adjusting your search parameters or risk level filters.</p>
+            </div>
+
+            <!-- Data Table View -->
+            <div id="tableWrapper" class="hidden overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-themeHeader/80 text-themeTextMuted uppercase text-[11px] tracking-wider font-semibold border-b border-themeBorder">
+                            <th class="py-3 px-4 w-64">Server Name</th>
+                            <th class="py-3 px-4 w-44">IP:Port</th>
+                            <th class="py-3 px-4">Detected Addons / Net Matches</th>
+                            <th class="py-3 px-4 w-28 text-center">Nets Count</th>
+                            <th class="py-3 px-3 w-10 text-center"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-themeBorder/60 text-sm">
+                        <!-- Rows rendered dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="paginationWrapper" class="hidden mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-themeCard p-3 rounded-xl border border-themeBorder">
+            <div id="paginationInfo" class="text-xs text-themeTextMuted">
+                Showing <span id="pageStart" class="text-white font-medium">0</span> to <span id="pageEnd" class="text-white font-medium">0</span> of <span id="pageTotal" class="text-white font-medium">0</span> servers
+            </div>
+            <div class="flex items-center gap-1.5">
+                <button id="prevPageBtn" onclick="changePage(-1)" class="p-2 bg-themeHeader hover:bg-themeBorder border border-themeBorder text-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </button>
+                <span id="currentPageDisplay" class="px-3 text-xs font-mono text-blue-400">Page 1 / 1</span>
+                <button id="nextPageBtn" onclick="changePage(1)" class="p-2 bg-themeHeader hover:bg-themeBorder border border-themeBorder text-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <footer class="mt-6 text-center text-xs text-themeTextMuted flex flex-col sm:flex-row items-center justify-between gap-2 px-2">
+            <div>Click any server row to inspect full net function list & addon download sources</div>
+            <div>Source: <a href="https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/docs/netsarchive1.txt" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">netsarchive1.txt</a></div>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript Application Engine -->
+    <script>
+        const NETS_URL = 'https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/docs/anet.txt';
+
+        // Embedded Net Addon Lookup Database
+        const ADDON_DATABASE = {
+            "ZimbaBackdoor": { n: "Anti-Exploit #1", l: "", c: "red" },
+            "_CAC_ReadMemory": { n: "Anti-Exploit #2", l: "", c: "red" },
+            "GimmeThatScreen_Mirrored": { n: "GimmeThatScreen", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2114254167", c: "orange" },
+            "rtxappend2": { n: "Screengrab v2", l: "https://github.com/kralicky/Screengrab/blob/master/sh_screengrab_v2.lua", c: "orange" },
+            "RSC.NetworkV2": { n: "Retro Screengrab (ONLY WITH WITHOUT SECURITY RUNMETHOD)", l: "https://www.gmodstore.com/market/view/retro-s-screengrabber-easily-capture-your-players-screen", c: "orange" },
+            "bScreenGrabStart": { n: "Epic Screengrab", l: "https://www.unknowncheats.me/forum/garry-s-mod/462021-epic-screengrab.html", c: "orange" },
+            "FSpectate": { n: "FSpectate", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=559017762", c: "orange" },
+            "ba.cmd.sg.request": { n: "Sup Screengrab", l: "", c: "orange" },
+            "sv_anticrash_GlobalCleanup": { n: "Anti-Crash", l: "https://www.gmodstore.com/market/view/anti-crash", c: "orange" },
+            "_AntiCrash": { n: "Anti-Crash", l: "https://www.gmodstore.com/market/view/anti-crash", c: "orange" },
+            "FPP_RestrictedToolList": { n: "Falcos Prop Protection", l: "https://github.com/FPtje/Falcos-Prop-protection", c: "orange" },
+            "AFKTimeUpdate": { n: "Anti AFK", l: "", c: "orange" },
+            "AntiAfksenBypassUsers": { n: "Anti AFK", l: "", c: "red" },
+            "AntiFamSharing::DeployVFS": { n: "Anti Family-Sharing", l: "", c: "orange" },
+            "SteamFamilySharing_NetworkServerToClient": { n: "Anti Family-Sharing & Anti-Alt", l: "https://github.com/C0nw0nk/Garrys-Mod-Family-Sharing/blob/master/garrysmod/lua/autorun/server/sv_familysharing.lua", c: "red" },
+            "spp:DoAntiSpamWarning": { n: "Simple Prop Protection", l: "https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=145061455", c: "orange" },
+            "jBlacklist_UpdateClientConfig": { n: "JBlacklist", l: "https://www.gmodstore.com/market/view/jblacklist-v2-more-control-of-rule-breakers/", c: "red" },
+            "BanEvasion:Data": { n: "Ban Evasion", l: "https://www.gmodstore.com/market/view/ban-evasion", c: "orange" },
+            "SendPlayerLua": { n: "Admins lua runner", l: "", c: "red" },
+            "sendscript": { n: "Admins lua runner", l: "", c: "red" },
+            "_da_": { n: "Admins lua runner", l: "", c: "red" },
+            "luadev_run": { n: "Admins lua runner", l: "", c: "red" },
+            "luapad.DownloadRunClient": { n: "Luapad Admins (ingame lua runner)", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=107905654", c: "red" },
+            "_lplualoader.startcrashmenu": { n: "Admins lua runner + crasher", l: "", c: "red" },
+            "nova_anticheat_detection": { n: "Nova Anticheat", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3069680995", c: "red" },
+            "pprotect_request_ents": { n: "Pprotect", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=183047564", c: "red" },
+            "AntiCheatTop_BinKick": { n: "Unknown Anticheat", l: "", c: "orange" },
+            "sg.request": { n: "Sup Screengrab", l: "", c: "red" },
+            "gmsv_gluapack_autorefresh": { n: "GLua Pack", l: "https://github.com/djsime1/gluapack", c: "red" },
+            "VACS:StartScreen": { n: "VACS Screengrab", l: "", c: "red" },
+            "KAdmin_Screengrab_Status": { n: "KAdmin Screengrab", l: "", c: "red" },
+            "HMCD_ACS": { n: "DOG Anticheat", l: "https://www.unknowncheats.me/forum/4310777-post7.html", c: "orange" },
+            "SNTEV2:CreateNet": { n: "Say No To Exploits V2", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1308262997", c: "red" },
+            "MurlockAC_RequestFunctionNames": { n: "Murlock Anticheat", l: "", c: "orange" },
+            "SAC.TimerCheck": { n: "Sol Anticheat", l: "", c: "red" },
+            "RRAC_Heartbeat": { n: "rr anticheat", l: "", c: "red" },
+            "gMining.registerAchievement": { n: "gMining", l: "" },
+            "aphone_bank": { n: "APhone", l: "" },
+            "slogs::RequestData": { n: "sLogs", l: "" },
+            "management_warns::DemotePlayer": { n: "Management warns", l: "" },
+            "BodyGroups.ModelMessage": { n: "BodyGroups", l: "" },
+            "CRadio.NetworkPlaylist": { n: "CRadio", l: "" },
+            "rHit.Open.CurrentHits": { n: "rHit", l: "" },
+            "HoverbikeHUD": { n: "HoverbikeHUD", l: "" },
+            "gMarriage_ProposalUI": { n: "gMarriage", l: "" },
+            "gElection_Open_NPCUI": { n: "gElection", l: "" },
+            "ExeRapor_OpenMenu": { n: "ExeRapor Reports", l: "" },
+            "freports.reports_statistics.search": { n: "FReports", l: "" },
+            "nutInventoryInit": { n: "Nut Inventory", l: "" },
+            "DPets_UpdatePetName": { n: "DPets", l: "" },
+            "BP:QMenu": { n: "Xenin BattlePass", l: "https://www.gmodstore.com/market/view/xenin-battle-pass" },
+            "BATTLEPASS_OpenMenu": { n: "BattlePass", l: "https://www.gmodstore.com/market/view/battlepass" },
+            "ItemStoreSync": { n: "ItemStore", l: "https://www.gmodstore.com/market/view/itemstore-inventory-bank-and-trading-for-darkrp" },
+            "zwf_Shop_Buy_net": { n: "Zeros weedfarm", l: "https://www.gmodstore.com/market/view/zero-s-grow-op-weed-script" },
+            "BRS.Net.AdminGangCMD": { n: "Bricks Gangs", l: "https://www.gmodstore.com/market/view/brick-s-gangs-territories-associations-achievements-more" },
+            "SitAnywhere": { n: "Sit Anywhere", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=108176967" },
+            "SH_POINTSHOP.ApplyAdjustment": { n: "SH Pointshop", l: "https://www.gmodstore.com/market/view/sh-pointshop" },
+            "GProfiler_RequestFunctionSource": { n: "GProfiler", l: "https://www.gmodstore.com/market/view/gprofiler-profiling-made-easy" },
+            "VoidCases.TradeChat": { n: "VoidCases", l: "https://www.gmodstore.com/market/view/voidcases-unboxing-system" },
+            "bKeypads.Keycards.Inventory.Drop": { n: "bKeypads", l: "https://www.gmodstore.com/market/view/billys-keypads" },
+            "GTawards.GetTopPlayers": { n: "GTawards", l: "https://www.gmodstore.com/market/view/gtawards-awards-for-onlinetime-mysql-sqlite" },
+            "tfaSDLP": { n: "TFA Base", l: "https://steamcommunity.com/workshop/filedetails/?id=2840031720", c: "orange" },
+            "wOS.SkillTree.SetXP": { n: "wOS Animation", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=757604550" },
+            "Medicsystem:KillPlayer": { n: "Medicsystem", l: "https://www.gmodstore.com/market/view/amm-advanced-medic-mod-the-first-complete-and-realistic-medical-addon" },
+            "PermaProps.GetPage": { n: "PermaProps", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=220336312" },
+            "permaprop create": { n: "PermaProps", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=220336312" },
+            "MEDIAPLAYER.Remove": { n: "MediaPlayer", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=546392647" },
+            "awarn3_deleteallplayerwarnings": { n: "Awarn3", l: "https://www.gmodstore.com/market/view/awarn3-warning-system" },
+            "onyx.f4:RequestStats": { n: "Onyx F4", l: "https://www.gmodstore.com/market/view/onyx-f4-a-modern-f4" },
+            "onyx.scoreboard:SetColumns": { n: "Onyx Scoreboard", l: "https://www.gmodstore.com/market/view/onyx-scoreboard-a-modern-scoreboard" },
+            "vj_meme": { n: "vjbase", l: "https://steamcommunity.com/workshop/filedetails/?id=131759821" },
+            "arccw_asktoattach": { n: "ArcCW", l: "https://steamcommunity.com/workshop/filedetails/?id=2131186647", c: "red" },
+            "nw.NilEntityVar": { n: "Sup DarkRP", l: "https://wiki.superiorservers.co/shelves/darkrp" },
+            "ashop_RankPromotion_Create": { n: "AShop", l: "https://www.gmodstore.com/market/view/ashop" },
+            "gmodadminsuite:logging:SendLogs": { n: "GmodAdminSuite", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1595332211" },
+            "teams:GetIdentifiers": { n: "DConfig", l: "https://www.gmodstore.com/market/view/dconfig-in-game-darkrp-customization-jobs-shipments-categories-etc" },
+            "SV_Settings_HardReset": { n: "SVMod", l: "https://svmod.com/" },
+            "VoidFactions.Rank.CreateRank": { n: "VoidFactions", l: "https://www.gmodstore.com/market/view/voidfactions" },
+            "wanted_radio": { n: "Radio Police", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=885647841" },
+            "cats.closeTicket": { n: "Cats tickets", l: "https://brokencore.club/resources/1276/" },
+            "SH_WHITELIST.PanelHook": { n: "SH Whitelist", l: "https://www.gmodstore.com/market/view/sh-whitelist" },
+            "CH_Mining_Net_PlayerInventory": { n: "CH Mining", l: "https://www.gmodstore.com/market/view/mining" },
+            "IGS.nw.NilEntityVar": { n: "IGS AutoDonate", l: "https://gm-donate.net/" },
+            "JMod_LuaConfigSync": { n: "JMod", l: "https://steamcommunity.com/workshop/filedetails/?id=1919689921" },
+            "3DStreamRadio/StaticState": { n: "3D Stream Radio", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=246756300" },
+            "ToyBoxReworked_ArmyMakerAnswer": { n: "Toybox Classics", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2847048496" },
+            "firstpersonDeath": { n: "First Person Death", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=615975981" },
+            "SquadSystem.RequestCreateSquad": { n: "SquadSystem", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2686130557" },
+            "pCasino:FreeSpin": { n: "pCasino", l: "https://www.gmodstore.com/market/view/pcasino-the-perfect-casino-addon-roulette-blackjack-slots-prize-wheel" },
+            "pvault_ui_makeoffer": { n: "pVault", l: "https://www.gmodstore.com/market/view/pvault-the-perfect-bank-raid-heist-addon-masks" },
+            "gspeak_request_init": { n: "Gspeak", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1877304986" },
+            "SAM.NetStreamDS.Sending": { n: "Sam Admin", l: "https://www.gmodstore.com/market/view/sam" },
+            "VapeTalking": { n: "Vape SWEP", l: "https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=673698301" },
+            "SCB.SendMessage": { n: "SCB ChatBox", l: "https://www.gmodstore.com/market/view/scb" },
+            "CH_GarbageSystem_ShowTruckMenu": { n: "Garbage System", l: "https://www.gmodstore.com/market/view/garbage-system-garbage-truck-dumpsters-income-custom-models" },
+            "guthlevelsystem:SendNotif": { n: "Guthlevel system", l: "https://github.com/Guthen/guthlevelsystem" },
+            "sReport:AdminMenu": { n: "sReport", l: "https://www.gmodstore.com/market/view/sreport-sits-admin-popups" },
+            "AirdropOpen": { n: "Airdrop", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2408069881" },
+            "SpawnPoints:RefreshClientSpawns": { n: "SpawnPoints", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2827761794" },
+            "vrmod_doors": { n: "Vrmod", l: "https://exechack.cc/lua/post/Noclip+VRMOD+Exploit", c: "green" },
+            "AdvBone_NewModelToCPanel_SendToCl": { n: "Advanced Bone Tool", l: "https://steamcommunity.com/workshop/filedetails/?id=279079869" },
+            "AnimProp_Ragdollize_SendToSv": { n: "Animated Props", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3214437941" },
+            "vFirePriority": { n: "vFire", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1525218777" },
+            "MQS.TaskNotify": { n: "Mac Quest System", l: "https://www.gmodstore.com/market/view/mac-s-quest-system" },
+            "MSD.GetConfigData": { n: "MSD HUD", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2815155991" },
+            "TalkModes.InitMenu": { n: "Talk Modes", l: "https://www.gmodstore.com/market/view/talk-modes-whisper-talk-yell" },
+            "TicketSystem:Chat": { n: "TicketSystem", l: "https://www.gmodstore.com/market/view/dk-ticket-system" },
+            "pac_projectile": { n: "Pac3", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=104691717" },
+            "BM2.Command.Mining": { n: "Bitminers 2", l: "https://github.com/In-memory-of-CODE-BLUE/Bitminers-2" },
+            "plogs.LogData": { n: "pLogs", l: "https://github.com/aStonePenguin/pLogs-2" },
+            "TalkIconChat": { n: "Talk Icon", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=841066734" },
+            "Chess ClientRequestMove": { n: "Chess and Checkers", l: "https://www.gmodstore.com/market/view/chess-and-checkers" },
+            "BEvents.Finish": { n: "BEvents", l: "https://www.gmodstore.com/market/view/event-addon" },
+            "Workbench.Using": { n: "Workbench", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2622286057" },
+            "MRS.Notify": { n: "Advanced Rank System", l: "https://www.gmodstore.com/market/view/rankup-advanced-rank-system" },
+            "ASayPopupClose": { n: "ASayPopup", l: "https://aide-serveur.fr/threads/probleme-avec-ladd-on-admin-popups.40125/" },
+            "FAS2_SENDATTACHMENTS": { n: "FAS2 Base", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=258192021" },
+            "gred_net_simfphys_enableradio": { n: "Simfphys", l: "https://steamcommunity.com/workshop/filedetails/?id=771487490" },
+            "DarkRP_preferredjobmodels": { n: "DarkRP", l: "https://github.com/FPtje/DarkRP/tree/master" },
+            "DRC_SetSpecialModels": { n: "Draconic Base", l: "https://steamcommunity.com/workshop/filedetails/?id=1847505933" },
+            "mCompass_AddMarker": { n: "mCompass", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1452363997" },
+            "gpoker_payEntry": { n: "Gpoker", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2825347854" },
+            "Cuffs_UntiePlayers": { n: "Cuffs", l: "https://www.gmodstore.com/market/view/cuffs-handcuffs-and-restraints" },
+            "VManip_SimplePlay": { n: "VManip Base", l: "https://steamcommunity.com/workshop/filedetails/?id=2155366756" },
+            "Keypad_Wire": { n: "Keypad", l: "https://github.com/willox/gmod-keypad/tree/master" },
+            "areaManager_notify": { n: "AreaManager", l: "https://www.gmodstore.com/market/view/areamanager" },
+            "boombox::OnMenuClosed": { n: "Boombox", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=513676470" },
+            "SH_SZ.Teleport": { n: "SH Safe Zones", l: "https://www.gmodstore.com/market/view/sh-safe-zones" },
+            "SH_REPORTS.Claim": { n: "SH Reports", l: "https://www.gmodstore.com/market/view/sh-reports" },
+            "CH_Mayor_Net_ShowMayorMenu": { n: "CH Mayor", l: "https://www.gmodstore.com/market/view/mayor-taxes-vault-laws-leaderboards-licenses-more" },
+            "EMOTES.Sync": { n: "EMOTES", l: "https://www.gmodstore.com/market/view/emotes-a-new-way-to-flex" },
+            "Eradication.Send.Store": { n: "Eradication", l: "https://www.gmodstore.com/market/view/eradication-the-complete-purge-experience" },
+            "OpenPermissions.OpenMenu": { n: "OpenPermissions", l: "https://github.com/GmodAdminSuite/OpenPermissions" },
+            "PARTY.Create": { n: "Simple Party System", l: "https://www.gmodstore.com/market/view/simple-party-system" },
+            "EliteShelvesOpenMenu": { n: "EliteShelves", l: "https://www.gmodstore.com/market/view/eliteshelves/versions" },
+            "MedicNPC.PurchaseHealth": { n: "MedicNPC", l: "https://gamebanana.com/mods/503537" },
+            "AdvocateSystem::ShowAnimation": { n: "AdvocateSystem", l: "https://www.gmodstore.com/market/view/judge-system-1" },
+            "BadCoderz_status_request": { n: "BadCoderz", l: "https://github.com/ExtReMLapin/BadCoderz" },
+            "double_or_nothing": { n: "Blues Double or Nothing", l: "https://github.com/In-memory-of-CODE-BLUE/Blues-Double-or-Nothing" },
+            "EmergencyDispatch:DispatchCallout:VictimMenu": { n: "EmergencyDispatch", l: "https://www.gmodstore.com/market/view/911-emergency-response-1" },
+            "CarePackage.Menu": { n: "Xenin Care Package", l: "https://www.gmodstore.com/market/view/xenin-care-package-the-superior-airdrop-system" },
+            "zwf_OpenSeedBank": { n: "Zeros Grow OP", l: "https://www.gmodstore.com/market/view/zero-s-grow-op-weed-script" },
+            "ztm_baseanim_AnimEvent_net": { n: "Zeros Trashman", l: "https://www.gmodstore.com/market/view/zero-s-trashman-trash-script" },
+            "Slawer.Mayor": { n: "‍Slawer Mayor", l: "https://www.gmodstore.com/market/view/slawer-mayor-an-advanced-mayor-system" },
+            "ExtremeFpsBoost": { n: "ExtremeFPSBooster", l: "https://github.com/flleeppyy/extremefpsbooster" },
+            "Photon_SimpleNet_Change": { n: "Photon", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3128242636" },
+            "CH_ATM_Net_ChangeATMColor": { n: "CH ATM", l: "https://www.gmodstore.com/market/view/atm" },
+            "CH_ChopShop_DetectedChopVehicle": { n: "Chop Shop", l: "https://www.gmodstore.com/market/view/chopshop" },
+            "RealisticPolice:CriminalRecord": { n: "RealisticPolice", l: "https://www.gmodstore.com/market/view/realistic-police-the-best-realistic-police-script" },
+            "SlownLS:Taxi:Events": { n: "SlownLS Taxi", l: "https://www.gmodstore.com/market/view/slownls-taxi-an-advanced-taxi-system/discussion" },
+            "SlownLS:Hitman:Events": { n: "SlownLS Hitman", l: "https://www.gmodstore.com/market/view/slownls-hitman-an-advanced-hitman-system" },
+            "FLATHUDSendAlert": { n: "FLATHUD", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2062546579" },
+            "ahouse_askdisplay": { n: "Ahouse", l: "https://www.gmodstore.com/market/view/ahouse-realistic-advanced-properties-system" },
+            "RogueScoreboard.NetData": { n: "Rogue Scoreboard", l: "https://www.gmodstore.com/market/view/rogue-scoreboard" },
+            "CH_NPC_Shops_Net_DeleteItem": { n: "NPC Shops", l: "https://www.gmodstore.com/market/view/npc-shops-in-game-setup-unlimited-shops-job-restrictions-all-gamemodes" },
+            "EASY_CHAT_SEND_SERVER_CONFIG": { n: "EasyChat", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1182471500" },
+            "Fishingmod:Player": { n: "Fishingmod", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2909221398" },
+            "prop2mesh_upload": { n: "Prop2Mesh", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2458909924" },
+            "ArcticVR_ShootPhysBullet": { n: "ArcticVR", l: "https://steamcommunity.com/workshop/filedetails/?id=1985324827" },
+            "Popcorn_Eat_Start": { n: "Popcorn", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=171935748" },
+            "StormFox2.feetfix": { n: "StormFox2", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2447774443" },
+            "hbombs_announcer": { n: "HBOMBS", l: "https://steamcommunity.com/workshop/filedetails/?id=668552230" },
+            "Morpheus.StaffTracker": { n: "Morpheus", l: "https://www.gmodstore.com/market/view/morpheus-motd-escape-screen-simplicity-collection" },
+            "gBan.BanBuffer": { n: "gBan", l: "https://github.com/Livaco/GBanPanel" },
+            "dronesrewrite_controldr": { n: "Drones Rewrite", l: "https://steamcommunity.com/workshop/filedetails/?id=669642096" },
+            "Cosmo.DonateCommand": { n: "Cosmo", l: "https://www.gmodstore.com/market/view/cosmo-cloud-the-robust-all-in-one-suite" },
+            "CH_FireSystem_Net_SendTruckModelCL": { n: "CH FireSystem", l: "https://www.gmodstore.com/market/view/firesystem" },
+            "TowTruck_CreateTowTruck": { n: "Tow Truck Driver Job 2", l: "https://www.gmodstore.com/market/view/tow-truck-driver-job-2" },
+            "SimpleMount.CheckContent": { n: "Simple Mount", l: "https://www.gmodstore.com/market/view/simple-mount-ingame-workshop-mounter-downloader" },
+            "sg_adminReply": { n: "ServerGuard", l: "https://www.gmodstore.com/market/view/serverguard" },
+            "ComCompNotif": { n: "Common Computer", l: "https://brokencore.club/threads/35958/" },
+            "realistic_hook": { n: "Realistic Hook", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2857321128" },
+            "gWare.Commands.act": { n: "gWare", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2904047867" },
+            "VoidChar.OpenIdentityMenu": { n: "VoidChar", l: "https://www.gmodstore.com/market/view/voidchar-character-system-1" },
+            "ZBaseReload": { n: "ZBase", l: "https://steamcommunity.com/workshop/filedetails/?id=3128800187" },
+            "GlowLib:EditMenu:Save": { n: "GlowLib", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3279071164" },
+            "mining_kickstart_extractor": { n: "️Simple Mining System", l: "https://www.gmodstore.com/market/view/simple-mining-system/versions" },
+            "JukeBox_WebRequest": { n: "JukeBox", l: "https://web.botdan.com/jukebox/" },
+            "CYBER_AUGS_RequestChildren": { n: "Cybernetic Implants", l: "https://www.gmodstore.com/market/view/geralt-s-cybernetic-implants-2-0" },
+            "SQLWorkbench_QueryError": { n: "SQLWorkbench", l: "https://github.com/WilliamVenner/SQLWorkbench" },
+            "Seth_GPS_Fix": { n: "Seths GPS", l: "https://www.gmodstore.com/market/view/seth-gps" },
+            "yaws.punishments.createpunishment": { n: "️Yet Another Warning System", l: "https://www.gmodstore.com/market/view/yet-another-warning-system-yaws-user-warning-and-punishment-system" },
+            "Minigames.ListenConfig": { n: "Minigames", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=859310770" },
+            "metrostroi_trackeditor_message": { n: "Metrostroi", l: "https://metrostroi.net/" },
+            "PulsarLib.Notify": { n: "Pulsar Store", l: "https://www.gmodstore.com/market/view/pulsar-store-2" },
+            "JukHackingSystem:Net:Delivery": { n: "JukHackingSystem", l: "https://www.gmodstore.com/market/view/juk-hacking-system-the-best-hacking-system-2" },
+            "XGUI.SetMotdData": { n: "ULX", l: "https://github.com/TeamUlysses/ulx" },
+            "blobsParty:PartySettings": { n: "Blobs Party", l: "https://www.gmodstore.com/market/view/blobsparty" },
+            "CH_BITMINERS_UpdateBitcoinRates": { n: "CH BITMINERS", l: "https://www.gmodstore.com/market/view/bitminers" },
+            "customchat.set_theme": { n: "CustomChat", l: "https://github.com/StyledStrike/gmod-custom-chat" },
+            "WUMACompressedDataStream": { n: "WUMA", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1117436840" },
+            "z_AdvancedFeedAddKill": { n: "Advanced Killfeed", l: "https://www.gmodstore.com/market/view/advanced-killfeed-1" },
+            "SChat2Message": { n: "SChat 2", l: "https://www.blackspigot.com/downloads/schat-2-reworked-chatbox-garrysmod.9820/" },
+            "FarmingOffice_ProductCreated": { n: "FarmingOffice", l: "https://www.gmodstore.com/market/view/farming-grow-plants-sell-crops" },
+            "RealisticWoodCutter:Swep": { n: "RealisticWoodCutter", l: "https://www.gmodstore.com/market/view/realistic-wood-cutter-the-most-advanced-wood-cutting-system" },
+            "arcticnvgs_toggle": { n: "Arctic Night Vision", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2389553185" },
+            "CRAFTINGMOD_SHOP": { n: "CraftingMod", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3017902884" },
+            "casinokit_chipexchange": { n: "CasinoKit", l: "https://www.gmodstore.com/market/view/casino-kit-blackjack" },
+            "dLogsGetCommand": { n: "dLogs", l: "https://github.com/Deagler/deagleLogs" },
+            "atlaschat.rqclrcfg": { n: "Atlas Chat", l: "https://www.gmodstore.com/market/view/atlas-chat" },
+            "tickbookpayfine": { n: "TicketBook System", l: "https://www.gmodstore.com/market/view/ticketbook-system-a-simple-fine-system" },
+            "blueatm": { n: "Blue ATM", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3235581259" },
+            "desktopPrinter_Withdraw": { n: "Desktop Printer", l: "https://github.com/patrickratzow/PAM-Desktop-Printer" },
+            "GlorifiedHandcuffs.InteractionMenu.OpenInteractionMenu": { n: "GlorifiedHandcuffs", l: "https://github.com/GlorifiedPig/GlorifiedHandcuffs" },
+            "ghomes_OwnerUpdate": { n: "gHomes", l: "https://github.com/ExtReMLapin/gHomes" },
+            "Seasonpass::ResetQuests": { n: "SeasonPass", l: "https://www.gmodstore.com/market/view/xenin-battle-pass" },
+            "GraffitiSprayingChanger": { n: "GraffitiSpraying", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2889832721" },
+            "blogs_AdvancedSelectLogs": { n: "bLogs", l: "https://www.gmodstore.com/market/view/billys-logs" },
+            "gmphone": { n: "GPhone", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1370983401" },
+            "dPolice.sendReinforcement": { n: "dPolice", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2849384648" },
+            "gLevel.syncAccesories": { n: "gLevel", l: "https://brokencore.club/threads/34388/" },
+            "dEvents.getAllEvents": { n: "dEvents", l: "https://www.gmodstore.com/market/view/event-addon" },
+            "zhits.openHitMenu": { n: "zHits", l: "https://www.gmodstore.com/market/view/sale-zhitman-the-unique-hitman-system-with-an-in-game-config" },
+            "gPrinters.retrieveMoney": { n: "gPrinters", l: "https://brokencore.club/threads/21748/" },
+            "CharSystem_AskInfos": { n: "CharSystem", l: "https://www.gmodstore.com/market/view/aden-character-system" },
+            "pCams:Camera:Created": { n: "pCams", l: "https://www.gmodstore.com/market/view/pcams-the-perfect-cctv-addon" },
+            "McPhone.CallDeny": { n: "McPhone", l: "https://www.gmodstore.com/market/view/mcphone-advanced-phone-system-1" },
+            "rks_blindfold": { n: "Realistic Kidnap System", l: "https://www.gmodstore.com/market/view/v1-4-0-realistic-kidnap-system/versions?page=3" },
+            "Aero.Open.F4": { n: "Aero F4", l: "https://www.gmodstore.com/market/view/aero-f4-more-than-just-a-menu" },
+            "CH_AdvMedic_Net_AmbulanceMenu": { n: "Paramedic Essentials", l: "https://www.gmodstore.com/market/view/paramedic-essentials/versions?page=2" },
+            "RayBoard:RemoveFakeIdentityToServer": { n: "RayScoreboard", l: "https://www.gmodstore.com/market/view/flatboard2" },
+            "sv_nodegrapheditor_getvectors": { n: "Nodegraph Editor", l: "https://steamcommunity.com/sharedfiles/filedetails/?l=norwegian&id=104487190" },
+            "stalker.inventory.refresh": { n: "Stalker inventory", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2895148790" },
+            "AnomalyTrackEditor": { n: "Anomaly from Stalker", l: "https://tbmods.ru/garry-s-mod-anomalii-iz-s-t-a-l-k-e-r.html" },
+            "hRadio_PlyChangeChannelFeedback": { n: "hRadio", l: "https://brokencore.club/threads/29676/" },
+            "m4n0cr4zy.Look": { n: "Remover Advanced", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2853674790" },
+            "gebLib.cl.utils.PlayAnim": { n: "gebLib", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3171164705" },
+            "SUIScoreboardPlayerColor": { n: "SUI Scoreboard", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=160121673" },
+            "PS_Points": { n: "Pointshop", l: "https://github.com/adamdburton/pointshop/" },
+            "PrometheusMessages": { n: "Prometheus", l: "https://www.gmodstore.com/market/view/prometheus" },
+            "CFC_ULX_StatCheckCL": { n: "CFC Build Kill", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1629732176" },
+            "Environments_client_forceradiosityzero": { n: "Environments", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=104484308" },
+            "OmniMan.Network.SuperFlyingOnHit": { n: "OmniMan", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2584410335" },
+            "Super357Shockwave": { n: "Super 357", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2886539197" },
+            "tarena_deleteclass": { n: "tArena", l: "https://www.gmodstore.com/market/view/tarena" },
+            "RetroBoombox:SendBoomboxInfos": { n: "Retro Boombox", l: "https://www.gmodstore.com/market/view/retro-boombox-real-radio-streams-for-your-players" },
+            "XeninInventory.FullSync": { n: "Xenin Inventory", l: "https://www.gmodstore.com/market/view/xenin-inventory" },
+            "BLUESDECALS:OpenMenu": { n: "Blues Decals", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3235598955" },
+            "breakabledoors:NotifyRepair": { n: "Breakabledoors", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=290961117" },
+            "cooking.CreateBurger": { n: "Cooking Mod", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=1605394247" },
+            "ShopBusinessPopup": { n: "Business Mod", l: "https://www.gmodstore.com/market/view/advanced-darkrp-business-mod" },
+            "AdvHUDIndicator_EXIO": { n: "Advanced Hud", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3272563585" },
+            "adrewards_ActionMenu": { n: "A Daily Rewards", l: "https://www.gmodstore.com/market/view/a-daily-rewards" },
+            "sv_easyskins_UpdateSkin": { n: "Easy Skins", l: "https://www.gmodstore.com/market/view/easy-skins" },
+            "Hologram.Tool.UpdateEntity": { n: "Hologram Tool", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2191919799" },
+            "gScooters.Net.SendJob": { n: "gScooters", l: "https://www.gmodstore.com/market/view/gscooters-scooter-rental-immersive-charging-job-easily-configurable" },
+            "xGangsInviteMember": { n: "xGangs", l: "https://www.gmodstore.com/market/view/xgangs-advanced-gang-system" },
+            "VC_SendToClient_Model": { n: "VCMod", l: "https://www.gmodstore.com/market/view/vcmod-main" },
+            "AdvDupe2_RemoveSelectBox": { n: "Advanced Duplicator 2", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=773402917" },
+            "ClearDrugs": { n: "DurgzMod", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=696374067" },
+            "CreditStore.SyncCredits": { n: "CreditStore", l: "https://www.gmodstore.com/market/view/brick-s-credit-store-multiple-stores-suits-credits" },
+            "FatedGang-ColorRank": { n: "FatedGang", l: "https://github.com/darkfated/fatedgang" },
+            "CarTrunk.NetworkVehiclesLock": { n: "CarTrunk", l: "https://www.gmodstore.com/market/view/car-trunk" },
+            "guthscp.config:receive": { n: "GuthScp", l: "https://github.com/Guthen/guthscpbase" },
+            "CW20_PRESET_LOAD": { n: "CW 2.0", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=356003051" },
+            "gAdmin_AdminChat": { n: "gAdmin", l: "https://www.gmodstore.com/market/view/gadmin-staff-application-system" },
+            "StopCarRadioStation": { n: "CarRadio", l: "https://steamcommunity.com/workshop/filedetails/?id=1419487677" },
+            "BodycamToggleMovement": { n: "BodyСam", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3025899379" },
+            "Photon2:SetControllerChannelState": { n: "Photon2", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3128242636" },
+            "GlorifiedLeveling.AdminPanel.PlayerListOpened": { n: "GlorifiedLeveling", l: "https://github.com/GlorifiedPig/GlorifiedLeveling" },
+            "GmodEats.GetBackBag": { n: "GmodEats", l: "https://www.gmodstore.com/market/view/gmod-eats-an-uber-eats-like-delivery-system" },
+            "M9KGasEffectRequestSend": { n: "M9K", l: "https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=300653696" },
+            "xdeshe_S2C_BroadEffect": { n: "xdReanimsBase", l: "https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=2143558752" },
+            "zmc_Inventory_Sync": { n: "Zeros MasterChef", l: "https://www.gmodstore.com/market/view/zero-s-masterchef-cooking-script/" },
+            "zyb_UpgradeMenu_Sell_net": { n: "Zeros Yeastbeast", l: "https://www.gmodstore.com/market/view/zero-s-yeastbeast-alcohol-script" },
+            "Bonemerge.OneTimeModelChange": { n: "Bonemerge", l: "https://steamcommunity.com/workshop/filedetails/?id=104601200" },
+            "SpecDM_Autoswitch": { n: "TTT Spectator Deathmatch", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=404599106" },
+            "cloadout.apply": { n: "Custom Loadout", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=2675972006" },
+            "wardrobe.cache": { n: "Bodygroup Wardrobe", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=3084136611" }
+        };
+
+        // Application State
+        let parsedServers = [];
+        let filteredServers = [];
+        let activeRiskFilter = 'all';
+        let currentPage = 1;
+        let pageSize = 25;
+
+        // DOM Elements
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const emptyState = document.getElementById('emptyState');
+        const tableWrapper = document.getElementById('tableWrapper');
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const totalServersEl = document.getElementById('totalServers');
+        const totalAddonsDbEl = document.getElementById('totalAddonsDb');
+        const filteredServersEl = document.getElementById('filteredServers');
+        const errorMessageEl = document.getElementById('errorMessage');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const refreshIcon = document.getElementById('refreshIcon');
+        const paginationWrapper = document.getElementById('paginationWrapper');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            totalAddonsDbEl.textContent = Object.keys(ADDON_DATABASE).length.toLocaleString();
+            fetchData();
+        });
+
+        // Fetch Server Nets JSON
+        async function fetchData() {
+            showState('loading');
+            refreshIcon.classList.add('animate-spin');
+
+            try {
+                const response = await fetch(NETS_URL, { cache: 'no-cache' });
+                if (!response.ok) {
+                    throw new Error(`HTTP Error status: ${response.status}`);
+                }
+                const rawJson = await response.json();
+                processServerData(rawJson);
+                filterAndRender();
+                showState('data');
+            } catch (err) {
+                console.error("Fetch Data Error:", err);
+                errorMessageEl.textContent = `Error loading JSON: ${err.message}`;
+                showState('error');
+            } finally {
+                refreshIcon.classList.remove('animate-spin');
+            }
+        }
+
+        // Process RAW JSON into server entities with mapped Addons
+        function processServerData(jsonData) {
+            parsedServers = [];
+
+            for (const [ipPort, val] of Object.entries(jsonData)) {
+                if (typeof val !== 'string') continue;
+
+                // Value structure: "ServerName: net1 % net2 % net3 %"
+                const firstColonIndex = val.indexOf(':');
+                let serverName = "Unknown Server";
+                let netsString = "";
+
+                if (firstColonIndex !== -1) {
+                    serverName = val.substring(0, firstColonIndex).trim();
+                    netsString = val.substring(firstColonIndex + 1).trim();
+                } else {
+                    serverName = val.trim();
+                }
+
+                // Split nets by '%'
+                const rawNets = netsString
+                    .split('%')
+                    .map(n => n.trim())
+                    .filter(n => n.length > 0);
+
+                // Detect Addons
+                const matchedAddons = [];
+                const matchedAddonNames = new Set();
+                let highestRisk = 'blue';
+
+                rawNets.forEach(netKey => {
+                    if (ADDON_DATABASE[netKey]) {
+                        const addon = ADDON_DATABASE[netKey];
+                        const color = addon.c || 'blue';
+                        
+                        matchedAddons.push({
+                            net: netKey,
+                            name: addon.n,
+                            link: addon.l,
+                            color: color
+                        });
+
+                        matchedAddonNames.add(addon.n.toLowerCase());
+
+                        // Update highest risk priority: red > orange > green > blue
+                        if (color === 'red') highestRisk = 'red';
+                        else if (color === 'orange' && highestRisk !== 'red') highestRisk = 'orange';
+                        else if (color === 'green' && highestRisk !== 'red' && highestRisk !== 'orange') highestRisk = 'green';
+                    }
+                });
+
+                parsedServers.push({
+                    ip: ipPort,
+                    name: serverName || ipPort,
+                    nets: rawNets,
+                    addons: matchedAddons,
+                    riskLevel: highestRisk,
+                    searchIndex: `${serverName} ${ipPort} ${rawNets.join(' ')} ${Array.from(matchedAddonNames).join(' ')}`.toLowerCase()
+                });
+            }
+
+            totalServersEl.textContent = parsedServers.length.toLocaleString();
+        }
+
+        // Filter Function
+        function filterAndRender() {
+            const query = searchInput.value.toLowerCase().trim();
+
+            if (query) {
+                clearSearchBtn.classList.remove('hidden');
+            } else {
+                clearSearchBtn.classList.add('hidden');
+            }
+
+            filteredServers = parsedServers.filter(srv => {
+                // Search term match
+                const matchesQuery = !query || srv.searchIndex.includes(query);
+
+                // Risk Filter Match
+                let matchesRisk = true;
+                if (activeRiskFilter !== 'all') {
+                    if (activeRiskFilter === 'blue') {
+                        matchesRisk = srv.riskLevel === 'blue';
+                    } else if (activeRiskFilter === 'red') {
+                        matchesRisk = srv.riskLevel === 'red' || srv.addons.some(a => a.color === 'red');
+                    } else if (activeRiskFilter === 'orange') {
+                        matchesRisk = srv.riskLevel === 'orange' || srv.addons.some(a => a.color === 'orange');
+                    } else if (activeRiskFilter === 'green') {
+                        matchesRisk = srv.riskLevel === 'green' || srv.addons.some(a => a.color === 'green');
+                    }
+                }
+
+                return matchesQuery && matchesRisk;
+            });
+
+            filteredServersEl.textContent = filteredServers.length.toLocaleString();
+            currentPage = 1;
+
+            if (filteredServers.length === 0 && parsedServers.length > 0) {
+                showState('empty');
+            } else if (parsedServers.length > 0) {
+                renderTable();
+                showState('data');
+            }
+        }
+
+        // Render Current Page
+        function renderTable() {
+            tableBody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, filteredServers.length);
+            const pageServers = filteredServers.slice(startIndex, endIndex);
+
+            pageServers.forEach((srv, localIdx) => {
+                const globalIdx = startIndex + localIdx;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-themeBorder/40 transition-colors cursor-pointer select-none group border-b border-themeBorder/40";
+                tr.setAttribute('onclick', `toggleRow(${globalIdx})`);
+
+                // Badges HTML preview
+                let addonChipsHtml = '';
+                if (srv.addons.length > 0) {
+                    // Show up to 3 chip badges on main row
+                    const displayChips = srv.addons.slice(0, 3);
+                    addonChipsHtml = displayChips.map(a => getBadgeChip(a.name, a.color)).join('');
+                    if (srv.addons.length > 3) {
+                        addonChipsHtml += `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-themeBorder text-gray-300">+${srv.addons.length - 3} more</span>`;
+                    }
+                } else {
+                    addonChipsHtml = `<span class="text-xs text-themeTextMuted italic">No recognized addons</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-medium text-white">
+                        <div class="truncate-custom max-w-[200px] sm:max-w-xs" title="${escapeHtml(srv.name)}">
+                            ${escapeHtml(srv.name)}
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 font-mono text-xs text-blue-300 whitespace-nowrap">
+                        ${escapeHtml(srv.ip)}
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            ${addonChipsHtml}
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-center font-mono text-xs text-gray-300">
+                        <span class="px-2 py-0.5 rounded bg-themeHeader border border-themeBorder">${srv.nets.length}</span>
+                    </td>
+                    <td class="py-3 px-3 text-center text-themeTextMuted group-hover:text-white transition-colors">
+                        <i data-lucide="chevron-down" id="chevron-${globalIdx}" class="w-4 h-4 transition-transform duration-200 mx-auto"></i>
+                    </td>
+                `;
+
+                // Expandable details HTML
+                const trDetails = document.createElement('tr');
+                trDetails.className = "bg-themeHeader/50 border-b border-themeBorder/60";
+                
+                // Detailed Addons List
+                let detailedAddonsHtml = '';
+                if (srv.addons.length > 0) {
+                    detailedAddonsHtml = srv.addons.map(a => `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded bg-themeCard border border-themeBorder gap-2">
+                            <div class="flex items-center gap-2">
+                                ${getBadgeChip(a.color.toUpperCase(), a.color)}
+                                <span class="font-medium text-white">${escapeHtml(a.name)}</span>
+                                <span class="font-mono text-xs text-themeTextMuted">(${escapeHtml(a.net)})</span>
+                            </div>
+                            ${a.link ? `
+                                <a href="${escapeHtml(a.link)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 hover:underline">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Source Link
+                                </a>
+                            ` : '<span class="text-xs text-themeTextMuted italic">No source link</span>'}
+                        </div>
+                    `).join('');
+                } else {
+                    detailedAddonsHtml = `<div class="text-xs text-themeTextMuted italic">No known addon signatures detected for these net functions.</div>`;
+                }
+
+                // Raw Nets List
+                const rawNetsBadgeHtml = srv.nets.map(net => {
+                    const isAddonNet = ADDON_DATABASE[net];
+                    const bg = isAddonNet ? 'bg-blue-900/40 border-blue-500/40 text-blue-200' : 'bg-themeHeader border-themeBorder text-gray-300';
+                    return `<span class="px-2 py-1 rounded text-xs font-mono border ${bg}">${escapeHtml(net)}</span>`;
+                }).join('');
+
+                trDetails.innerHTML = `
+                    <td colspan="5" class="p-0">
+                        <div id="expand-${globalIdx}" class="expandable-content">
+                            <div class="p-4 bg-black/25 space-y-4 border-l-4 border-blue-500 my-1 ml-2 mr-2 rounded-r-lg">
+                                
+                                <!-- Top Bar Controls inside expansion -->
+                                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-themeBorder/40 pb-3">
+                                    <div>
+                                        <h4 class="text-base font-semibold text-white">${escapeHtml(srv.name)}</h4>
+                                        <p class="text-xs font-mono text-emerald-400 flex items-center gap-2 mt-0.5">
+                                            <span>IP: ${escapeHtml(srv.ip)}</span>
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="copyText('connect ${escapeHtml(srv.ip)}', event)" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5 shadow-sm">
+                                            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Copy Connect Cmd
+                                        </button>
+                                        <button onclick="copyText('${escapeHtml(srv.ip)}', event)" class="px-3 py-1.5 bg-themeCard hover:bg-themeBorder border border-themeBorder text-white rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5">
+                                            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy IP
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Recognized Addons Section -->
+                                <div>
+                                    <h5 class="text-xs uppercase tracking-wider font-bold text-themeTextMuted mb-2 flex items-center gap-1.5">
+                                        <i data-lucide="shield-alert" class="w-4 h-4 text-yellow-400"></i> Recognized Addons (${srv.addons.length})
+                                    </h5>
+                                    <div class="space-y-1.5">
+                                        ${detailedAddonsHtml}
+                                    </div>
+                                </div>
+
+                                <!-- Raw Net Functions List -->
+                                <div>
+                                    <h5 class="text-xs uppercase tracking-wider font-bold text-themeTextMuted mb-2 flex items-center gap-1.5">
+                                        <i data-lucide="code" class="w-4 h-4 text-blue-400"></i> All Net Functions (${srv.nets.length})
+                                    </h5>
+                                    <div class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-themeCard rounded-lg border border-themeBorder">
+                                        ${rawNetsBadgeHtml}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                `;
+
+                tableBody.appendChild(tr);
+                tableBody.appendChild(trDetails);
+            });
+
+            updatePaginationControls(startIndex, endIndex);
+            lucide.createIcons();
+        }
+
+        // Helper badge chip builder
+        function getBadgeChip(label, color) {
+            let bgClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+            if (color === 'red') bgClass = 'bg-red-500/20 text-red-300 border-red-500/40';
+            if (color === 'orange') bgClass = 'bg-orange-500/20 text-orange-300 border-orange-500/40';
+            if (color === 'green') bgClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+
+            return `<span class="px-2 py-0.5 rounded text-[11px] font-semibold border ${bgClass}">${escapeHtml(label)}</span>`;
+        }
+
+        // Expand/Collapse Row Handler
+        function toggleRow(globalIndex) {
+            const content = document.getElementById(`expand-${globalIndex}`);
+            const chevron = document.getElementById(`chevron-${globalIndex}`);
+
+            if (!content) return;
+
+            const isOpen = content.classList.contains('open');
+
+            // Close other open rows for clean view
+            document.querySelectorAll('.expandable-content.open').forEach(el => {
+                if (el.id !== `expand-${globalIndex}`) {
+                    el.classList.remove('open');
+                    const otherIdx = el.id.replace('expand-', '');
+                    const otherChevron = document.getElementById(`chevron-${otherIdx}`);
+                    if (otherChevron) otherChevron.style.transform = 'rotate(0deg)';
+                }
+            });
+
+            if (isOpen) {
+                content.classList.remove('open');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('open');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Risk Filter Selection
+        function setRiskFilter(risk) {
+            activeRiskFilter = risk;
+            
+            document.querySelectorAll('.risk-filter-btn').forEach(btn => {
+                btn.className = "risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-themeBorder bg-themeCard text-themeTextMuted hover:border-blue-500/50";
+            });
+
+            const activeBtn = document.getElementById(`btn-risk-${risk}`);
+            if (activeBtn) {
+                if (risk === 'all') activeBtn.className = "risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-blue-500 bg-blue-600/30 text-blue-300";
+                if (risk === 'red') activeBtn.className = "risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-red-500 bg-red-600/30 text-red-300";
+                if (risk === 'orange') activeBtn.className = "risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-orange-500 bg-orange-600/30 text-orange-300";
+                if (risk === 'green') activeBtn.className = "risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-emerald-500 bg-emerald-600/30 text-emerald-300";
+                if (risk === 'blue') activeBtn.className = "risk-filter-btn px-3 py-1 rounded-lg text-xs font-medium border border-blue-500 bg-blue-600/30 text-blue-300";
+            }
+
+            filterAndRender();
+        }
+
+        // Pagination handlers
+        function updatePaginationControls(start, end) {
+            const total = filteredServers.length;
+            const totalPages = Math.ceil(total / pageSize) || 1;
+
+            document.getElementById('pageStart').textContent = total === 0 ? 0 : start + 1;
+            document.getElementById('pageEnd').textContent = end;
+            document.getElementById('pageTotal').textContent = total.toLocaleString();
+            document.getElementById('currentPageDisplay').textContent = `Page ${currentPage} / ${totalPages}`;
+
+            document.getElementById('prevPageBtn').disabled = (currentPage <= 1);
+            document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages);
+
+            paginationWrapper.classList.remove('hidden');
+        }
+
+        function changePage(delta) {
+            const totalPages = Math.ceil(filteredServers.length / pageSize) || 1;
+            currentPage += delta;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            renderTable();
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size, 10) || 25;
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Switch View States
+        function showState(state) {
+            loadingState.classList.add('hidden');
+            errorState.classList.add('hidden');
+            emptyState.classList.add('hidden');
+            tableWrapper.classList.add('hidden');
+            paginationWrapper.classList.add('hidden');
+
+            if (state === 'loading') {
+                loadingState.classList.remove('hidden');
+            } else if (state === 'error') {
+                errorState.classList.remove('hidden');
+            } else if (state === 'empty') {
+                emptyState.classList.remove('hidden');
+            } else if (state === 'data') {
+                tableWrapper.classList.remove('hidden');
+                paginationWrapper.classList.remove('hidden');
+            }
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterAndRender);
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            filterAndRender();
+            searchInput.focus();
+        });
+        refreshBtn.addEventListener('click', fetchData);
+
+        // Escape HTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Clipboard Copy Utility
+        function copyText(text, event) {
+            if (event) event.stopPropagation();
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const target = event ? event.currentTarget : null;
+            if (target) {
+                const originalText = target.innerHTML;
+                target.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Copied!`;
+                lucide.createIcons();
+                setTimeout(() => {
+                    target.innerHTML = originalText;
+                    lucide.createIcons();
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
