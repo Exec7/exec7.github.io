@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exechack disconnect archived database</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#313742',
+                            card: '#22272e',
+                            cardHover: '#2a3038',
+                            surface: '#3b4252',
+                            accent: '#5e81ac',
+                            accentHover: '#81a1c1',
+                            highlight: '#88c0d0',
+                            text: '#d8dee9',
+                            muted: '#e5e9f0',
+                            subtext: '#8892b0',
+                            danger: '#bf616a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #313742;
+            color: #d8dee9;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Custom scrollbar for clean aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #22272e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4c566a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5e81ac;
+        }
+
+        .truncate-line {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Smooth expandable transition effect */
+        .expanded-content {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col p-3 sm:p-6 md:p-8">
+
+    <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col space-y-4">
+        
+        <!-- Header -->
+        <header class="bg-brand-card p-4 sm:p-6 rounded-xl border border-gray-700/50 shadow-lg">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        <i data-lucide="shield-alert" class="text-brand-highlight w-7 h-7 inline-block"></i>
+                        exechack disconnect archived database
+                    </h1>
+                    <p class="text-xs sm:text-sm text-brand-subtext mt-1">
+                        Archived connection logs, server bans, and disconnect reasons lookup.
+                    </p>
+                </div>
+
+                <!-- Summary Badges -->
+                <div class="flex flex-wrap gap-2 text-xs sm:text-sm" id="stats-container">
+                    <div class="bg-brand-surface/70 px-3 py-1.5 rounded-lg border border-gray-600/40 flex items-center gap-2">
+                        <i data-lucide="database" class="w-4 h-4 text-brand-highlight"></i>
+                        <span>Total Records: <strong id="stat-total" class="text-white">0</strong></span>
+                    </div>
+                    <div class="bg-brand-surface/70 px-3 py-1.5 rounded-lg border border-gray-600/40 flex items-center gap-2">
+                        <i data-lucide="server" class="w-4 h-4 text-brand-accentHover"></i>
+                        <span>Unique Servers: <strong id="stat-servers" class="text-white">0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search & Control Toolbar -->
+        <section class="bg-brand-card p-4 rounded-xl border border-gray-700/50 shadow-md flex flex-col sm:flex-row items-center gap-3">
+            <div class="relative w-full flex-grow">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-brand-subtext w-4 h-4"></i>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Search by Date, Server, Ban Reason or IP..." 
+                    class="w-full bg-brand-bg text-white placeholder-brand-subtext text-sm rounded-lg pl-9 pr-10 py-2.5 outline-none border border-gray-700 focus:border-brand-accent transition-all"
+                >
+                <button 
+                    id="clear-search" 
+                    title="Clear search" 
+                    class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-brand-subtext hover:text-white p-1"
+                >
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Page Selector & Count -->
+            <div class="flex items-center justify-between w-full sm:w-auto gap-3 text-xs sm:text-sm text-brand-subtext">
+                <div class="whitespace-nowrap">
+                    Showing <span id="visible-count" class="font-bold text-white">0</span> of <span id="filtered-count" class="font-bold text-white">0</span> entries
+                </div>
+                
+                <select id="items-per-page" class="bg-brand-bg text-brand-text border border-gray-700 rounded-lg px-2.5 py-2 outline-none text-xs sm:text-sm cursor-pointer">
+                    <option value="25">25 per page</option>
+                    <option value="50" selected>50 per page</option>
+                    <option value="100">100 per page</option>
+                    <option value="250">250 per page</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow flex flex-col">
+            
+            <!-- Loading State -->
+            <div id="state-loading" class="bg-brand-card rounded-xl p-12 border border-gray-700/50 flex flex-col items-center justify-center space-y-4 my-auto">
+                <div class="w-10 h-10 border-4 border-brand-accent border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-brand-subtext text-sm sm:text-base animate-pulse">Fetching records from GitHub repository...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="state-error" class="hidden bg-brand-card rounded-xl p-8 border border-red-500/30 text-center flex flex-col items-center justify-center space-y-4 my-auto">
+                <div class="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center text-brand-danger">
+                    <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Failed to Load Database</h3>
+                <p id="error-message" class="text-sm text-brand-subtext max-w-md">An unknown error occurred while fetching data.</p>
+                <button id="retry-btn" class="bg-brand-accent hover:bg-brand-accentHover text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                    <i data-lucide="rotate-cw" class="w-4 h-4"></i> Retry
+                </button>
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="state-empty" class="hidden bg-brand-card rounded-xl p-12 border border-gray-700/50 text-center flex flex-col items-center justify-center space-y-3 my-auto">
+                <i data-lucide="search-x" class="w-10 h-10 text-brand-subtext"></i>
+                <h3 class="text-base font-semibold text-white">No Matching Records Found</h3>
+                <p class="text-xs sm:text-sm text-brand-subtext">Try refining your search terms or filters.</p>
+            </div>
+
+            <!-- Data Table Container -->
+            <div id="state-data" class="hidden flex-grow flex flex-col space-y-2">
+                
+                <!-- Table Header for Large Screens -->
+                <div class="hidden md:grid md:grid-cols-12 gap-3 px-4 py-2.5 text-xs font-semibold text-brand-subtext uppercase tracking-wider bg-brand-card/40 rounded-lg border border-gray-700/30">
+                    <div class="col-span-2">Date / Time</div>
+                    <div class="col-span-3">Server Name</div>
+                    <div class="col-span-4">Ban Reason</div>
+                    <div class="col-span-2">IP Address</div>
+                    <div class="col-span-1 text-center">Actions</div>
+                </div>
+
+                <!-- Rows List -->
+                <div id="rows-container" class="space-y-2">
+                    <!-- Dynamic rows will be inserted here -->
+                </div>
+
+                <!-- Pagination Footer -->
+                <div class="mt-4 bg-brand-card p-3 sm:p-4 rounded-xl border border-gray-700/50 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div class="text-xs text-brand-subtext text-center sm:text-left" id="pagination-info">
+                        Page 1 of 1
+                    </div>
+                    
+                    <div class="flex items-center gap-1.5" id="pagination-controls">
+                        <button id="btn-first" class="px-2.5 py-1.5 bg-brand-surface hover:bg-brand-accent/50 text-white rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i data-lucide="chevrons-left" class="w-4 h-4"></i>
+                        </button>
+                        <button id="btn-prev" class="px-2.5 py-1.5 bg-brand-surface hover:bg-brand-accent/50 text-white rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                        </button>
+                        
+                        <span id="page-numbers" class="flex gap-1">
+                            <!-- Page number buttons dynamic -->
+                        </span>
+
+                        <button id="btn-next" class="px-2.5 py-1.5 bg-brand-surface hover:bg-brand-accent/50 text-white rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                        <button id="btn-last" class="px-2.5 py-1.5 bg-brand-surface hover:bg-brand-accent/50 text-white rounded text-xs disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i data-lucide="chevrons-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+        
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-5 right-5 bg-brand-highlight text-gray-900 px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+            <i data-lucide="check-circle" class="w-4 h-4"></i>
+            <span id="toast-message">Copied to clipboard!</span>
+        </div>
+
+    </div>
+
+    <!-- App Logic -->
+    <script>
+        const DATA_URL = 'https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/docs/disconnectsarchive1.txt';
+
+        // Application State
+        let rawData = [];
+        let filteredData = [];
+        let expandedRowIndex = null;
+        let currentPage = 1;
+        let itemsPerPage = 50;
+
+        // DOM Elements
+        const stateLoading = document.getElementById('state-loading');
+        const stateError = document.getElementById('state-error');
+        const stateEmpty = document.getElementById('state-empty');
+        const stateData = document.getElementById('state-data');
+        const errorMessage = document.getElementById('error-message');
+        const retryBtn = document.getElementById('retry-btn');
+        const rowsContainer = document.getElementById('rows-container');
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const itemsPerPageSelect = document.getElementById('items-per-page');
+        
+        const statTotal = document.getElementById('stat-total');
+        const statServers = document.getElementById('stat-servers');
+        const visibleCount = document.getElementById('visible-count');
+        const filteredCount = document.getElementById('filtered-count');
+
+        const paginationInfo = document.getElementById('pagination-info');
+        const btnFirst = document.getElementById('btn-first');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        const btnLast = document.getElementById('btn-last');
+        const pageNumbersContainer = document.getElementById('page-numbers');
+
+        // Initialize Lucide Icons
+        function renderIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        // Parse Data robustly based on requirements
+        // Format: Data:Server Name:Ban Reason:Ip
+        function parseLine(line) {
+            if (!line || !line.trim()) return null;
+            
+            const parts = line.split(':');
+            if (parts.length < 4) return null;
+
+            // Extract first parameter (Data) and last parameter (IP)
+            const data = parts[0].trim();
+            const ip = parts[parts.length - 1].trim();
+
+            // The remaining middle parts are Server Name & Ban Reason
+            // We join middle parameters back and split smartly if extra colons exist
+            const middle = parts.slice(1, parts.length - 1);
+            
+            let serverName = "";
+            let banReason = "";
+
+            if (middle.length === 2) {
+                serverName = middle[0].trim();
+                banReason = middle[1].trim();
+            } else if (middle.length > 2) {
+                // If extra colons present inside Server Name or Ban Reason
+                serverName = middle[0].trim();
+                banReason = middle.slice(1).join(':').trim();
+            } else {
+                serverName = middle.join(':').trim();
+                banReason = 'N/A';
+            }
+
+            return {
+                data: data || 'N/A',
+                serverName: serverName || 'Unknown Server',
+                banReason: banReason || 'No Reason Provided',
+                ip: ip || 'N/A'
+            };
+        }
+
+        // Fetch & Load Data
+        async function fetchData() {
+            showState('loading');
+            try {
+                const response = await fetch(DATA_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP Error status: ${response.status}`);
+                }
+                const text = await response.text();
+                
+                // Process lines into standard records
+                const lines = text.split('\n');
+                const parsed = [];
+                const uniqueServers = new Set();
+
+                for (let i = 0; i < lines.length; i++) {
+                    const item = parseLine(lines[i]);
+                    if (item) {
+                        item.id = i; // Store unique id
+                        parsed.push(item);
+                        if (item.serverName) uniqueServers.add(item.serverName);
+                    }
+                }
+
+                rawData = parsed;
+                filteredData = [...rawData];
+
+                // Update Overview Stats
+                statTotal.textContent = rawData.length.toLocaleString();
+                statServers.textContent = uniqueServers.size.toLocaleString();
+
+                currentPage = 1;
+                applyFilterAndRender();
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                errorMessage.textContent = err.message || "Failed to fetch database. Please check your network connection.";
+                showState('error');
+            }
+        }
+
+        // Toggle Visual States
+        function showState(state) {
+            stateLoading.classList.add('hidden');
+            stateError.classList.add('hidden');
+            stateEmpty.classList.add('hidden');
+            stateData.classList.add('hidden');
+
+            if (state === 'loading') stateLoading.classList.remove('hidden');
+            else if (state === 'error') stateError.classList.remove('hidden');
+            else if (state === 'empty') stateEmpty.classList.remove('hidden');
+            else if (state === 'data') stateData.classList.remove('hidden');
+        }
+
+        // Filter Function
+        function applyFilterAndRender() {
+            const query = searchInput.value.toLowerCase().trim();
+            
+            if (query.length > 0) {
+                clearSearchBtn.classList.remove('hidden');
+            } else {
+                clearSearchBtn.classList.add('hidden');
+            }
+
+            filteredData = rawData.filter(item => {
+                return item.data.toLowerCase().includes(query) ||
+                       item.serverName.toLowerCase().includes(query) ||
+                       item.banReason.toLowerCase().includes(query) ||
+                       item.ip.toLowerCase().includes(query);
+            });
+
+            currentPage = 1; // Reset to first page when query changes
+            renderTable();
+        }
+
+        // Render Table & Pagination
+        function renderTable() {
+            if (filteredData.length === 0) {
+                showState('empty');
+                return;
+            }
+
+            showState('data');
+
+            // Calculate Pagination
+            const totalItems = filteredData.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+            
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+            const currentSlice = filteredData.slice(startIndex, endIndex);
+
+            // Update Header Counters
+            visibleCount.textContent = `${startIndex + 1}-${endIndex}`;
+            filteredCount.textContent = totalItems.toLocaleString();
+
+            // Render Rows HTML
+            rowsContainer.innerHTML = currentSlice.map(item => {
+                const isExpanded = expandedRowIndex === item.id;
+                
+                return `
+                    <div 
+                        onclick="toggleRow(${item.id})"
+                        class="bg-brand-card hover:bg-brand-cardHover border border-gray-700/60 rounded-lg cursor-pointer transition-all duration-150 overflow-hidden shadow-sm"
+                    >
+                        <!-- Collapsed/Compact Header Row -->
+                        <div class="p-3 sm:py-2.5 sm:px-4 grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-center">
+                            
+                            <!-- Date & Time -->
+                            <div class="md:col-span-2 text-xs font-mono text-brand-highlight flex items-center justify-between md:justify-start">
+                                <span>${escapeHtml(item.data)}</span>
+                                <span class="md:hidden text-brand-subtext text-[10px]">
+                                    <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4 inline"></i>
+                                </span>
+                            </div>
+
+                            <!-- Server Name -->
+                            <div class="md:col-span-3 text-xs sm:text-sm font-medium text-white truncate-line">
+                                <span class="text-brand-subtext md:hidden font-normal text-xs">Server: </span>
+                                ${escapeHtml(item.serverName)}
+                            </div>
+
+                            <!-- Ban Reason -->
+                            <div class="md:col-span-4 text-xs sm:text-sm text-brand-muted truncate-line">
+                                <span class="text-brand-subtext md:hidden font-normal text-xs">Reason: </span>
+                                ${escapeHtml(item.banReason)}
+                            </div>
+
+                            <!-- IP Address -->
+                            <div class="md:col-span-2 text-xs font-mono text-brand-subtext truncate">
+                                <span class="text-brand-subtext md:hidden font-normal text-xs">IP: </span>
+                                ${escapeHtml(item.ip)}
+                            </div>
+
+                            <!-- Actions / Expand Indicator -->
+                            <div class="hidden md:flex md:col-span-1 justify-center items-center gap-2">
+                                <button 
+                                    onclick="copyToClipboard(event, '${escapeHtml(item.ip)}', 'IP Address copied!')" 
+                                    title="Copy IP"
+                                    class="p-1 hover:bg-brand-surface rounded text-brand-subtext hover:text-white transition-colors"
+                                >
+                                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4 text-brand-subtext"></i>
+                            </div>
+
+                        </div>
+
+                        <!-- Expanded Full View Body -->
+                        ${isExpanded ? `
+                            <div class="bg-brand-surface/40 border-t border-gray-700/50 p-4 space-y-3 text-xs sm:text-sm expanded-content">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="text-brand-subtext text-xs uppercase font-semibold mb-1">Date / Timestamp</div>
+                                        <div class="text-white font-mono bg-brand-bg/60 p-2 rounded border border-gray-700/50 select-all">${escapeHtml(item.data)}</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-brand-subtext text-xs uppercase font-semibold mb-1">IP Address</div>
+                                        <div class="text-white font-mono bg-brand-bg/60 p-2 rounded border border-gray-700/50 flex items-center justify-between">
+                                            <span class="select-all">${escapeHtml(item.ip)}</span>
+                                            <button 
+                                                onclick="copyToClipboard(event, '${escapeHtml(item.ip)}', 'IP Address copied!')" 
+                                                class="text-xs bg-brand-accent hover:bg-brand-accentHover px-2 py-1 rounded text-white font-sans transition-colors"
+                                            >
+                                                Copy IP
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <div class="text-brand-subtext text-xs uppercase font-semibold mb-1">Server Name</div>
+                                        <div class="text-white font-medium bg-brand-bg/60 p-2.5 rounded border border-gray-700/50 break-words select-all">${escapeHtml(item.serverName)}</div>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <div class="text-brand-subtext text-xs uppercase font-semibold mb-1">Ban / Disconnect Reason</div>
+                                        <div class="text-brand-muted bg-brand-bg/60 p-2.5 rounded border border-gray-700/50 break-words select-all whitespace-pre-wrap">${escapeHtml(item.banReason)}</div>
+                                    </div>
+                                </div>
+                                <div class="pt-2 flex justify-end gap-2">
+                                    <button 
+                                        onclick="copyFullRow(event, ${item.id})" 
+                                        class="text-xs bg-brand-surface hover:bg-brand-card border border-gray-600/50 px-3 py-1.5 rounded text-brand-text hover:text-white flex items-center gap-1.5 transition-colors"
+                                    >
+                                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i> Copy Full Record
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            renderPaginationControls(totalPages);
+            renderIcons();
+        }
+
+        // Toggle Row Expansion
+        function toggleRow(id) {
+            if (expandedRowIndex === id) {
+                expandedRowIndex = null;
+            } else {
+                expandedRowIndex = id;
+            }
+            renderTable();
+        }
+
+        // Render Pagination UI
+        function renderPaginationControls(totalPages) {
+            paginationInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+            btnFirst.disabled = currentPage === 1;
+            btnPrev.disabled = currentPage === 1;
+            btnNext.disabled = currentPage === totalPages;
+            btnLast.disabled = currentPage === totalPages;
+
+            // Generate Page number buttons (max 5 visible)
+            let pageBtnsHtml = '';
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const isActive = i === currentPage;
+                pageBtnsHtml += `
+                    <button 
+                        onclick="goToPage(${i})" 
+                        class="px-3 py-1 rounded text-xs ${isActive ? 'bg-brand-accent text-white font-bold' : 'bg-brand-surface hover:bg-brand-accent/50 text-brand-text'}"
+                    >
+                        ${i}
+                    </button>
+                `;
+            }
+
+            pageNumbersContainer.innerHTML = pageBtnsHtml;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            expandedRowIndex = null;
+            renderTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Helper Functions
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function copyToClipboard(event, text, message = 'Copied!') {
+            event.stopPropagation();
+            if (!text) return;
+
+            // Using standard execCommand fallback for compatibility
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast(message);
+            } catch (err) {
+                console.error('Copy failed:', err);
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        function copyFullRow(event, id) {
+            const item = rawData.find(r => r.id === id);
+            if (item) {
+                const fullText = `Date: ${item.data}\nServer: ${item.serverName}\nReason: ${item.banReason}\nIP: ${item.ip}`;
+                copyToClipboard(event, fullText, 'Full record copied!');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', applyFilterAndRender);
+        
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            applyFilterAndRender();
+        });
+
+        itemsPerPageSelect.addEventListener('change', (e) => {
+            itemsPerPage = parseInt(e.target.value, 10);
+            currentPage = 1;
+            renderTable();
+        });
+
+        btnFirst.addEventListener('click', () => goToPage(1));
+        btnPrev.addEventListener('click', () => goToPage(currentPage - 1));
+        btnNext.addEventListener('click', () => goToPage(currentPage + 1));
+        btnLast.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage) || 1;
+            goToPage(totalPages);
+        });
+
+        retryBtn.addEventListener('click', fetchData);
+
+        // On Load
+        window.onload = () => {
+            fetchData();
+        };
+    </script>
+</body>
+</html>
