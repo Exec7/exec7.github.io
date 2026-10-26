@@ -1,725 +1,716 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link href="fonts.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
-    <title>exechack garry's mod cheat</title>
-  </head>
-  <body>
-      <div class="container-fluid" style="height: 60px;">
-        <div class="row">
-          <nav class="navbar">
-            <div class="navbar__toggle">
-              <div class="bros_tog"></div>
-              <div class="bros_tog2"></div>
-              <div class="bros_tog3"></div>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <ul class="navbar_ml">
-                        <p class="logo_hide_pc">exechack.cc</p>
-                        <button class="button_hide_pc">&times;</button>
-                        <li class="navbar_item">
-                            <a href="/" class="navbar_link" style="color:#3D7EFE">Home</a>
-                        </li>
-                        <li class="navbar_item">
-                            <a href="https://x.exechack.cc/forum/" class="navbar_link">Forum</a>
-                        </li>
-                        <li class="navbar_item">
-                            <a href="https://x.exechack.cc/forum/tickets" class="navbar_link">Support</a>
-                        </li>
-                        <li class="navbar_item">
-                          <a href="https://x.exechack.cc/forum/subscriptions" class="navbar_link">Subscriptions</a>
-                        </li>
-                        <p class="hide_txt_pc">exechack.cc</p>  
-                      </ul>
-                </div>
-            </div>
-          </nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#313742">
+  <meta name="description" content="Best private premium cheat for Garry's Mod, perfect aimbot, full customization esp, bunnyhop, wallhack.">
+  <meta name="keywords" content="exec hack garry's mod, exec hack, gmod cheat, private cheat gmod, darkrp, aimbot, esp">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <title>exechack garry's mod cheat</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#313742',
+              card: '#22272e',
+              cardHover: '#2a3038',
+              surface: '#3b4252',
+              accent: '#5e81ac',
+              accentHover: '#81a1c1',
+              highlight: '#88c0d0',
+              text: '#d8dee9',
+              muted: '#e5e9f0',
+              subtext: '#8892b0',
+              danger: '#bf616a',
+              warning: '#ebcb8b',
+              success: '#a3be8c'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #313742;
+      color: #d8dee9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #22272e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #4c566a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #5e81ac;
+    }
+
+    /* Details Accordion Animation */
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+    details summary {
+      list-style: none;
+    }
+    details[open] summary .toggle-icon {
+      transform: rotate(45deg);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-highlight/20 selection:text-brand-highlight">
+
+  <!-- Navigation Bar -->
+  <nav class="bg-brand-card/90 backdrop-blur-md border-b border-gray-700/60 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Desktop Navigation -->
+        <div class="flex items-center gap-8">
+          <a href="/" class="text-white hover:text-brand-highlight flex items-center gap-2 font-extrabold text-lg tracking-tight transition-colors">
+            exechack.cc
+          </a>
+
+          <div class="hidden md:flex items-center space-x-1 text-sm font-medium">
+            <a href="/" class="px-3 py-2 rounded-lg text-brand-highlight bg-brand-surface/60 transition-colors flex items-center gap-1.5 font-semibold">
+              Home
+            </a>
+            <a href="https://x.exechack.cc/forum/" class="px-3 py-2 rounded-lg text-brand-text hover:text-white hover:bg-brand-surface/60 transition-colors flex items-center gap-1.5">
+              Forum
+            </a>
+            <a href="https://x.exechack.cc/forum/tickets" class="px-3 py-2 rounded-lg text-brand-text hover:text-white hover:bg-brand-surface/60 transition-colors flex items-center gap-1.5">
+              Support
+            </a>
+            <a href="https://x.exechack.cc/forum/subscriptions" class="px-3 py-2 rounded-lg text-brand-text hover:text-white hover:bg-brand-surface/60 transition-colors flex items-center gap-1.5">
+              Subscriptions
+            </a>
+          </div>
         </div>
+
+
+        <!-- Mobile Menu Toggle Button -->
+        <div class="flex items-center md:hidden">
+          <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="p-2 rounded-lg text-brand-subtext hover:text-white hover:bg-brand-surface transition-colors" aria-label="Toggle menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+
+      </div>
     </div>
-	
 
-<style>
-a.button.button--primary {
-    color: #ffffff;
-    background: rgba(36, 109, 255);
-    -webkit-box-shadow: 0 0 2px 0 rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .12), 0 1px 3px 0 rgba(0, 0, 0, .2);
-    box-shadow: 0 0 2px 0 rgba(0, 0, 0, .14), 0 2px 2px 0 rgba(0, 0, 0, .12), 0 1px 3px 0 rgba(0, 0, 0, .2);
-    border: none;
-    border-color: #f5b145;
-}
-.ot_homeHeaderContainer {
-    background-color: rgba(0, 0, 0, .55);
-    border: 0 !important;
-    padding: 0 !important;
-}
-.ot_section {
-    padding: 40px 16px;
-    border-top: 1px solid rgba(255, 255, 255, .12);
-    border-bottom: 1px solid rgba(255, 255, 255, .12);
-    background-color: #2d3037;
-    color: #bdc6db;
-    position: relative;
-}
-#ot_slider_container {
-    height: 600px;
-    overflow: hidden;
-    position: relative;
-    background-color: #232328;
-}
-.ot-slider-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-position: top;
-    background-size: cover;
-    background-repeat: no-repeat;
-}
-.ot_homeHeaderContainer .ot_section__content {
-    min-height: 500px;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex
-;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-.ot_section__content {
-    max-width: 1200px;
-    margin: auto;
-    z-index: 50;
-    position: relative;
-}
-.ot_homeHeaderContainer .ot_homeHeader__content {
-    width: 35%;
-    min-width: 400px;
-    padding: 32px 16px;
-}
-a.button {
-    font-size: 14px;
-    font-weight: 700;
-    border-radius: 3px;
-    padding-top: 0;
-    padding-right: 10px;
-    padding-bottom: 0;
-    padding-left: 10px;
-    text-align: center;
-    outline: none;
-    line-height: 38px;
-    height: 38px;
-    text-decoration: none;
-    display: -webkit-inline-box;
-    display: -ms-inline-flexbox;
-    display: inline-flex
-;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    cursor: pointer;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
-    -webkit-appearance: none;
-    text-transform: uppercase;
-    will-change: box-shadow;
-    -webkit-transition: all .3s cubic-bezier(.25,.8,.25,1);
-    -o-transition: all .3s cubic-bezier(.25, .8, .25, 1);
-    transition: all .3s cubic-bezier(.25,.8,.25,1);
-    border: none;
-    white-space: nowrap;
-    color: #ffffff;
-    background: rgba(36, 109, 255);
-}
-</style>	
-<div class="ot_section ot_homeHeaderContainer">
- <div id="ot_slider_container">
- 
- <div class="ot-slider-slide ot-slider-slide-active" id="otslider" style="background-image: url(gmodpage.png);background-size: cover;background-position-y: 25%;">
- <div class="ot_section__content">
- <div class="ot_homeHeader__content">
- <h1>EXECHACK GMOD</h1>
- <p>Hundreds of functions such as Aimbot, ESP, and Collective Security. Exechack is the best cheat available for Garry's Mod.</p>
- <a class="button button--primary rippleButton" href="https://x.exechack.cc/forum/subscriptions">GET EXECHACK FROM 500₽/6$/5€ FOREVER</a>
-	
- </div>
- </div>
- </div>
- 
- 
- </div>
- </div>
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-700/60 bg-brand-card p-4 space-y-2 text-sm font-medium">
+      <a href="/" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-surface text-brand-highlight font-semibold">
+        Home
+      </a>
+      <a href="https://x.exechack.cc/forum/" class="flex items-center gap-2 px-3 py-2 rounded-lg text-brand-text hover:bg-brand-surface hover:text-white transition-colors">
+        Forum
+      </a>
+      <a href="https://x.exechack.cc/forum/tickets" class="flex items-center gap-2 px-3 py-2 rounded-lg text-brand-text hover:bg-brand-surface hover:text-white transition-colors">
+        Support
+      </a>
+      <a href="https://x.exechack.cc/forum/subscriptions" class="flex items-center gap-2 px-3 py-2 rounded-lg text-brand-text hover:bg-brand-surface hover:text-white transition-colors">
+        Subscriptions
+      </a>
+    </div>
+  </nav>
 
+  <!-- Hero Section -->
+  <header class="relative overflow-hidden bg-brand-card border-b border-gray-700/50">
+    <div class="absolute inset-0 bg-cover bg-center opacity-100" style="background-image: url('gmodpage.png'); background-position-y: 25%;"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-brand-card via-brand-card/90 to-brand-card/70"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28 flex flex-col justify-center min-h-[460px]">
+      <div class="max-w-2xl space-y-5">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-surface/80 border border-gray-700/60 text-xs font-semibold text-brand-highlight">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Undetected
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+          EXECHACK GMOD
+        </h1>
+        <p class="text-base sm:text-lg text-brand-subtext leading-relaxed">
+          Hundreds of functions such as Aimbot, ESP, and Collective Security.<br>Exechack is the best cheat available for Garry's Mod.
+        </p>
+        <div class="pt-2">
+          <a href="https://x.exechack.cc/forum/subscriptions" class="inline-flex items-center justify-center gap-2.5 bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-sm tracking-wide px-7 py-3.5 rounded-xl shadow-lg shadow-brand-accent/25 hover:-translate-y-0.5 transition-all">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+            GET FROM 500₽ / 6$ / 5€ FOREVER
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
 
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-14 space-y-20">
 
+    <!-- Interactive Menu Preview Section -->
+    <section>
+      <div class="flex items-center gap-3 mb-6">
+        <i data-lucide="layers" class="text-brand-highlight w-6 h-6"></i>
+        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Menu</h2>
+      </div>
 
+      <div class="flex justify-center perspective-[1000px]">
+        <div class="card relative max-w-4xl w-full rounded-2xl p-2 bg-brand-card border border-gray-700/50 shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer"
+             style="will-change: transform; transition: 2s cubic-bezier(0.18, 1.4, 0.53, 1); transform: rotateY(0deg) rotateX(0deg);">
+          <img src="gmod0.png" alt="Menu Preview" class="w-full h-auto rounded-xl object-contain mx-auto">
+        </div>
+      </div>
+    </section>
 
+    <!-- Advantages Section -->
+    <section id="advantages">
+      <div class="flex items-center gap-3 mb-8">
+        <i data-lucide="sparkles" class="text-brand-highlight w-6 h-6"></i>
+        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Advantages</h2>
+      </div>
 
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Advantage Card 1 -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+              <i data-lucide="cpu" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Simplicity</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed space-y-1">
+              Easy to launch and configure.<br>
+              60+ configs from our community.<br>
+              No required x64 or AVX2, only Windows 7-11.<br>
+              5 minutes from purchasing to playing.
+            </p>
+          </div>
+        </div>
 
-<div class="container">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<br><h4 class="bg-black d-inline-block h6 mb-2 p-2">MENU</h4>
-	<!--<h2 class="text-center text-2xl md:text-3xl lg:text-4xl font-black pt-4 bg-clip-text bg-gradient-to-r from-sky-400 to-cyan-200 text-transparent">better premium solution</h2>--><br><br>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const cards = document.querySelectorAll(".card");
-            cards.forEach(card => {
-                card.addEventListener("mousemove", (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = (e.clientX - rect.left) / rect.width;
-                    const y = (e.clientY - rect.top)  / rect.height;
+        <!-- Advantage Card 2 -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Security</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              It is impossible to be detected by anticheat, only if you intentionally ignore warnings.<br>
+              We are based on collective security, analyze every kick and ban.
+            </p>
+          </div>
+        </div>
 
-                    const rx = -(0.5 - y) * (28);
-                    const ry = -(x - 0.5) * (28);
-                    card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.05, 1.05, 1.05)`;
+        <!-- Advantage Card 3 -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+              <i data-lucide="headset" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Support</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              Long term support <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" class="text-brand-highlight hover:underline">since 2018</a>.<br>
+              We will support any user with their problem.<br>
+              We keep the price as low as possible for us, up to 20 times lower than others.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-                });
-                card.addEventListener("mouseleave", (e) => {
-                    card.style.transition = "all 2s cubic-bezier(0.18, 1.4, 0.53, 1)";
-                    card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-                });
-            });
+    <!-- Features Section -->
+    <section id="features">
+      <div class="flex items-center gap-3 mb-8">
+        <i data-lucide="check-circle" class="text-brand-highlight w-6 h-6"></i>
+        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Features</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Aimbot -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+            <i data-lucide="target" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Aimbot</h3>
+          <p class="text-sm text-brand-subtext leading-relaxed">
+            Perfect aimbot with great pack support.<br>
+            No Spread with support packs: <a href="https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=300653696" target="_blank" class="text-brand-highlight hover:underline">M9K</a>, HL2, <a href="https://steamcommunity.com/workshop/filedetails/?id=2840031720" target="_blank" class="text-brand-highlight hover:underline">TFA</a>*, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=356003051" target="_blank" class="text-brand-highlight hover:underline">CW2</a>, <a href="https://steamcommunity.com/workshop/filedetails/?id=1967187358" target="_blank" class="text-brand-highlight hover:underline">SWB</a>, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=258192021" target="_blank" class="text-brand-highlight hover:underline">FAS2</a>*.<br>
+            AutoWall with support packs: M9K, CW2, SWB, FAS2.<br>
+            Entity Aimming - you can choose any entity to use with aimbot.<br>
+            Return Fire - automatically kills the aggressor.<br>
+            Cursor Aimbot - Aim is like from C-MENU even on observation the aimbot is not visible.<br>
+            Silent, HitScan, Ignore filter, Priority Filter, Predict Customization, Target Lock, Disable on Kill, Fov Check, Triggerbot, Smooth Aim, Snapline, Legit-mode under observation.
+          </p>
+        </div>
+
+        <!-- Visuals -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+            <i data-lucide="eye" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Visuals</h3>
+          <p class="text-sm text-brand-subtext leading-relaxed">
+            Full esp with full customize, any text position and color, custom font.<br>
+            Full preview esp in menu.<br>
+            Chams with 5 types and support with obsbypass.<br>
+            Money Esp - shows player money on darkrp.<br>
+            Full Entity Esp - switch any entity and even map details, customize color and name for each entity.<br>
+            Debug Camera - visual noclip, view the entire map without restrictions.<br>
+            FullBright - removes shadows for dark play.<br>
+            Aspect Ratio, Customize Radar, Spectators List, Skybox Changer, Screen Filter, Custom CrossHair, Info Bar.
+          </p>
+        </div>
+
+        <!-- Miscellaneous -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+            <i data-lucide="sliders" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Miscellaneous</h3>
+          <p class="text-sm text-brand-subtext leading-relaxed">
+            Auto Strafe with 3 types: legit, rage and multi-directional.<br>
+            Max Hops - the maximum number of jumps for 1 time for undetect game.<br>
+            Keypad Logger - steals entered passwords by players, support for 2 types of keypads.<br>
+            Spammer with 5 types: chat, pm, ooc, killsay, connect from several our texts.<br>
+            Logs - has the same logs as the admins on server, you can find out who killed whom.<br>
+            Get Ban/kick - block yourself on the current server.
+          </p>
+        </div>
+
+        <!-- Lua -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+            <i data-lucide="code" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Lua</h3>
+          <p class="text-sm text-brand-subtext leading-relaxed">
+            Lua Execution - run your lua script on server with autorun or in clientside server code with undetectable method.<br>
+            <a href="https://x.exechack.cc/lua/" target="_blank" class="text-brand-highlight hover:underline">Lua List</a> - list with 200+ free scripts with additional features.<br>
+            Lua Stealer - stealing 70% server code, namely clientside and shared, handy assistant with netlogger in writing server hacks and other exploits.<br>
+            Editor - convenient script writing with obfuscator, minifier, beautifier, netlogger, encryption of scripts to password. For running on menustate and clientside. Editing any running clientside server code.<br>
+            <a href="https://x.exechack.cc/lua/api" target="_blank" class="text-brand-highlight hover:underline">Lua API</a> - full compatibility with the cheat with the ability to add your own functions to the cheat using a convenient wiki.
+          </p>
+        </div>
+
+        <!-- Security -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+            <i data-lucide="lock" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Security</h3>
+          <p class="text-sm text-brand-subtext leading-relaxed">
+            Anti Cheat Protection - bypass injection detection in many anticheats.<br>
+            <a href="gmod8.png" target="_blank" class="text-brand-highlight hover:underline">Anti Screengrab</a> - addon to stealing your screenshot by admins, esp and other windows will hided.<br>
+            Legit Features - functions for aimbot and bhop to prevent detection.<br>
+            <a href="https://exechack.cc/serversdatabase-archived/" target="_blank" class="text-brand-highlight hover:underline">Collective Security</a> - servers database with all gmod servers, exechack collects statistics, server code and admins to warn other users and create tips for safe play on this server. Even before connecting, you can find out all the bans of other users, each addon, all admins.<br>
+            <a href="gmod11.png" target="_blank" class="text-brand-highlight hover:underline">OBS Bypass</a> - esp and other windows will hided on your record.<br>
+            <a href="gmod17.png" target="_blank" class="text-brand-highlight hover:underline">Cheat Checkers Protection</a> - A dozen ways to hide an exechack from the admins checkers programs.
+          </p>
+        </div>
+
+        <!-- Main -->
+        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
+          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
+            <i data-lucide="server" class="w-6 h-6"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Main</h3>
+          <p class="text-sm text-brand-subtext leading-relaxed">
+            Oldest continuously supported cheat in Garry's Mod, supporting its users <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" class="text-brand-highlight hover:underline">since 2018</a>.<br>
+            <a href="https://x.exechack.cc/forum/tickets" target="_blank" class="text-brand-highlight hover:underline">Support</a> - fast help every subscriber and cheat stable work with new game updates.<br>
+            <a href="https://x.exechack.cc/forum/" target="_blank" class="text-brand-highlight hover:underline">Forum</a> - with friendly community, hundreds of cfg, useful materials, and etc.<br>
+            Loader - support x32 &amp; x64 gmod versions, and any others.<br>
+            <a href="https://exechack.cc/docs/#premium" target="_blank" class="text-brand-highlight hover:underline">Share Subscription</a> - Play with friend, give a friend access to play for the whole day.<br>
+            Own <a href="https://gamemonitoring.net/garrys-mod/servers/18853314" target="_blank" class="text-brand-highlight hover:underline">HvH Server</a> (Hack vs Hack) with 128 tickrate, only head, map vote.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Stats Banner -->
+    <section>
+      <div class="bg-brand-card rounded-2xl p-6 sm:p-8 border border-gray-700/50 shadow-xl backdrop-blur-md">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-y lg:divide-y-0 lg:divide-x divide-gray-700/50">
+          
+          <div class="pt-4 lg:pt-0">
+            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">2018</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-1">Support &amp; Update Since</p>
+          </div>
+
+          <div class="pt-4 lg:pt-0">
+            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">25k+</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-1">Members</p>
+          </div>
+
+          <div class="pt-4 lg:pt-0">
+            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">400+</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-1">Themes &amp; Lua</p>
+          </div>
+
+          <div class="pt-4 lg:pt-0">
+            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">1k+</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-1">
+              <a href="https://exechack.cc/serversdatabase-archived/safedatabase" target="_blank" class="hover:text-brand-highlight transition-colors underline">Safe Servers</a> in database
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- User Videos & FAQ Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Video Container -->
+      <div class="lg:col-span-7 bg-brand-card rounded-2xl p-6 border border-gray-700/50 shadow-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <i data-lucide="video" class="text-brand-highlight w-5 h-5"></i>
+            <h2 class="text-lg font-black uppercase tracking-wider text-white">User Video</h2>
+          </div>
+          <a href="https://www.youtube.com/playlist?list=PLIXvx8aAqAENzpSF7DIlxlXK0d0uthrj2" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1">
+            Full Playlist <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-brand-surface shadow-inner border border-gray-700/40">
+          <script>
+            const myArrays = ['B1e-P8D9tlg', '-xSYH8XjO8U', 'fVD1gREdCkQ', 'PFOXUIkr8qY', '7wB1AacHJZE', 'MD64t7Tp8yM', 'ViFkRNQjx_U', 'B0jB8igHwOg', 'laugAUHl_qw', 'NPJ16PczMGM', 'GWA9jJNkTI0', 'pnYuwlzqiFU', 'bGcfONAY_8k', 'NOxH9xhA66k', 'msSHUxZiH88', 'CCZP3CO0x4s', 'PcRvbw3KEy0'];
+            const randomElements = myArrays[Math.floor(Math.random() * myArrays.length)]; 
+            document.write('<iframe class="w-full h-full" src="https://www.youtube.com/embed/' + randomElements + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>');
+          </script>
+        </div>
+      </div>
+
+      <!-- FAQ Container -->
+      <div class="lg:col-span-5 bg-brand-card rounded-2xl p-6 border border-gray-700/50 shadow-xl space-y-4">
+        <div class="flex items-center gap-2.5 mb-2">
+          <i data-lucide="help-circle" class="text-brand-highlight w-5 h-5"></i>
+          <h2 class="text-lg font-black uppercase tracking-wider text-white">FAQ</h2>
+        </div>
+
+        <div class="space-y-3">
+          <!-- Item 1 -->
+          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+              <span>Payment methods</span>
+              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+            </summary>
+            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              We accept cryptocurrency, mir, paypal, visa, mastercard and other.
+            </div>
+          </details>
+
+          <!-- Item 2 -->
+          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+              <span>Available servers</span>
+              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+            </summary>
+            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              Each server in Garry's Mod is like a separate game, so the cheat collects reports and user statistics into a database.<br>
+              Before purchasing, check the servers you're interested in for issues.<br>
+              <a href="https://exechack.cc/serversdatabase-archived/" target="_blank" class="text-brand-highlight hover:underline font-medium inline-block mt-1">servers database (archived)</a>
+            </div>
+          </details>
+
+          <!-- Item 3 -->
+          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+              <span>Computer requirements</span>
+              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+            </summary>
+            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              The only requirement is the Windows operating system, AVX2 or x64 and etc not required.
+            </div>
+          </details>
+
+          <!-- Item 4 -->
+          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+              <span>Viruses</span>
+              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+            </summary>
+            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              <a href="https://exechack.cc/docs/#downloadloader" target="_blank" class="text-brand-highlight hover:underline font-medium">Loader</a> has protection, and the cheat itself contains a dubious code for the antivirus, which causes false triggering.
+            </div>
+          </details>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Menu Screenshots Gallery -->
+    <section>
+      <div class="flex items-center gap-3 mb-6">
+        <i data-lucide="image" class="text-brand-highlight w-6 h-6"></i>
+        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Menu Screenshots</h2>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <a href="menu1.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu1.png" alt="Menu Screenshot 1" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu2.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu2.png" alt="Menu Screenshot 2" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu3.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu3.png" alt="Menu Screenshot 3" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu4.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu4.png" alt="Menu Screenshot 4" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu5.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu5.png" alt="Menu Screenshot 5" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu6.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu6.png" alt="Menu Screenshot 6" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu7.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu7.png" alt="Menu Screenshot 7" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu8.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu8.png" alt="Menu Screenshot 8" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+        <a href="menu9.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
+          <img src="menu9.png" alt="Menu Screenshot 9" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        </a>
+      </div>
+    </section>
+
+    <!-- In-Game Screenshots Gallery -->
+    <section>
+      <div class="flex items-center gap-3 mb-6">
+        <i data-lucide="monitor" class="text-brand-highlight w-6 h-6"></i>
+        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">In-Game Screenshots</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod8.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod8.png" alt="Anti ScreenGrab" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Screen Stealing Protection (Anti ScreenGrab)</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod11.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod11.png" alt="OBS Bypass" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Demo Record Protection (OBS Bypass)</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod12.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod12.png" alt="Collective Security" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Global Server Statistics (Collective Security)</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod17.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod17.png" alt="Cheat Checkers Protection" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Cheat Checkers Protection (Memery Cleaner)</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod4.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod4.png" alt="ESP" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">ESP</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod18.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod18.png" alt="TTT" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">TTT</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod3.jpeg" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod3.jpeg" alt="Deathrun" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Deathrun</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod13.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod13.png" alt="Skybox Changer" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Skybox Changer</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod16.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod16.png" alt="Lua list" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Lua list</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod7.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod7.png" alt="Lua Api Menu Integration" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Lua Api (Menu Integration)</span>
+        </div>
+
+        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
+          <a href="gmod20.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
+            <img src="gmod20.png" alt="Lua Api Custom Animated Background" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+          </a>
+          <span class="text-xs font-medium text-brand-subtext px-1">Lua Api (Custom Animated Background by AI)</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Latest Updates Section -->
+    <section>
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <i data-lucide="newspaper" class="text-brand-highlight w-6 h-6"></i>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Latest Updates</h2>
+        </div>
+        <a href="https://x.exechack.cc/forum/categories/31/" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1">
+          All updates <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <a href="https://x.exechack.cc/forum/threads/1190/" target="_blank" class="group bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg">
+          <img src="https://i.postimg.cc/MpgrwZcX/image.png" alt="Update Thread 1190" class="w-full h-44 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+        </a>
+        <a href="https://x.exechack.cc/forum/threads/1170/" target="_blank" class="group bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg">
+          <img src="https://i.imgur.com/PGj4F4K.png" alt="Update Thread 1170" class="w-full h-44 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+        </a>
+        <a href="https://x.exechack.cc/forum/threads/1153/" target="_blank" class="group bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg">
+          <img src="https://i.imgur.com/7nCWbFv.png" alt="Update Thread 1153" class="w-full h-44 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+        </a>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="bg-brand-card rounded-2xl p-6 sm:p-8 border border-gray-700/50 shadow-xl space-y-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i data-lucide="message-circle" class="text-brand-highlight w-6 h-6"></i>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">User Reviews</h2>
+        </div>
+        <a href="https://github.com/Exec7/exechack/discussions/1" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1 font-medium">
+          Open on GitHub <i data-lucide="external-link" class="w-3 h-3"></i>
+        </a>
+      </div>
+
+      <div class="min-h-[220px]">
+        <script src="https://giscus.app/client.js"
+          data-repo="exec7/exechack"
+          data-repo-id="R_kgDONbV06Q"
+          data-mapping="number"
+          data-term="1"
+          data-reactions-enabled="0"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="dark"
+          data-lang="en"
+          data-loading="lazy"
+          async>
+        </script>
+        <div id="comments" class="giscus"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-700/50 bg-brand-card/70 py-10 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+        
+        <div>
+          <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+            exechack.cc
+          </h3>
+          <p class="text-xs text-brand-subtext leading-relaxed">
+            Created with love from Siberia.
+          </p>
+        </div>
+
+        <div></div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Website</h4>
+          <ul class="space-y-2 text-xs text-brand-subtext">
+            <li><a href="/" class="hover:text-brand-highlight transition-colors">Home</a></li>
+            <li><a href="https://x.exechack.cc/forum" class="hover:text-brand-highlight transition-colors">Forum</a></li>
+            <li><a href="https://x.exechack.cc/forum/subscriptions" class="hover:text-brand-highlight transition-colors">Subscriptions</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Other</h4>
+          <ul class="space-y-2 text-xs text-brand-subtext">
+            <li><a href="https://exechack.cc/docs" class="hover:text-brand-highlight transition-colors">Docs</a></li>
+            <li><a href="https://x.exechack.cc/lua" class="hover:text-brand-highlight transition-colors">Lua List</a></li>
+            <li><a href="https://exechack.cc/serversdatabase-archived/" class="hover:text-brand-highlight transition-colors">Servers Database</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="pt-6 border-t border-gray-700/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-subtext">
+        <div>
+          exechack.cc
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 3D Card Interactive Tilt Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Lucide icons initialization
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Interactive 3D tilt
+      const cards = document.querySelectorAll(".card");
+      cards.forEach(card => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+
+          const rx = -(0.5 - y) * (24);
+          const ry = -(x - 0.5) * (24);
+          card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02, 1.02, 1.02)`;
         });
-    </script>
-	<style>
-	.card {
-		background-color: #00000000;
-		border: #00000000;
-		width: 799px;
-		height: 499px;
-		width: 100%;
-	}
-	.responsive {
-	  width: 100%;
-	  height: 100%;
-	  max-width: 799px;
-	  max-height: 499px;
-	}
-	</style>
-	<div class="card" style="will-change: transform; transition: 2s cubic-bezier(0.18, 1.4, 0.53, 1); transform: rotateY(0deg) rotateX(0deg);">
-		<center><img alt="Nature class="rounded-lg mx-auto" class="responsive" src="gmod0.png"></center>
-	</div>
-	<br>
-</div>
-
-<br><br><br>
-<div class=container id=advantages>
- <h4 class="bg-black d-inline-block h6 mb-2 p-2">ADVANTAGES</h4>
-<br><br>
-<style>
-.gap-8{gap:3rem}@media (min-width:1024px){.lg\:grid-cols-5{grid-template-columns:repeat(3,minmax(0,1fr))}}.grid{display:grid}.duration-400{animation-duration:.3s;transition-duration:.3s}
-.transition-alls{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.p-6{padding:1.5rem}.bg-\[\#0a0c10\]{--tw-bg-opacity:1;background-color:rgba(49,55,66,.6)}
-.rounded-lg{border-radius:8px;border:1px solid hsla(0,0%,100%,.04)}.font-semibold{font-weight:600}.text-lg{font-size:1.125rem;line-height:1.75rem}.mb-2{margin-bottom:.5rem}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}
-</style>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-alls duration-400">
-    <h3 class="text-lg font-semibold mb-2">Simplicity</h3>
-    <p class="text-gray-400">
-		Easy to launch and configure. 
-		<br>60+ configs from our community.
-		<br>No required x64 or AVX2, only Windows 7-11.
-		<br>5 minutes from purchasing to playing.
-    </p>
-  </div>
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-alls duration-400">
-    <h3 class="text-lg font-semibold mb-2">Security</h3>
-    <p class="text-gray-400">
-		It is impossible to be detected by anticheat, only if you intentionally ignore warnings.
-		<br>We are based on collective security, analyze every kick and ban.
-    </p>
-  </div>
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-alls duration-400">
-    <h3 class="text-lg font-semibold mb-2">Support</h3>
-    <p class="text-gray-400">
-		Long term support <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" style="color:#6c757d">since 2018</a>.
-		<br>We will support any user with their problem.
-		<br>We keep the price as low as possible for us, up to 20 times lower than others.
-    </p>
-  </div>
-
-
-</div>
-</div>
-<br><br>
-
-	
-
-<div class=container id=features>
- <h4 class="bg-black d-inline-block h6 mb-2 p-2">FEATURES</h4>
-<br><br>
-<style>
-.gap-8{gap:2rem}@media (min-width:1024px){.lg\:grid-cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}}.grid{display:grid}.duration-300{animation-duration:.3s;transition-duration:.3s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.p-6{padding:1.5rem}.bg-\[\#0a0c10\]{--tw-bg-opacity:1;background-color:rgba(49,55,66,.6)}.rounded-lg{border-radius:8px;border:1px solid hsla(0,0%,100%,.04)}.font-semibold{font-weight:600}.text-lg{font-size:1.125rem;line-height:1.75rem}.mb-2{margin-bottom:.5rem}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}
-</style>
-
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-all duration-300">
-    <div class="mb-4 text-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-target">
-        <circle cx="12" cy="12" r="10"></circle>
-        <circle cx="12" cy="12" r="6"></circle>
-        <circle cx="12" cy="12" r="2"></circle>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold mb-2">Aimbot</h3>
-    <p class="text-gray-400">
-	Perfect aimbot with great pack support.<br>
-	No Spread with support packs: <a href="https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=300653696" target="_blank" style="color:#6c757d">M9K</a>, HL2, <a href="https://steamcommunity.com/workshop/filedetails/?id=2840031720" target="_blank" style="color:#6c757d">TFA</a>*, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=356003051" target="_blank" style="color:#6c757d">CW2</a>, <a href="https://steamcommunity.com/workshop/filedetails/?id=1967187358" target="_blank" style="color:#6c757d">SWB</a>, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=258192021" target="_blank" style="color:#6c757d">FAS2</a>*.<br>
-	AutoWall with support packs: M9K, CW2, SWB, FAS2.<br>
-	Entity Aimming - you can choose any entity to use with aimbot.<br>
-	Return Fire - automatically kills the aggressor.<br>
-	Cursor Aimbot - Aim is like from C-MENU even on observation the aimbot is not visible.<br>
-	Silent, HitScan, Ignore filter, Priority Filter, Predict Customization, Target Lock, Disable on Kill, Fov Check, Triggerbot, Smooth Aim, Snapline, Legit-mode under observation.
-    </p>
-  </div>
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-all duration-300">
-    <div class="mb-4 text-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-        <circle cx="9" cy="7" r="4"></circle>
-        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold mb-2">Visuals</h3>
-    <p class="text-gray-400">
-	    Full esp with full customize, any text position and color, custom font.<br>
-	    Full preview esp in menu.<br>
-	    Chams with 5 types and support with obsbypass.<br>
-	    Money Esp - shows player money on darkrp.<br>
-	    Full Entity Esp - switch any entity and even map details, customize color and name for each entity.<br>
-	    Debug Camera - visual noclip, view the entire map without restrictions.<br>
-	    FullBright - removes shadows for dark play.<br>
-	    Aspect Ratio, Customize Radar, Spectators List, Skybox Changer, Screen Filter, Custom CrossHair, Info Bar.
-    </p>
-  </div>
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-all duration-300">
-    <div class="mb-4 text-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cpu">
-        <rect width="16" height="16" x="4" y="4" rx="2"></rect>
-        <rect width="6" height="6" x="9" y="9" rx="1"></rect>
-        <path d="M15 2v2"></path>
-        <path d="M15 20v2"></path>
-        <path d="M2 15h2"></path>
-        <path d="M2 9h2"></path>
-        <path d="M20 15h2"></path>
-        <path d="M20 9h2"></path>
-        <path d="M9 2v2"></path>
-        <path d="M9 20v2"></path>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold mb-2">Miscellaneous</h3>
-    <p class="text-gray-400"> 
-	    Auto Strafe with 3 types: legit, rage and multi-directional.<br>
-	    Max Hops - the maximum number of jumps for 1 time for undetect game.<br>
-	    Keypad Logger - steals entered passwords by players, support for 2 types of keypads.<br>
-	    Spammer with 5 types: chat, pm, ooc, killsay, connect from several our texts.<br>
-	    Logs - has the same logs as the admins on server, you can find out who killed whom.<br>
-	    Get Ban/kick - block yourself on the current server.
-    </p>
-  </div>
-
-	<div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-all duration-300">
-    <div class="mb-4 text-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wrench">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold mb-2">Lua</h3>
-    <p class="text-gray-400">
-	Lua Execution - run your lua script on server with autorun or in clientside server code with undetectable method.<br>
-	<a href="https://x.exechack.cc/lua/" target="_blank" style="color:#6c757d">Lua List</a> - list with 200+ free scripts with additional features.<br>
-	Lua Stealer - stealing 70% server code, namely clientside and shared, handy assistant with netlogger in writing server hacks and other exploits.<br>
-	Editor - convenient script writing with obfuscator, minifier, beautifier, netlogger, encryption of scripts to password. For running on menustate and clientside. Editing any running clientside server code.<br>
-	<a href="https://x.exechack.cc/lua/api" target="_blank" style="color:#6c757d">Lua API</a> - full compatibility with the cheat with the ability to add your own functions to the cheat using a convenient wiki.
-    </p>
-  </div>
-	
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-all duration-300">
-    <div class="mb-4 text-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock">
-        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold mb-2">Security</h3>
-    <p class="text-gray-400">
-	Anti Cheat Protection - bypass injection detection in many anticheats.<br>
-	<a href="gmod8.png" target="_blank" style="color:#6c757d">Anti Screengrab</a> - addon to stealing your screenshot by admins, esp and other windows will hided.<br>
-	Legit Features - functions for aimbot and bhop to prevent detection.<br>
-	<a href="https://exechack.cc/serversdatabase-archived/" target="_blank" style="color:#6c757d">Collective Security</a> - servers database with all gmod servers, exechack collects statistics,
-	server code and admins. to warn other users and create tips for safe play on this server.
-	even before connecting, you can find out all the bans of other users, each addon, all admins.
-	<br>
-	<a href="gmod11.png" target="_blank" style="color:#6c757d">OBS Bypass</a> - esp and other windows will hided on your record.<br>
-	<a href="gmod17.png" target="_blank" style="color:#6c757d">Cheat Checkers Protection</a> - A dozen ways to hide an exechack from the admins checkers programs.
-    </p>
-  </div>
-
-  <div class="bg-[#0a0c10] rounded-lg p-6 hover:bg-[#12151c] transition-all duration-300">
-    <div class="mb-4 text-blue-500">
-      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-      </svg>
-    </div>
-    <h3 class="text-lg font-semibold mb-2">Main</h3>
-    <p class="text-gray-400">
-	Oldest continuously supported cheat in Garry's Mod, supporting its users <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" style="color:#6c757d">since 2018</a>.<br>
-	<a href="https://x.exechack.cc/forum/tickets" target="_blank" style="color:#6c757d">Support</a> - fast help every subscriber and cheat stable work with new game updates.<br>
-	<a href="https://x.exechack.cc/forum/" target="_blank" style="color:#6c757d">Forum</a> - with friendly community, hundreds of cfg, useful materials, and etc.<br>
-	Loader - support x32 &amp; x64 gmod versions, and any others.<br>
-	<a href="https://exechack.cc/docs/#premium" target="_blank" style="color:#6c757d">Share Subscription</a> - Play with friend, give a friend access to play for the whole day.<br>
-	Own <a href="https://gamemonitoring.net/garrys-mod/servers/18853314" target="_blank" style="color:#6c757d">HvH Server</a> (Hack vs Hack) with 128 tickrate, only head, map vote.
-    </p>
-  </div>
-
-	
-	
-</div>
-
-
-	
-</div>
-
-
-
-<div class="container">
- <section class="py-5">
-<div class="text-center text-white-50 p-3" style="background: rgba(49,55,66,0.6);backdrop-filter: blur(10px);-webkit-backdrop-filter: blur(10px);border-radius: 8px;border: 1px solid hsla(0,0%,100%,.04);">
-                <div class="row row-cols-2 row-cols-md-4">
-                    <div class="col" style="padding-top: 6px;padding-bottom: 6px;">
-                        <div class="p-3">
-                            <h4 class="display-5 fw-bold text-white mb-0">2018</h4>
-                            <p class="mb-0">Support & Update<br>Since</p>
-                        </div>
-                    </div>
-                    <div class="col" style="border-left: 1px solid hsla(0,0%,100%,.04);padding-top: 6px;padding-bottom: 6px;">
-                        <div class="p-3" style="border-right-width: 1px;">
-                            <h4 class="display-5 fw-bold text-white mb-0">25k+</h4>
-                            <p class="mb-0">Members</p>
-                        </div>
-                    </div>
-                    <div class="col" style="border-right: 1px solid hsla(0,0%,100%,.04);border-left: 1px solid hsla(0,0%,100%,.04);padding-top: 6px;padding-bottom: 6px;">
-                        <div class="p-3">
-                            <h4 class="display-5 fw-bold text-white mb-0">400+</h4>
-                            <p class="mb-0">Themes & Lua</p>
-                        </div>
-                    </div>
-                    <div class="col" style="padding-top: 6px;padding-bottom: 6px;">
-                        <div class="p-3">
-                            <h4 class="display-5 fw-bold text-white mb-0">1k+</h4>
-                            <p class="mb-0"><a href="https://exechack.cc/serversdatabase-archived/safedatabase" target="_blank" style="color:#6c757d">Safe Servers</a> in database</p>
-                        </div>
-                    </div>
-                </div>
-</div>
-        </div>
-</section>
-
-
-<br><br>
-
-
-
-<div class="container">
- <section class=py-5>
- 
-
- 
- <div class="row py-5">
- <div class="col-md-7 mx-auto mb-3">
-             <div>
-                <h2 class="bg-black d-inline-block h6 mb-2 p-2">USER VIDEOS</h2>
-            </div>
-	<div class="video-container">
-	
-	<script>
-		const myArrays = ['B1e-P8D9tlg', '-xSYH8XjO8U', 'fVD1gREdCkQ', 'PFOXUIkr8qY', '7wB1AacHJZE', 'MD64t7Tp8yM', 'ViFkRNQjx_U', 'B0jB8igHwOg', 'laugAUHl_qw', 'NPJ16PczMGM', 'GWA9jJNkTI0', 'pnYuwlzqiFU', 'bGcfONAY_8k', 'NOxH9xhA66k', 'msSHUxZiH88', 'CCZP3CO0x4s', 'PcRvbw3KEy0'];
-		const randomElements = myArrays[Math.floor(Math.random() * myArrays.length)]; 
-		document.write('<iframe style="border-radius: 8px;" class="video" src="https://www.youtube.com/embed/' + randomElements + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow="encrypted-media"></iframe>');
-	</script>
-	</div><a class="text-muted mt-3 small" href="https://www.youtube.com/playlist?list=PLIXvx8aAqAENzpSF7DIlxlXK0d0uthrj2" target="blank">full playlist</a>
- </div>
- <div class=col-md-5>
-
-
-<h4 class="bg-black d-inline-block h6 mb-2 p-2">FREQUENTLY ASKED QUESTIONS</h4>
-<style>details{background-color:#313742}summary{color: #6c757d;padding:.5em 1.3rem;list-style:none;display:flex;justify-content:space-between;transition:height 1s}summary::-webkit-details-marker{display:none}summary:after{content:"\002B"}details[open] summary{border-bottom:1px solid #aaa;margin-bottom:.5em}details[open] summary:after{content:"\00D7"}details[open] div{padding:.5em 1em}</style>
-
-<details name="reqs">
-<summary>payment methods</summary>
-<div>We accept cryptocurrency, mir, paypal, visa, mastercard and other.
-</div>
-</details>
-
-
-
-<details name="reqs">
-<summary>available servers</summary>
-<div>
-Each server in Garry's Mod is like a separate game, so the cheat collects reports and user statistics into a database.<br>
-Before purchasing, check the servers you're interested in for issues.<br>
-<a href="https://exechack.cc/serversdatabase-archived/" target="_blank" style="color:#6c757d">servers database (archived)</a>
-</div>
-</details>
-
-
-<details name="reqs">
-<summary>computer requirements</summary>
-<div>
-The only requirement is the Windows operating system, AVX2 or x64 and etc not required.
-</div>
-</details>
-
-<details name="reqs">
-<summary>viruses</summary>
-<div>
-<a href="https://exechack.cc/docs/#downloadloader" target="_blank" style="color:#6c757d">Loader</a> has protection, and the cheat itself contains a dubious code for the antivirus, which causes false triggering.
-</div>
-</details>
-	
-
-
- </div>
- </div>
- 
-
-
-
-</section>			
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class=container>
- <h4 class="bg-black d-inline-block h6 mb-2 p-2">MENU SCREENSHOTS</h4>
- <div class="pb-5 row photos">
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu1.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu1.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu2.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu2.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu3.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu3.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu4.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu4.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu5.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu5.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu6.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu6.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu7.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu7.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu8.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu8.png"></a></div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="menu9.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="menu9.png"></a></div>
- </div>
-</div>
-
-<div class=container>
- <h4 class="bg-black d-inline-block h6 mb-2 p-2">IN-GAME SCREENSHOTS</h4>
- <div class="pb-5 row photos" style="color:#6c757d">
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod8.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod8.png"></a>Screen Stealing Protection (Anti ScreenGrab)</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod11.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod11.png"></a>Demo Record Protection (OBS Bypass)</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod12.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod12.png"></a>Global Server Statistics (Collective Security)</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod17.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod17.png"></a>Cheat Checkers Protection (Memery Cleaner)</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod4.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod4.png"></a>ESP</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod18.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod18.png"></a>TTT</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod3.jpeg" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod3.jpeg"></a>Deathrun</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod13.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod13.png"></a>Skybox Changer</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod16.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod16.png"></a>Lua list</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod7.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod7.png"></a>Lua Api (Menu Integration)</div>
-	<div class="col-6 col-md-6 col-lg-4 item mb-3"><a href="gmod20.png" target="_blank" data-lightbox="photos"><img class="img-fluid" src="gmod20.png"></a>Lua Api (Custom Animated Background by AI)</div>
- </div>
-</div>
-
-
-<div class=container>
- <h4 class="bg-black d-inline-block h6 mb-2 p-2"><a href="https://x.exechack.cc/forum/categories/31/" target="_blank">LATESTS UPDATES</a></h4>
- <div class="pb-5 row photos">
-	 <div style="width:300px;height:170px" class="col-6 col-md-6 col-lg-4 item mb-3"><a href="https://x.exechack.cc/forum/threads/1190/" target="_blank" data-lightbox="photos"><img style="width:260px;height:160px" class="img-fluid" src="https://i.postimg.cc/MpgrwZcX/image.png"></a></div>
-	 <div style="width:300px;height:170px" class="col-6 col-md-6 col-lg-4 item mb-3"><a href="https://x.exechack.cc/forum/threads/1170/" target="_blank" data-lightbox="photos"><img style="width:260px;height:160px" class="img-fluid" src="https://i.imgur.com/PGj4F4K.png"></a></div>
-	 <div style="width:300px;height:170px" class="col-6 col-md-6 col-lg-4 item mb-3"><a href="https://x.exechack.cc/forum/threads/1153/" target="_blank" data-lightbox="photos"><img style="width:260px;height:160px" class="img-fluid" src="https://i.imgur.com/7nCWbFv.png"></a></div>
- </div>
-</div>
-
-
-<!--
-<div class=container>
- <h4 class="bg-black d-inline-block h6 mb-2 p-2"><a href="https://x.exechack.cc/forum/categories/31/" target="_blank">COMPARE</a></h4>
-
-<style>
-table {
-
-background: rgba(49,55,66,0.6);
-backdrop-filter: blur(10px);
--webkit-backdrop-filter: blur(10px);
-border: 1px solid hsla(0,0%,100%,.04);
-border-radius: 8px;
-  border-spacing: 0;
-
-border-collapse: separate !important;
-}
-
-th, td {
-  text-align: center;
-  padding: 16px;
-}
-
-th:first-child, td:first-child {
-  text-align: left;
-}
-
-tr:nth-child(even) {
-  background-color: rgba(45,51,63,0.6)
-}
-
-.fa-check {
-  color: green;
-}
-
-.fa-remove {
-  color: red;
-}
-</style>
-<table>
-  <tr>
-    <th style="width:15%">Feature</th>
-    <th>exechack</th>
-    <th>royalhack</th>
-	<th>cheadleware</th>
-	<th>free</th>
-  </tr>
-  <tr>
-    <td>x32-x64 support</td>
-    <td style="color:limegreen">x32 & x64<br>without AVX2 requirement</td>
-	<td style="color:green">x32 & x64</td>
-    <td style="color:orange">only x64</td>
-	<td style="color:red">mostly only x32</td>
-  </tr>
-  <tr>
-    <td>Screenshot and Demo Bypass</td>
-    <td style="color:limegreen">full</td>
-	<td style="color:green">full (no chams)</td>
-    <td style="color:green">full (no chams)</td>
-	<td style="color:orange">only screenshot</td>
-  </tr>
-  <tr>
-    <td>Esp Customization</td>
-    <td style="color:limegreen">front, position, color</td>
-	<td style="color:green">front, color</td>
-    <td style="color:orange">only color</td>
-	<td style="color:orange">some<br>only color</td>
-  </tr>
-  <tr>
-    <td>Lua</td>
-    <td style="color:limegreen">loader, lua-list, api<br>stealer, autorun, editor</td>
-	<td style="color:red">none</td>
-    <td style="color:orange">without lua-list</td>
-	<td style="color:orange">some<br>only loader</td>
-  </tr>
-  <tr>
-    <td>Collective Security<br>Servers Database</td>
-    <td style="color:limegreen">safety information, users bans<br>addons, online admins</td>
-	<td style="color:red">none</td>
-    <td style="color:red">none</td>
-	<td style="color:red">none</td>
-  </tr>
-  <tr>
-    <td>Updates</td>
-    <td style="color:limegreen">continuous support<br>since 2018</td>
-	<td style="color:orange">rarely</td>
-    <td style="color:orange">rarely</td>
-	<td style="color:red">mostly outdated</td>
-  </tr>
-  <tr>
-    <td>Payment Option</td>
-    <td style="color:limegreen">visa, mastercard<br>paypal, crypto, mir</td>
-	<td style="color:orange">only card</td>
-    <td style="color:orange">only litecoin</td>
-	<td>none</td>
-  </tr>
-  <tr>
-    <td>Price</td>
-    <td style="color:green">6$/forever</td>
-	<td style="color:red">34$/year</td>
-    <td style="color:red">66$/180 days</td>
-	<td style="color:limegreen">free</td>
-  </tr>
-</table>
-
-
-
-</div>
-<br><br>
-
--->
-	  
-<div class=container>
-<h4 class="bg-black d-inline-block h6 mb-2 p-2"><a href="https://github.com/Exec7/exechack/discussions/1" target="_blank">OPEN USER REVIEWS ON GITHUB</a></h4>
-<script src="https://giscus.app/client.js" data-repo="exec7/exechack" data-repo-id="R_kgDONbV06Q" 
-data-mapping="number" data-term="1"
-data-reactions-enabled="0" data-emit-metadata="0" data-input-position="bottom"
-data-theme="dark"
-data-lang="en" data-loading="lazy" async></script>
-<div id="comments" class="giscus"></div>
-</div>
-
-
-
-<style>.mb-3{margin-bottom:1rem!important}.row-cols-1>*{flex:0 0 auto;width:100%}@media (min-width:576px){.row-cols-sm-2>*{flex:0 0 auto;width:50%}}@media (min-width:768px){.row-cols-md-4>*{flex:0 0 auto;width:25%}.col-md-3{flex:0 0 auto;width:25%}</style>
-<div b-0sxjuuz4as="" class="container">
-        <footer b-0sxjuuz4as="" class="row row-cols-1 row-cols-sm-2 row-cols-md-4 py-5">
-            <div b-0sxjuuz4as="" class="col mb-3">
-                <h2 b-0sxjuuz4as="">exechack.cc</h2>
-
-                <p b-0sxjuuz4as="">Created with love from Siberia.</p>
-            </div>
-
-            <div b-0sxjuuz4as="" class="col mb-3">
-            </div>
-
-            <div b-0sxjuuz4as="" style="col mb-3">
-                <h5 b-0sxjuuz4as="">Website</h5>
-                <ul b-0sxjuuz4as="" class="nav flex-column">
-					<li b-0sxjuuz4as="" class="nav-item mb-2"><a b-0sxjuuz4as="" href="/" class="nav-link p-0 text-secondary">Home</a></li>
-                    <li b-0sxjuuz4as="" class="nav-item mb-2"><a b-0sxjuuz4as="" href="https://x.exechack.cc/forum" class="nav-link p-0 text-secondary">Forum</a></li>
-                    <li b-0sxjuuz4as="" class="nav-item mb-2"><a b-0sxjuuz4as="" href="https://x.exechack.cc/forum/subscriptions" class="nav-link p-0 text-secondary">Subscriptions</a></li>
-                </ul>
-            </div>
-
-            <div b-0sxjuuz4as="" class="col mb-3">
-                <h5 b-0sxjuuz4as="">Other</h5>
-                <ul b-0sxjuuz4as="" class="nav flex-column">
-                    <li b-0sxjuuz4as="" class="nav-item mb-2"><a b-0sxjuuz4as="" href="https://exechack.cc/docs" class="nav-link p-0 text-secondary">Docs</a></li>
-                    <li b-0sxjuuz4as="" class="nav-item mb-2"><a b-0sxjuuz4as="" href="https://x.exechack.cc/lua" class="nav-link p-0 text-secondary">Lua List</a></li>
-                    <li b-0sxjuuz4as="" class="nav-item mb-2"><a b-0sxjuuz4as="" href="https://exechack.cc/serversdatabase-archived/" class="nav-link p-0 text-secondary">Servers Database</a></li>
-                </ul>
-            </div>
-        </footer>
-    </div>
-			
-
-    <script src="main.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-  </body>
+        card.addEventListener("mouseleave", () => {
+          card.style.transition = "all 1.5s cubic-bezier(0.18, 1.4, 0.53, 1)";
+          card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+      });
+    });
+  </script>
+
+</body>
 </html>
