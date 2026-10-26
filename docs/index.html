@@ -28,7 +28,9 @@
               text: '#d8dee9',
               muted: '#e5e9f0',
               subtext: '#8892b0',
-              danger: '#bf616a'
+              danger: '#bf616a',
+              success: '#a3be8c',
+              warning: '#ebcb8b'
             }
           }
         }
@@ -109,7 +111,7 @@
     @media (min-width: 1024px) {
       .navigation_sticky {
         position: sticky;
-        top: 1.5rem;
+        top: 5.5rem; /* Смещение с учетом высоты верхнего nav-бара */
         display: flex;
         flex-direction: column;
       }
@@ -169,7 +171,7 @@
         targets.forEach(t => observer.observe(t.el));
       }
 
-      // Mobile button & backdrop toggle
+      // Mobile button & backdrop toggle (sidebar docs)
       const btn = document.querySelector(".navigation-button");
       const backdrop = document.querySelector(".navigation_backdrop");
 
@@ -188,480 +190,511 @@
   </script>
 </head>
 
-<body class="min-h-screen flex flex-col p-3 sm:p-6 md:p-8">
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
-  <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col space-y-6">
-
-    <!-- Header -->
-    <header class="bg-brand-card p-4 sm:p-6 rounded-xl border border-gray-700/50 shadow-lg">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
-            <i data-lucide="book-open" class="text-brand-highlight w-7 h-7 inline-block"></i>
-            exechack.cc docs
-          </h1>
-          <p class="text-xs sm:text-sm text-brand-subtext mt-1">
-            All the necessary information and documentation for exechack.cc
-          </p>
-        </div>
-      </div>
-    </header>
-
-    <!-- Content Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-
-      <!-- Navigation Sidebar -->
-      <aside class="navigation lg:col-span-1 order-2 lg:order-1">
-        <div class="navigation_sticky bg-brand-card p-4 rounded-xl border border-gray-700/50 shadow-md">
-          <div class="text-sm font-bold text-white uppercase tracking-wider mb-3 pb-2 border-b border-gray-700/50 flex items-center gap-2">
-            <i data-lucide="menu" class="w-4 h-4 text-brand-highlight"></i> Navigation
-          </div>
-          <div class="mb-3">
-            <a href="https://x.exechack.cc/forum" target="_blank" class="navigation_link inline-flex items-center gap-1.5 text-xs font-semibold text-brand-accent hover:text-brand-highlight transition-colors py-1 px-2 rounded">
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Forum
+  <!-- Top Navigation Bar -->
+  <nav class="bg-brand-card/90 backdrop-blur-md border-b border-gray-700/60 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-6">
+          <a href="https://exechack.cc/" class="text-white hover:text-brand-highlight flex items-center gap-2 font-extrabold text-lg tracking-tight transition-colors">
+            exechack.cc <span class="text-brand-highlight text-sm font-normal">docs</span>
+          </a>
+          <div class="hidden md:flex items-center space-x-1 text-sm font-medium">
+            <a href="https://exechack.cc/docs/lua-api" target="_blank" class="px-3 py-2 rounded-lg text-brand-text hover:text-white hover:bg-brand-surface/60 transition-colors flex items-center gap-1.5">
+              <i data-lucide="code" class="w-4 h-4"></i> Lua API
+            </a>
+            <a href="https://x.exechack.cc/forum/" class="px-3 py-2 rounded-lg text-brand-text hover:text-white hover:bg-brand-surface/60 transition-colors flex items-center gap-1.5">
+              <i data-lucide="messages-square" class="w-4 h-4"></i> Forum
             </a>
           </div>
-          <ul class="navigation_ul space-y-1 text-xs text-brand-subtext">
-            <li><a href="#downloadloader" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Loader</a></li>
-            <li><a href="#premium" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Premium</a></li>
-            <li><a href="#new" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Informations for newbies</a></li>
-            <li><a href="#usagecfg" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Usage Cfg</a></li>
-            <li><a href="#usagelua" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Usage Lua</a></li>
-            <li><a href="#createlua" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Create Lua</a></li>
-            <li><a href="#hwid" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">HWID</a></li>
-            <li><a href="#buymethods" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Buy Methods</a></li>
-            <li><a href="#rules" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Rules</a></li>
-            <li><a href="#popularproblems" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Popular problems</a></li>
-            <li><a href="#functiondescription" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Function description</a></li>
-          </ul>
-        </div>
-      </aside>
-
-      <!-- Main Documentation Content -->
-      <main class="lg:col-span-3 order-1 lg:order-2 space-y-6">
-
-        <!-- Section: Download Loader -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="downloadloader">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="download" class="w-5 h-5 text-brand-highlight"></i> Download Loader
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">Garry's Mod x32</div>
-              <div class="sm:col-span-2 text-brand-subtext">
-				<img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/4dfHn1Dd/image.png">
-                <a class="inline-flex items-center gap-1 font-medium text-amber-400 hover:text-amber-300 hover:underline mr-2" href="x32.zip" target="_blank"><i data-lucide="file-down" class="w-4 h-4"></i> Download</a> 
-                password: <span class="text-emerald-400 font-mono bg-brand-bg px-2 py-0.5 rounded border border-gray-700">exechack.cc</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">Garry's Mod x64</div>
-              <div class="sm:col-span-2 text-brand-subtext">
-				<img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/T1hyJ3Yw/image.png">
-                <a class="inline-flex items-center gap-1 font-medium text-amber-400 hover:text-amber-300 hover:underline mr-2" href="x64.zip" target="_blank"><i data-lucide="file-down" class="w-4 h-4"></i> Download</a> 
-                password: <span class="text-emerald-400 font-mono bg-brand-bg px-2 py-0.5 rounded border border-gray-700">exechack.cc</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center">
-              <div class="font-semibold text-brand-text">Required</div>
-              <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
-                <a class="text-amber-400 hover:underline" href="https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0" target="_blank">visual c++</a>, 
-                <a class="text-amber-400 hover:underline" href="https://www.microsoft.com/en-us/download/details.aspx?id=8109" target="_blank">directx</a>, 
-                disable antivirus, run by administrator, read all documentation below
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Section: Premium -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="premium">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="crown" class="w-5 h-5 text-amber-400"></i> Premium
+        <div class="flex items-center gap-3">
+          <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg text-brand-subtext hover:text-white hover:bg-brand-surface transition-colors" aria-label="Toggle navigation menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-700/60 bg-brand-card p-4 space-y-2 text-sm font-medium">
+      <a href="https://exechack.cc/docs/lua-api" target="_blank" class="block px-3 py-2 rounded-lg hover:bg-brand-surface text-brand-text">Lua API</a>
+      <a href="https://x.exechack.cc/forum/" class="block px-3 py-2 rounded-lg hover:bg-brand-surface text-brand-accentHover">Forum</a>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="p-3 sm:p-6 md:p-8 flex-grow flex flex-col">
+    <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col space-y-6">
+
+      <!-- Header -->
+      <header class="bg-brand-card p-4 sm:p-6 rounded-xl border border-gray-700/50 shadow-lg">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+              <i data-lucide="book-open" class="text-brand-highlight w-7 h-7 inline-block"></i>
+              exechack.cc docs
+            </h1>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-1">
+              All the necessary information and documentation for exechack.cc
+            </p>
           </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">Subscription</div>
-              <div class="sm:col-span-2 text-brand-subtext">subscription with benefits, for additional support of the project</div>
+        </div>
+      </header>
+
+      <!-- Content Grid Layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+        <!-- Navigation Sidebar -->
+        <aside class="navigation lg:col-span-1 order-2 lg:order-1">
+          <div class="navigation_sticky bg-brand-card p-4 rounded-xl border border-gray-700/50 shadow-md">
+            <div class="text-sm font-bold text-white uppercase tracking-wider mb-3 pb-2 border-b border-gray-700/50 flex items-center gap-2">
+              <i data-lucide="menu" class="w-4 h-4 text-brand-highlight"></i> Navigation
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">Forum</div>
-              <div class="sm:col-span-2 text-brand-subtext">priority in support</div>
+            <ul class="navigation_ul space-y-1 text-xs text-brand-subtext">
+              <li><a href="#downloadloader" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Loader</a></li>
+              <li><a href="#premium" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Premium</a></li>
+              <li><a href="#new" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Informations for newbies</a></li>
+              <li><a href="#usagecfg" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Usage Cfg</a></li>
+              <li><a href="#usagelua" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Usage Lua</a></li>
+              <li><a href="#createlua" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Create Lua</a></li>
+              <li><a href="#hwid" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">HWID</a></li>
+              <li><a href="#buymethods" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Buy Methods</a></li>
+              <li><a href="#rules" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Rules</a></li>
+              <li><a href="#popularproblems" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Popular problems</a></li>
+              <li><a href="#functiondescription" class="navigation_link block py-1.5 px-2.5 rounded hover:bg-brand-surface hover:text-white transition-all">Function description</a></li>
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Documentation Content -->
+        <main class="lg:col-span-3 order-1 lg:order-2 space-y-6">
+
+          <!-- Section: Download Loader -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="downloadloader">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="download" class="w-5 h-5 text-brand-highlight"></i> Download Loader
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Cheat</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>hwid reset every 3 days</div>
-                <div>custom gif background <img class="mt-1 rounded border border-gray-700 max-w-full" src="https://i.imgur.com/xKpCv0Y.gif"></div>
-                <div>custom esp fonts <img class="mt-1 rounded border border-gray-700 max-w-full" src="https://i.imgur.com/a5dtiHp.png"></div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">Garry's Mod x32</div>
+                <div class="sm:col-span-2 text-brand-subtext">
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/4dfHn1Dd/image.png">
+                  <a class="inline-flex items-center gap-1 font-medium text-amber-400 hover:text-amber-300 hover:underline mr-2" href="x32.zip" target="_blank"><i data-lucide="file-down" class="w-4 h-4"></i> Download</a> 
+                  password: <span class="text-emerald-400 font-mono bg-brand-bg px-2 py-0.5 rounded border border-gray-700">exechack.cc</span>
+                </div>
               </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Lua list</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>exclusive new lua</div>
-                <div>exclusive for premium - <a class="text-amber-400 hover:underline font-medium" href="https://x.exechack.cc/lua/premium" target="_blank">premium list</a></div>
-                <img class="mt-1 rounded border border-gray-700 max-w-full" src="https://i.imgur.com/aOOd9Ek.png">
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">Garry's Mod x64</div>
+                <div class="sm:col-span-2 text-brand-subtext">
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/T1hyJ3Yw/image.png">
+                  <a class="inline-flex items-center gap-1 font-medium text-amber-400 hover:text-amber-300 hover:underline mr-2" href="x64.zip" target="_blank"><i data-lucide="file-down" class="w-4 h-4"></i> Download</a> 
+                  password: <span class="text-emerald-400 font-mono bg-brand-bg px-2 py-0.5 rounded border border-gray-700">exechack.cc</span>
+                </div>
               </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text">Share subscription</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-3">
-                <div>share subscription with your friend on day</div>
-                <form method="get" name="form" action="https://x.exechack.cc/forum/key/friend.php" target="_blank" class="flex flex-col sm:flex-row gap-2 max-w-md">
-                  <input class="bg-brand-bg text-white border border-gray-700 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-brand-accent transition-all flex-grow" name="a" type="text" placeholder="username from forum"/>
-                  <input class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-1.5 rounded-lg text-xs cursor-pointer transition-colors" type="submit" value="share"/>
-                </form>
-                <div class="text-xs text-brand-subtext/80 bg-brand-bg/50 p-2.5 rounded-lg border border-gray-700/40">
-                  This function is created for playing with a friend, not as a way to buy a single subscription for two. Abuse is prohibited, and you are also responsible to your friend for any violations of our rules.
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center">
+                <div class="font-semibold text-brand-text">Required</div>
+                <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
+                  <a class="text-amber-400 hover:underline" href="https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0" target="_blank">visual c++</a>, 
+                  <a class="text-amber-400 hover:underline" href="https://www.microsoft.com/en-us/download/details.aspx?id=8109" target="_blank">directx</a>, 
+                  disable antivirus, run by administrator, read all documentation below
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Section: Newbies -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="new">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="help-circle" class="w-5 h-5 text-brand-highlight"></i> Informations for newbies
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Materials</div>
-              <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
-                <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/7/" target="_blank">cfgs</a> - ready made settings of the cheat from users.
-                <br><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/lua/" target="_blank">lua list</a> - scripts for additional functions and other effects.
-                <br><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/16/" target="_blank">tips-n-tricks</a> and <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/32/" target="_blank">other</a> - guides and other useful materials.
-                <br><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/serv/" target="_blank">servers database</a> - database with all servers, with other users game sessions for ensure the collective safety of our community.
-              </div>
+          <!-- Section: Premium -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="premium">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="crown" class="w-5 h-5 text-amber-400"></i> Premium
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Anticheat</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>Each server in garrys mod is like a separate game, cheat is maximally unified but unfortunately there are problems including individual anticheat on each server, for this we have created a database of servers with other user sessions.</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/4y5mgxtF/image.png">
-                <div>Before connecting, check server security and see what other players were banned for, very dangerous and unplayable servers will be hidden from the serverlist (<a class="text-amber-400 hover:underline" href="https://exechack.cc/serv/?a=p" target="_blank">database/problem servers</a>).</div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">Subscription</div>
+                <div class="sm:col-span-2 text-brand-subtext">subscription with benefits, for additional support of the project</div>
               </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Compatibility</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>Each server in garrys mod is like a separate game, cheat is maximally unified but unfortunately there are problems. for this reason, we created a couple of run method (injection method for server addons)</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/zGgjBkMv/image.png">
-                <div>if standart not working and your get Failed Lua Initializing try other run methods</div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">Forum</div>
+                <div class="sm:col-span-2 text-brand-subtext">priority in support</div>
               </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Legit Game</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>Enable spectators list for to see if admins are watching you.</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/FsM24Vr8/image.png">
-                <div>Disable bunnyhop or set max hops 2-3</div>
-                <div>Disable rage function in aimbot and enable smooth.</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/T2z6d6Qt/image.png">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Cheat</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>hwid reset every 3 days</div>
+                  <div>custom gif background <img class="mt-1 rounded border border-gray-700 max-w-full" src="https://i.imgur.com/xKpCv0Y.gif"></div>
+                  <div>custom esp fonts <img class="mt-1 rounded border border-gray-700 max-w-full" src="https://i.imgur.com/a5dtiHp.png"></div>
+                </div>
               </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text">Ban Bypass</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>Servers may write identification files to game files to detect ban bypass.</div>
-                <div>Delete this files in <code class="bg-brand-bg px-2 py-0.5 rounded border border-gray-700 text-brand-highlight">Steam\steamapps\common\GarrysMod\garrysmod</code>:</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/76PLNyj3/image.png">
-                <div>Most frequently used files are marked in red, we recommend deleting all of them.</div>
-                <div>New steam account with new purchased gmod (family sharing not available in many servers).</div>
-                <div>New ip address - solved by turning on vpn, bad or free ones can be in the vpn address database and the server can will kick you.</div>
-                <div class="font-medium text-white pt-1">Delete files, new account, new ip - there is no hardware ban in garrys mod.</div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Lua list</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>exclusive new lua</div>
+                  <div>exclusive for premium - <a class="text-amber-400 hover:underline font-medium" href="https://x.exechack.cc/lua/premium" target="_blank">premium list</a></div>
+                  <img class="mt-1 rounded border border-gray-700 max-w-full" src="https://i.imgur.com/aOOd9Ek.png">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text">Share subscription</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-3">
+                  <div>share subscription with your friend on day</div>
+                  <form method="get" name="form" action="https://x.exechack.cc/forum/key/friend.php" target="_blank" class="flex flex-col sm:flex-row gap-2 max-w-md">
+                    <input class="bg-brand-bg text-white border border-gray-700 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-brand-accent transition-all flex-grow" name="a" type="text" placeholder="username from forum"/>
+                    <input class="bg-amber-500 hover:bg-amber-600 text-gray-900 font-bold px-4 py-1.5 rounded-lg text-xs cursor-pointer transition-colors" type="submit" value="share"/>
+                  </form>
+                  <div class="text-xs text-brand-subtext/80 bg-brand-bg/50 p-2.5 rounded-lg border border-gray-700/40">
+                    This function is created for playing with a friend, not as a way to buy a single subscription for two. Abuse is prohibited, and you are also responsible to your friend for any violations of our rules.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Section: Usage Cfg -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="usagecfg">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="sliders" class="w-5 h-5 text-brand-highlight"></i> Usage Cfg
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">File</div>
-              <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
-                1. download cfg from <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/7/" target="_blank">forum</a><br>
-                2. drop .cfgexec files to C/exechack<br>
-                3. load cfg in menu>config>main
-              </div>
+          <!-- Section: Newbies -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="new">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="help-circle" class="w-5 h-5 text-brand-highlight"></i> Informations for newbies
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text">Cloud Key</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>1. copy the key from forum</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/vLwmX6v.png">
-                <div>2. enter the key in menu>config>main>cloud</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/1v2kMp4.png">
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Materials</div>
+                <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
+                  <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/7/" target="_blank">cfgs</a> - ready made settings of the cheat from users.
+                  <br><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/lua/" target="_blank">lua list</a> - scripts for additional functions and other effects.
+                  <br><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/16/" target="_blank">tips-n-tricks</a> and <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/32/" target="_blank">other</a> - guides and other useful materials.
+                  <br><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/serv/" target="_blank">servers database</a> - database with all servers, with other users game sessions for ensure the collective safety of our community.
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Section: Usage Lua -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="usagelua">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="code" class="w-5 h-5 text-brand-highlight"></i> Usage Lua
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">File</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>1. drop .lua or .luamenu files to C/exechack</div>
-                <div>2. load in menu>lua>disc</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/Hz5wg8P.png">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Anticheat</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>Each server in garrys mod is like a separate game, cheat is maximally unified but unfortunately there are problems including individual anticheat on each server, for this we have created a database of servers with other user sessions.</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/4y5mgxtF/image.png">
+                  <div>Before connecting, check server security and see what other players were banned for, very dangerous and unplayable servers will be hidden from the serverlist (<a class="text-amber-400 hover:underline" href="https://exechack.cc/serv/?a=p" target="_blank">database/problem servers</a>).</div>
+                </div>
               </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text"><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/lua" target="_blank">Lua List</a></div>
-              <div class="sm:col-span-2 text-brand-subtext">open menu>lua>main>lua list, press run script</div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text">Editor</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>open menu>lua>main>editor>enter code>run script</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/clvtcrl.png">
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Section: Create Lua -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="createlua">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="file-plus" class="w-5 h-5 text-brand-highlight"></i> Create Lua
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Information</div>
-              <div class="sm:col-span-2 text-brand-subtext">cheat can run <a class="text-amber-400 hover:underline" href="https://wiki.facepunch.com/gmod/States#client" target="_blank">client</a> and <a class="text-amber-400 hover:underline" href="https://wiki.facepunch.com/gmod/States#menu" target="_blank">menu</a> scripts, menu scripts for menu integration with api or get full access</div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text">Sources</div>
-              <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
-                Base - <a class="text-amber-400 hover:underline" href="https://www.lua.org/manual/5.1" target="_blank">lua.org/manual/5.1</a> - LUA(syntax+standard functions)
-                <br>Gmod - <a class="text-amber-400 hover:underline" href="https://wiki.facepunch.com/gmod" target="_blank">wiki.facepunch.com/gmod</a> - GLUA(useless gmod syntax+api for scripts)
-                <br>Cheat - <a class="text-amber-400 hover:underline" href="lua-api" target="_blank">exechack.cc/docs/lua-api</a> - exechackapi(cheat integration)
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Compatibility</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>Each server in garrys mod is like a separate game, cheat is maximally unified but unfortunately there are problems. for this reason, we created a couple of run method (injection method for server addons)</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/zGgjBkMv/image.png">
+                  <div>if standart not working and your get Failed Lua Initializing try other run methods</div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Legit Game</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>Enable spectators list for to see if admins are watching you.</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/FsM24Vr8/image.png">
+                  <div>Disable bunnyhop or set max hops 2-3</div>
+                  <div>Disable rage function in aimbot and enable smooth.</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/T2z6d6Qt/image.png">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text">Ban Bypass</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>Servers may write identification files to game files to detect ban bypass.</div>
+                  <div>Delete this files in <code class="bg-brand-bg px-2 py-0.5 rounded border border-gray-700 text-brand-highlight">Steam\steamapps\common\GarrysMod\garrysmod</code>:</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.postimg.cc/76PLNyj3/image.png">
+                  <div>Most frequently used files are marked in red, we recommend deleting all of them.</div>
+                  <div>New steam account with new purchased gmod (family sharing not available in many servers).</div>
+                  <div>New ip address - solved by turning on vpn, bad or free ones can be in the vpn address database and the server can will kick you.</div>
+                  <div class="font-medium text-white pt-1">Delete files, new account, new ip - there is no hardware ban in garrys mod.</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Section: HWID -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="hwid">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="cpu" class="w-5 h-5 text-brand-highlight"></i> HWID
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Information</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-2">
-                <div>using the cheat is allowed only 1 device, reset in subscriptions or <a class="text-amber-400 hover:underline" href="https://exechack.cc/forum/hwid.php" target="_blank">here</a></div>
-                <div>can reseted from windows reinstall</div>
-                <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/6AgIMUB.png">
-                <div>no early reset provided</div>
-                <div class="text-red-400 font-medium">for account transfer permament ban</div>
+          <!-- Section: Usage Cfg -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="usagecfg">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="sliders" class="w-5 h-5 text-brand-highlight"></i> Usage Cfg
+            </div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">File</div>
+                <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
+                  1. download cfg from <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/categories/7/" target="_blank">forum</a><br>
+                  2. drop .cfgexec files to C/exechack<br>
+                  3. load cfg in menu>config>main
+                </div>
               </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center">
-              <div class="font-semibold text-brand-text">Reset limits</div>
-              <div class="sm:col-span-2 text-brand-subtext">
-                Standart - 14 days<br>
-                Premium - 3 days
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section: Buy Methods -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="buymethods">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="credit-card" class="w-5 h-5 text-brand-highlight"></i> Buy Methods
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">Information</div>
-              <div class="sm:col-span-2 text-brand-subtext">payment is accepted only by these methods.</div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">RU - MIR</div>
-              <div class="sm:col-span-2 text-brand-subtext">manual transfer, 5% commission</div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">GLOBAL - Crypto/FreeKassa</div>
-              <div class="sm:col-span-2 text-brand-subtext">
-                crypto - processing within 1 hour<br>
-                skins - 40% commission<br>
-                if problem with payment or unsuccessful payment, contact with <a class="text-amber-400 hover:underline" href="https://freekassa.net/support" target="_blank">freekassa support</a>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
-              <div class="font-semibold text-brand-text">US/EU - Paypal/Reseller</div>
-              <div class="sm:col-span-2 text-brand-subtext">purchase through a reseller with his commission, or write resellers directly</div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text">Gift</div>
-              <div class="sm:col-span-2 text-brand-subtext space-y-1">
-                <div>Ask a friend to generate a purchase link and pay for it yourself.</div>
-                <div>Example link:</div>
-                <code class="block text-emerald-400 bg-brand-bg p-2 rounded border border-gray-700 font-mono text-xs overflow-x-auto">https://pay.freekassa.net/?m=</code>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text">Cloud Key</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>1. copy the key from forum</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/vLwmX6v.png">
+                  <div>2. enter the key in menu>config>main>cloud</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/1v2kMp4.png">
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Section: Rules -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="rules">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="shield-alert" class="w-5 h-5 text-red-400"></i> Rules
-          </div>
-          <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
-              <div class="font-semibold text-brand-text">Temporary ban</div>
-              <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
-                spam/shitposting in forum/tickets/reports - 1 week<br>
-                subscription share abuse - 1 month<br>
-                server developing - 3 days(risk of creating anticheat)
+          <!-- Section: Usage Lua -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="usagelua">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="code" class="w-5 h-5 text-brand-highlight"></i> Usage Lua
+            </div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">File</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>1. drop .lua or .luamenu files to C/exechack</div>
+                  <div>2. load in menu>lua>disc</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/Hz5wg8P.png">
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text"><a class="text-amber-400 hover:underline" href="https://x.exechack.cc/lua" target="_blank">Lua List</a></div>
+                <div class="sm:col-span-2 text-brand-subtext">open menu>lua>main>lua list, press run script</div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text">Editor</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>open menu>lua>main>editor>enter code>run script</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/clvtcrl.png">
+                </div>
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
-              <div class="font-semibold text-brand-text text-red-400">Permanent ban</div>
-              <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
-                any harming exechack and its community<br>
-                ban bypass/multi account<br>
-                ddos website/crack<br>
-                leak materials(content)<br>
-                account transfer or selling or hacking<br>
-                anticheat testing or developing
+          </div>
+
+          <!-- Section: Create Lua -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="createlua">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="file-plus" class="w-5 h-5 text-brand-highlight"></i> Create Lua
+            </div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Information</div>
+                <div class="sm:col-span-2 text-brand-subtext">cheat can run <a class="text-amber-400 hover:underline" href="https://wiki.facepunch.com/gmod/States#client" target="_blank">client</a> and <a class="text-amber-400 hover:underline" href="https://wiki.facepunch.com/gmod/States#menu" target="_blank">menu</a> scripts, menu scripts for menu integration with api or get full access</div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text">Sources</div>
+                <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
+                  Base - <a class="text-amber-400 hover:underline" href="https://www.lua.org/manual/5.1" target="_blank">lua.org/manual/5.1</a> - LUA(syntax+standard functions)
+                  <br>Gmod - <a class="text-amber-400 hover:underline" href="https://wiki.facepunch.com/gmod" target="_blank">wiki.facepunch.com/gmod</a> - GLUA(useless gmod syntax+api for scripts)
+                  <br>Cheat - <a class="text-amber-400 hover:underline" href="lua-api" target="_blank">exechack.cc/docs/lua-api</a> - exechackapi(cheat integration)
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Section: Popular Problems -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="popularproblems">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-400"></i> Popular problems
+          <!-- Section: HWID -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="hwid">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="cpu" class="w-5 h-5 text-brand-highlight"></i> HWID
+            </div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Information</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-2">
+                  <div>using the cheat is allowed only 1 device, reset in subscriptions or <a class="text-amber-400 hover:underline" href="https://exechack.cc/forum/hwid.php" target="_blank">here</a></div>
+                  <div>can reseted from windows reinstall</div>
+                  <img class="rounded border border-gray-700 max-w-full" src="https://i.imgur.com/6AgIMUB.png">
+                  <div>no early reset provided</div>
+                  <div class="text-red-400 font-medium">for account transfer permament ban</div>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center">
+                <div class="font-semibold text-brand-text">Reset limits</div>
+                <div class="sm:col-span-2 text-brand-subtext">
+                  Standart - 14 days<br>
+                  Premium - 3 days
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
 
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">"MSVCP140.dll code could not be found" or "0xc00000ba"</div>
-              <div class="text-emerald-400">- download <a class="text-amber-400 hover:underline" href="https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0" target="_blank">visual c++</a>, <a class="text-amber-400 hover:underline" href="https://www.microsoft.com/en-us/download/details.aspx?id=8109" target="_blank">directx</a></div>
+          <!-- Section: Buy Methods -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="buymethods">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="credit-card" class="w-5 h-5 text-brand-highlight"></i> Buy Methods
             </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">loader "game not found, running"</div>
-              <div class="text-emerald-400">- dont use x64 loader for x32 game or vice versa, remove "-multirun" from launch option</div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">Information</div>
+                <div class="sm:col-span-2 text-brand-subtext">payment is accepted only by these methods.</div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">RU - MIR</div>
+                <div class="sm:col-span-2 text-brand-subtext">manual transfer, 5% commission</div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">GLOBAL - Crypto/FreeKassa</div>
+                <div class="sm:col-span-2 text-brand-subtext">
+                  crypto - processing within 1 hour<br>
+                  skins - 40% commission<br>
+                  if problem with payment or unsuccessful payment, contact with <a class="text-amber-400 hover:underline" href="https://freekassa.net/support" target="_blank">freekassa support</a>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-center">
+                <div class="font-semibold text-brand-text">US/EU - Paypal/Reseller</div>
+                <div class="sm:col-span-2 text-brand-subtext">purchase through a reseller with his commission, or write resellers directly</div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text">Gift</div>
+                <div class="sm:col-span-2 text-brand-subtext space-y-1">
+                  <div>Ask a friend to generate a purchase link and pay for it yourself.</div>
+                  <div>Example link:</div>
+                  <code class="block text-emerald-400 bg-brand-bg p-2 rounded border border-gray-700 font-mono text-xs overflow-x-auto">https://pay.freekassa.net/?m=</code>
+                </div>
+              </div>
             </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
-              <div class="font-semibold text-red-400 mb-1">Loader "Injecting.." and nothing</div>
-              <div class="text-emerald-400">- run loader by administrator</div>
-              <div class="text-emerald-400">- use vpn, maybe in your country website banned</div>
-              <div class="text-emerald-400">- try run loader 20 times in a row</div>
-              <div class="text-emerald-400">- try install all visual c++</div>
-              <div class="text-emerald-400">- try change the version of the game and loader to another</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
-              <div class="font-semibold text-red-400 mb-1">Loader "Downloading.." and nothing</div>
-              <div class="text-emerald-400">- load with vpn</div>
-              <div class="text-emerald-400">- disable dpi bypasser, he interferes with the loader protection.</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">I couldnt log into my account and I havent logged into it for a long time</div>
-              <div class="text-emerald-400">- auto deleted dead accounts havent used it for more than half a year, to restore, create a ticket with a request to restore and present: login + password + email about purchase + purchase receipt from bank.</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">where i can reset password?</div>
-              <div class="text-emerald-400">- in <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/account/security" target="_blank">password and security</a>, or logout and click forgot password</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">not working custom zoom, thirdperson in vehicle, how fix it?</div>
-              <div class="text-emerald-400">- cheat not support server zoom from weapons and thirdperson and etc, press panickey or enable exechack thirdperson</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">where to know is where exechack is detected?</div>
-              <div class="text-emerald-400">- <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/serv" target="_blank">exechack.cc/serv</a></div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">screen twitching on server</div>
-              <div class="text-emerald-400">- enable Aimbot>Main>Camera Fix</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
-              <div class="font-semibold text-red-400 mb-1">lower fps or breaked esp</div>
-              <div class="text-emerald-400">- perhaps something went wrong with your settings, try the config of other users from the forum</div>
-              <div class="text-emerald-400">- check Config>Optimization tips</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
-              <div class="font-semibold text-red-400 mb-1">"Failed lua initialization" or "The game crashes with an error ("gamemode" library is not a table)" "Out of memery"</div>
-              <div class="text-emerald-400">- Steam>Garry's Mod>Local Files and press on "check integrity of game files"</div>
-              <div class="text-emerald-400">- delete folder lua in Steam/steamapps/common/GarrysMod/garrysmod/cache</div>
-              <div class="text-emerald-400">- possible server using addon gluapack, on some servers it is not compatible with the exechack, need disable <a class="text-amber-400 hover:underline" href="https://gluapack.com/help/#opt-out" target="_blank">gluapack</a>.</div>
-              <div class="text-emerald-400">- maybe current Run Method not suitable for this server(method of injection in server addons), try all the others in Cheat>General>Run Method</div>
-              <div class="text-emerald-400">- try change your gmod to x64 chromium version</div>
-              <div class="text-emerald-400">- report about this server in tickets if all of the above did not help</div>
-            </div>
-
-            <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
-              <div class="font-semibold text-red-400 mb-1">cheat miss in hvh (hack vs hack)</div>
-              <div class="text-emerald-400">- exechack not created for hvh and not have competitive hvh functionality, search in <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/lua" target="_blank">lua list</a> cheat for hvh</div>
-            </div>
-
           </div>
-        </div>
 
-        <!-- Section: Function Description -->
-        <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="functiondescription">
-          <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
-            <i data-lucide="list" class="w-5 h-5 text-brand-highlight"></i> Function description
+          <!-- Section: Rules -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="rules">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="shield-alert" class="w-5 h-5 text-red-400"></i> Rules
+            </div>
+            <div class="p-4 sm:p-6 space-y-3 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 border-b border-gray-700/30 items-start">
+                <div class="font-semibold text-brand-text">Temporary ban</div>
+                <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
+                  spam/shitposting in forum/tickets/reports - 1 week<br>
+                  subscription share abuse - 1 month<br>
+                  server developing - 3 days(risk of creating anticheat)
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-start">
+                <div class="font-semibold text-brand-text text-red-400">Permanent ban</div>
+                <div class="sm:col-span-2 text-brand-subtext leading-relaxed">
+                  any harming exechack and its community<br>
+                  ban bypass/multi account<br>
+                  ddos website/crack<br>
+                  leak materials(content)<br>
+                  account transfer or selling or hacking<br>
+                  anticheat testing or developing
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="p-4 sm:p-6 divide-y divide-gray-700/30 text-xs sm:text-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Silent</div><div class="sm:col-span-2 text-brand-subtext">no visual aim</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Auto wall</div><div class="sm:col-span-2 text-brand-subtext">wall penetration check</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Return Fire</div><div class="sm:col-span-2 text-brand-subtext">automatic fire on the attacker if there is a weapon</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Entity Aimming</div><div class="sm:col-span-2 text-brand-subtext">adding list entities to aimbot targets</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">No Spread</div><div class="sm:col-span-2 text-brand-subtext">disabling bullet spread, the character is deflected to the position at which the bullet will hit where you want</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Hitbox</div><div class="sm:col-span-2 text-brand-subtext">target body part selection</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Snapline</div><div class="sm:col-span-2 text-brand-subtext">line to the selected aimbot target</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Dormant</div><div class="sm:col-span-2 text-brand-subtext">ignoring players whose game engine does not load far away, behind the wall</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Debug Camera</div><div class="sm:col-span-2 text-brand-subtext">visual fly</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Edge Jump</div><div class="sm:col-span-2 text-brand-subtext">automatic jump at the end of the surface</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Cloud Radar</div><div class="sm:col-span-2 text-brand-subtext">radar which available from the site</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Keypad Logger</div><div class="sm:col-span-2 text-brand-subtext">recording entered passwords on keypads</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Lua Stealer</div><div class="sm:col-span-2 text-brand-subtext">saving all server client scripts to exechack folder</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Save Mode</div><div class="sm:col-span-2 text-brand-subtext">protection against running bad lua scripts by server creators</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Net Logger</div><div class="sm:col-span-2 text-brand-subtext">records network traffic between you and the server, to be modified and resent</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">OBS bypass</div><div class="sm:col-span-2 text-brand-subtext">hide cheat on record video in obs</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Panic Key</div><div class="sm:col-span-2 text-brand-subtext">disable cheat by button</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Run Methods</div><div class="sm:col-span-2 text-brand-subtext">way to run cheat to server, all servers are different and do not have the same standardized code, so there are a couple of basic methods to run on the server</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Cursor Aimming</div><div class="sm:col-span-2 text-brand-subtext">aiming method where you don't aim your character at others, works the same as in C-MENU, autofire broken use keybind aim on lmb</div></div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Camera Fix</div><div class="sm:col-span-2 text-brand-subtext">use 'cheat' camera only during aimbot, no work with anti-aim and nospread without aimbot. Fixes screen twitching on server.</div></div>
-          </div>
-        </div>
 
-      </main>
+          <!-- Section: Popular Problems -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="popularproblems">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-400"></i> Popular problems
+            </div>
+            <div class="p-4 sm:p-6 space-y-4 text-xs sm:text-sm">
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">"MSVCP140.dll code could not be found" or "0xc00000ba"</div>
+                <div class="text-emerald-400">- download <a class="text-amber-400 hover:underline" href="https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0" target="_blank">visual c++</a>, <a class="text-amber-400 hover:underline" href="https://www.microsoft.com/en-us/download/details.aspx?id=8109" target="_blank">directx</a></div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">loader "game not found, running"</div>
+                <div class="text-emerald-400">- dont use x64 loader for x32 game or vice versa, remove "-multirun" from launch option</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
+                <div class="font-semibold text-red-400 mb-1">Loader "Injecting.." and nothing</div>
+                <div class="text-emerald-400">- run loader by administrator</div>
+                <div class="text-emerald-400">- use vpn, maybe in your country website banned</div>
+                <div class="text-emerald-400">- try run loader 20 times in a row</div>
+                <div class="text-emerald-400">- try install all visual c++</div>
+                <div class="text-emerald-400">- try change the version of the game and loader to another</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
+                <div class="font-semibold text-red-400 mb-1">Loader "Downloading.." and nothing</div>
+                <div class="text-emerald-400">- load with vpn</div>
+                <div class="text-emerald-400">- disable dpi bypasser, he interferes with the loader protection.</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">I couldnt log into my account and I havent logged into it for a long time</div>
+                <div class="text-emerald-400">- auto deleted dead accounts havent used it for more than half a year, to restore, create a ticket with a request to restore and present: login + password + email about purchase + purchase receipt from bank.</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">where i can reset password?</div>
+                <div class="text-emerald-400">- in <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/forum/account/security" target="_blank">password and security</a>, or logout and click forgot password</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">not working custom zoom, thirdperson in vehicle, how fix it?</div>
+                <div class="text-emerald-400">- cheat not support server zoom from weapons and thirdperson and etc, press panickey or enable exechack thirdperson</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">where to know is where exechack is detected?</div>
+                <div class="text-emerald-400">- <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/serv" target="_blank">exechack.cc/serv</a></div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">screen twitching on server</div>
+                <div class="text-emerald-400">- enable Aimbot>Main>Camera Fix</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
+                <div class="font-semibold text-red-400 mb-1">lower fps or breaked esp</div>
+                <div class="text-emerald-400">- perhaps something went wrong with your settings, try the config of other users from the forum</div>
+                <div class="text-emerald-400">- check Config>Optimization tips</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40 space-y-1">
+                <div class="font-semibold text-red-400 mb-1">"Failed lua initialization" or "The game crashes with an error ("gamemode" library is not a table)" "Out of memery"</div>
+                <div class="text-emerald-400">- Steam>Garry's Mod>Local Files and press on "check integrity of game files"</div>
+                <div class="text-emerald-400">- delete folder lua in Steam/steamapps/common/GarrysMod/garrysmod/cache</div>
+                <div class="text-emerald-400">- possible server using addon gluapack, on some servers it is not compatible with the exechack, need disable <a class="text-amber-400 hover:underline" href="https://gluapack.com/help/#opt-out" target="_blank">gluapack</a>.</div>
+                <div class="text-emerald-400">- maybe current Run Method not suitable for this server(method of injection in server addons), try all the others in Cheat>General>Run Method</div>
+                <div class="text-emerald-400">- try change your gmod to x64 chromium version</div>
+                <div class="text-emerald-400">- report about this server in tickets if all of the above did not help</div>
+              </div>
+
+              <div class="p-3 bg-brand-bg/50 rounded-lg border border-gray-700/40">
+                <div class="font-semibold text-red-400 mb-1">cheat miss in hvh (hack vs hack)</div>
+                <div class="text-emerald-400">- exechack not created for hvh and not have competitive hvh functionality, search in <a class="text-amber-400 hover:underline" href="https://x.exechack.cc/lua" target="_blank">lua list</a> cheat for hvh</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Section: Function Description -->
+          <div class="db bg-brand-card rounded-xl border border-gray-700/50 shadow-md overflow-hidden" id="functiondescription">
+            <div class="bg-brand-surface/60 p-4 border-b border-gray-700/50 text-base font-bold text-white flex items-center gap-2">
+              <i data-lucide="list" class="w-5 h-5 text-brand-highlight"></i> Function description
+            </div>
+            <div class="p-4 sm:p-6 divide-y divide-gray-700/30 text-xs sm:text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Silent</div><div class="sm:col-span-2 text-brand-subtext">no visual aim</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Auto wall</div><div class="sm:col-span-2 text-brand-subtext">wall penetration check</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Return Fire</div><div class="sm:col-span-2 text-brand-subtext">automatic fire on the attacker if there is a weapon</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Entity Aimming</div><div class="sm:col-span-2 text-brand-subtext">adding list entities to aimbot targets</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">No Spread</div><div class="sm:col-span-2 text-brand-subtext">disabling bullet spread, the character is deflected to the position at which the bullet will hit where you want</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Hitbox</div><div class="sm:col-span-2 text-brand-subtext">target body part selection</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Snapline</div><div class="sm:col-span-2 text-brand-subtext">line to the selected aimbot target</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Dormant</div><div class="sm:col-span-2 text-brand-subtext">ignoring players whose game engine does not load far away, behind the wall</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Debug Camera</div><div class="sm:col-span-2 text-brand-subtext">visual fly</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Edge Jump</div><div class="sm:col-span-2 text-brand-subtext">automatic jump at the end of the surface</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Cloud Radar</div><div class="sm:col-span-2 text-brand-subtext">radar which available from the site</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Keypad Logger</div><div class="sm:col-span-2 text-brand-subtext">recording entered passwords on keypads</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Lua Stealer</div><div class="sm:col-span-2 text-brand-subtext">saving all server client scripts to exechack folder</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Save Mode</div><div class="sm:col-span-2 text-brand-subtext">protection against running bad lua scripts by server creators</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Net Logger</div><div class="sm:col-span-2 text-brand-subtext">records network traffic between you and the server, to be modified and resent</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">OBS bypass</div><div class="sm:col-span-2 text-brand-subtext">hide cheat on record video in obs</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Panic Key</div><div class="sm:col-span-2 text-brand-subtext">disable cheat by button</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Run Methods</div><div class="sm:col-span-2 text-brand-subtext">way to run cheat to server, all servers are different and do not have the same standardized code, so there are a couple of basic methods to run on the server</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Cursor Aimming</div><div class="sm:col-span-2 text-brand-subtext">aiming method where you don't aim your character at others, works the same as in C-MENU, autofire broken use keybind aim on lmb</div></div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 py-2 items-center"><div class="font-semibold text-brand-text">Camera Fix</div><div class="sm:col-span-2 text-brand-subtext">use 'cheat' camera only during aimbot, no work with anti-aim and nospread without aimbot. Fixes screen twitching on server.</div></div>
+            </div>
+          </div>
+
+        </main>
+      </div>
     </div>
   </div>
 
-  <!-- Mobile Floating Navigation Button & Backdrop -->
+  <!-- Mobile Floating Navigation Button & Backdrop (Sidebar) -->
   <div class="navigation_backdrop"></div>
   <button class="navigation-button fixed bottom-6 right-6 bg-brand-accent hover:bg-brand-accentHover text-white p-3.5 rounded-full shadow-2xl z-50 focus:outline-none" title="Toggle Navigation">
     <span class="navigation-button_closed">
