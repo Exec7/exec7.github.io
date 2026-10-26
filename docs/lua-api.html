@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#313742" />
-  <title>exechack.cc lua api</title>
+  <title>exechack.cc docs</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,7 +28,9 @@
               text: '#d8dee9',
               muted: '#e5e9f0',
               subtext: '#8892b0',
-              danger: '#bf616a'
+              danger: '#bf616a',
+              warning: '#ebcb8b',
+              success: '#a3be8c'
             }
           }
         }
@@ -109,7 +111,7 @@
     @media (min-width: 1024px) {
       .navigation_sticky {
         position: sticky;
-        top: 1.5rem;
+        top: 5rem;
         display: flex;
         flex-direction: column;
       }
@@ -126,9 +128,39 @@
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col p-3 sm:p-6 md:p-8">
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
-  <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col space-y-6">
+  <!-- Top Navigation Bar -->
+  <nav class="bg-brand-card/90 backdrop-blur-md border-b border-gray-700/60 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-6">
+          <a href="/" class="text-white hover:text-brand-highlight flex items-center gap-2 font-extrabold text-lg tracking-tight transition-colors">
+            exechack.cc <span class="text-brand-highlight text-sm font-normal">docs/lua-api</span>
+          </a>
+          <div class="hidden md:flex items-center space-x-1 text-sm font-medium">
+            <a href="https://x.exechack.cc/forum/" class="px-3 py-2 rounded-lg text-brand-text hover:text-white hover:bg-brand-surface/60 transition-colors flex items-center gap-1.5">
+              <i data-lucide="messages-square" class="w-4 h-4"></i> Forum
+            </a>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="md:hidden p-2 rounded-lg text-brand-subtext hover:text-white hover:bg-brand-surface transition-colors">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-700/60 bg-brand-card p-4 space-y-2 text-sm font-medium">
+      <a href="https://x.exechack.cc/forum/" class="block px-3 py-2 rounded-lg hover:bg-brand-surface text-brand-text">Forum</a>
+    </div>
+  </nav>
+
+  <!-- Page Content Wrapper -->
+  <div class="max-w-7xl mx-auto w-full flex-grow flex flex-col space-y-6 p-3 sm:p-6 md:p-8">
 
     <!-- Header -->
     <header class="bg-brand-card p-4 sm:p-6 rounded-xl border border-gray-700/50 shadow-lg">
@@ -152,7 +184,7 @@
       <aside class="navigation lg:col-span-1 order-2 lg:order-1">
         <div class="navigation_sticky bg-brand-card p-4 rounded-xl border border-gray-700/50 shadow-md">
           <div class="text-sm font-bold text-white uppercase tracking-wider mb-3 pb-2 border-b border-gray-700/50 flex items-center gap-2">
-            <i data-lucide="menu" class="w-4 h-4 text-brand-highlight"></i> Tab
+            <i data-lucide="menu" class="w-4 h-4 text-brand-highlight"></i> Navigation
           </div>
           
           <div class="space-y-4">
@@ -191,7 +223,7 @@
     </div>
   </div>
 
-  <!-- Mobile Floating Navigation Button & Backdrop -->
+  <!-- Mobile Floating Navigation Button & Backdrop for API Sidebar -->
   <div class="navigation_backdrop"></div>
   <button class="navigation-button fixed bottom-6 right-6 bg-brand-accent hover:bg-brand-accentHover text-white p-3.5 rounded-full shadow-2xl z-50 focus:outline-none" title="Toggle Navigation">
     <span class="navigation-button_closed">
@@ -204,286 +236,544 @@
 
   <script>
     // Данные API
-    const clientapi = {
-      "exechack_api.Notification": {
-        "Description": "Used to display notifications on the screen.",
-        "Arguments": { "string": "text" },
-        "Example": { "code": 'exechack_api.Notification("My nick "..LocalPlayer():Name())', "desc": "Notification: my nick", "output": "My nick Exec" },
-        "goodname": "Notification"
-      },
-      "exechack_api.SetCheatAngle": {
-        "Description": "Sets the direction the client wants to move in.",
-        "Arguments": { "Angle": "viewAngle" },
-        "Example": { "code": 'exechack_api.SetCheatAngle(Angle(0,0,90))', "desc": "Locks the player's view to only vertical movement." },
-        "goodname": "SetCheatAngle"
-      },
-      "exechack_api.GetCheatAngle": {
-        "Description": "Returns the direction a localplayer with cheat.",
-        "Returns": { "Angle": "*" },
-        "Example": { "code": 'print(exechack_api.GetCheatAngle())', "desc": "Print the local player's angles.", "output": "When looking straight down, it might return Angle(89, -175.38, 0)" },
-        "goodname": "GetCheatAngle"
-      },
-      "exechack_api.CalcViewOverlayHook": {
-        "Description": "Analog hook CalcView with cheat sync https://wiki.facepunch.com/gmod/GM:CalcView",
-        "Returns": { "Entiy": "ply", "Vector": "Origin", "Angle": "Angles", "Number": "Fov", "Number": "znear", "Number": "zfar" },
-        "Example": {
-          "code": `exechack_api.CalcViewOverlayHook = function( ply, pos, angles, fov )
-	local view = {
-		origin = pos - ( angles:Forward() * 100 ),
-		angles = angles,
-		fov = fov,
-		drawviewer = true
-	}
 
-	return view
-end`, "desc": "hook CalcView.", "output": "Draws the LocalPlayer and sets the view behind."
-        },
-        "goodname": "CalcViewOverlayHook"
-      },
-      "exechack_api.IsFriend": {
-        "Description": "Return true if friend or false if not friend.",
-        "Arguments": { "Entity": "*" },
-        "Returns": { "Boolean": "true or false" },
-        "goodname": "IsFriend"
-      },
-      "exechack_api.GetUserName": {
-        "Description": "Return the login on the forum.",
-        "Returns": { "String": "Login" },
-        "Example": { "code": 'print(exechack_api.GetUserName())', "desc": "Print login", "output": "Exec" },
-        "goodname": "GetUserName"
-      },
-      "exechack_api.CleanGlobalTable": {
-        "Description": "Return original _G table with functions no modificate.",
-        "Example": {
-          "code": `print = function()end
-exechack_api.CleanGlobalTable.print("bypass")`, "desc": "using the original function"
-        },
-        "goodname": "CleanGlobalTable"
-      },
-      "exechack_api.cfg_SetValue": {
-        "Description": "Change cfg value",
-        "Arguments": { "string": "cfg name", "string/boolean/float/table": "new value" },
-        "Example": { "code": 'exechack_api.cfg_SetValue("AIM_ENABLED",false)', "desc": "Disable aimbot" },
-        "goodname": "cfg_SetValue"
-      },
-      "exechack_api.cfg_GetValue": {
-        "Description": "Return a cfg value",
-        "Arguments": { "string": "cfg name" },
-        "Returns": { "string/boolean/float/table": "value" },
-        "Example": { "code": 'print(exechack_api.cfg_GetValue("AIM_ENABLED"))', "desc": "Get aimbot enable", "output": "false" },
-        "goodname": "cfg_GetValue"
-      }
-    };
 
-    const menustateapi = {
-      "exec_background_render": {
-        "Description": "paint function called in background cheat menu",
-        "Example": {
-          "code": `exec_background_render = function()
-surface.SetFont( "Default" )
-surface.SetTextColor( 255, 255, 255 )
-surface.SetTextPos( 128, 128 ) 
-surface.DrawText( "Hello World" )
-end`, "desc": "Add text on background"
-        },
-        "goodname": "background_render"
-      },
-      "exec_Fetch": {
-        "Description": "analog of http.Fetch for menustate",
-        "Arguments": { "string": "url", "function1": "callback body", "function2": "callback error" },
-        "goodname": "exec_Fetch"
-      },
-      "exec_Post": {
-        "Description": "analog of http.Post for menustate",
-        "Arguments": { "string1": "url", "string2": "parameters", "function1": "callback body", "function2": "callback error" },
-        "goodname": "exec_Post"
-      },
-      "exec_cfg_GetValue": {
-        "Description": "Return a cfg value",
-        "Arguments": { "string": "cfg name" },
-        "Returns": { "string/boolean/float/table": "value" },
-        "Example": { "code": 'print(exec_cfg_GetValue("AIM_ENABLED"))', "desc": "Get aimbot enable", "output": "false" },
-        "goodname": "cfg_GetValue"
-      },
-      "exec_cfg_SetValue": {
-        "Description": "Change cfg value",
-        "Arguments": { "string": "cfg name", "string/boolean/float/table": "new value" },
-        "Example": { "code": 'exec_cfg_SetValue("AIM_ENABLED",false)', "desc": "Disable aimbot" },
-        "goodname": "cfg_SetValue"
-      },
-      "exec_menuaddtab": {
-        "Description": "Adds a tab to the lua cheat tab",
-        "Arguments": { "string": "tab name", "function": "(return vgui derma)" },
-        "Example": {
-          "code": `if not MENU_DLL then return end
 
-if exec_cfg_GetValue("PRINTONSPAWN")==nil then
-	exec_cfg_SetValue("PRINTONSPAWN",false)
-end
+const clientapi = {
+  "exechack_api.Notification": {
+    "Description": "Displays an on-screen toast notification banner to the user.",
+    "Arguments": { "string": "text - The message string to display on screen" },
+    "Example": {
+      "code": 'exechack_api.Notification("Welcome, " .. LocalPlayer():Nick())',
+      "desc": "Displays a greeting notification with the local player's nickname.",
+      "output": "Welcome, Player1"
+    },
+    "goodname": "Notification"
+  },
+  "exechack_api.SetCheatAngle": {
+    "Description": "Overrides and forces the client's internal movement and aim direction angles.",
+    "Arguments": { "Angle": "viewAngle - The target Euler angle to apply (Pitch, Yaw, Roll)" },
+    "Example": {
+      "code": "exechack_api.SetCheatAngle(Angle(0, 90, 0))",
+      "desc": "Locks the player's view direction directly to the east.",
+      "output": "View angle adjusted"
+    },
+    "goodname": "SetCheatAngle"
+  },
+  "exechack_api.GetCheatAngle": {
+    "Description": "Retrieves the current manipulated view angle applied to the local player.",
+    "Returns": { "Angle": "The active cheat angle vector (Pitch, Yaw, Roll)" },
+    "Example": {
+      "code": "local currentAngle = exechack_api.GetCheatAngle()\nprint(currentAngle)",
+      "desc": "Queries and prints the client's active angle.",
+      "output": "Angle(0.00, 90.00, 0.00)"
+    },
+    "goodname": "GetCheatAngle"
+  },
+  "exechack_api.CalcViewOverlayHook": {
+    "Description": "A hook analogous to GM:CalcView that allows modifying third-person perspective, origin offset, and field of view with cheat synchronization.",
+    "Arguments": {
+      "ply": "Player entity",
+      "pos": "Vector camera position",
+      "angles": "Angle camera orientation",
+      "fov": "Number field of view"
+    },
+    "Returns": { "Table": "view - Table containing origin, angles, fov, and drawviewer properties" },
+    "Example": {
+      "code": `exechack_api.CalcViewOverlayHook = function(ply, pos, angles, fov)
+    local view = {
+        origin = pos - (angles:Forward() * 120),
+        angles = angles,
+        fov = fov,
+        drawviewer = true
+    }
+    return view
+end`,
+      "desc": "Positions the camera behind the player model in third-person view.",
+      "output": "Renders camera 120 units behind the local player."
+    },
+    "goodname": "CalcViewOverlayHook"
+  },
+  "exechack_api.IsFriend": {
+    "Description": "Checks whether a given player entity is marked in the local friend list.",
+    "Arguments": { "Entity": "ply - The player entity to check" },
+    "Returns": { "Boolean": "Returns true if the entity is registered as a friend, otherwise false" },
+    "Example": {
+      "code": `local trEntity = LocalPlayer():GetEyeTrace().Entity
+if IsValid(trEntity) and trEntity:IsPlayer() then
+    if exechack_api.IsFriend(trEntity) then
+        print(trEntity:Nick() .. " is a friend.")
+    else
+        print(trEntity:Nick() .. " is not a friend.")
+    end
+end`,
+      "desc": "Evaluates whether the entity under the player's crosshair is a friend.",
+      "output": "TargetPlayer is a friend."
+    },
+    "goodname": "IsFriend"
+  },
+  "exechack_api.GetUserName": {
+    "Description": "Returns the account username of the authenticated forum user.",
+    "Returns": { "String": "The forum username associated with the active session" },
+    "Example": {
+      "code": 'print("Logged in as: " .. exechack_api.GetUserName())',
+      "desc": "Prints the active user handle to the client console.",
+      "output": "Logged in as: Exec"
+    },
+    "goodname": "GetUserName"
+  },
+  "exechack_api.CleanGlobalTable": {
+    "Description": "Provides direct access to the clean, unmodified global table (_G) to call native functions bypassed by third-party hook detours or modifications.",
+    "Example": {
+      "code": `-- Override global print
+print = function() end
 
-local clientcode = [==[
-if exechack_api.cfg_GetValue("PRINTONSPAWN")then
-	print(1)
-end
-]==]
+-- Call the unhooked original print function
+exechack_api.CleanGlobalTable.print("Clean output bypass")`,
+      "desc": "Invokes the original standard library print function even if _G.print has been hooked or overwritten.",
+      "output": "Clean output bypass"
+    },
+    "goodname": "CleanGlobalTable"
+  },
+  "exechack_api.cfg_SetValue": {
+    "Description": "Sets a configuration value by key inside the client configuration environment.",
+    "Arguments": {
+      "string": "cfgName - Key identifier of the configuration variable",
+      "string/boolean/float/table": "newValue - The value to store"
+    },
+    "Example": {
+      "code": 'exechack_api.cfg_SetValue("AIM_ENABLED", false)',
+      "desc": "Disables the aimbot setting within the client configuration.",
+      "output": "AIM_ENABLED set to false"
+    },
+    "goodname": "cfg_SetValue"
+  },
+  "exechack_api.cfg_GetValue": {
+    "Description": "Retrieves the current stored value for a given configuration variable.",
+    "Arguments": { "string": "cfgName - Key identifier of the configuration variable" },
+    "Returns": { "string/boolean/float/table": "The current value stored in the configuration" },
+    "Example": {
+      "code": 'local isEnabled = exechack_api.cfg_GetValue("AIM_ENABLED")\nprint("Aimbot status:", isEnabled)',
+      "desc": "Fetches and prints the current state of AIM_ENABLED.",
+      "output": "Aimbot status: false"
+    },
+    "goodname": "cfg_GetValue"
+  }
+};
 
-local oldexec_newclientrunned = exec_newclientrunned
+const menustateapi = {
+  "exec_background_render": {
+    "Description": "Custom render function executed during menu state painting (analogous to derma.Paint). Designed for 800x499 resolution interfaces without cam functions.",
+    "Arguments": {
+      "panel": "derma panel reference",
+      "float1": "w - Panel width in pixels",
+      "float2": "h - Panel height in pixels"
+    },
+    "Example": {
+      "code": `exec_background_render = function(self, w, h)
+    surface.SetDrawColor(20, 20, 20, 255)
+    surface.DrawRect(0, 0, w, h)
+
+    surface.SetFont("Default")
+    surface.SetTextColor(255, 255, 255)
+    surface.SetTextPos(20, 20)
+    surface.DrawText("Menu Canvas Ready")
+end`,
+      "desc": "Draws a dark background box with status text in the menu panel.",
+      "output": "Paints background on the cheat menu panel."
+    },
+    "goodname": "background_render"
+  },
+  "exec_Fetch": {
+    "Description": "Asynchronous HTTP GET request wrapper available within the menu state environment.",
+    "Arguments": {
+      "string": "url - The target HTTP/HTTPS URL",
+      "function1": "onSuccess - Callback receiving (body, contentLength, headers, statusCode)",
+      "function2": "onFailure - Callback receiving (errorMessage)"
+    },
+    "Example": {
+      "code": `exec_Fetch("https://api.ipify.org?format=json", function(body)
+    print("Response payload: " .. body)
+end, function(err)
+    print("Fetch error: " .. tostring(err))
+end)`,
+      "desc": "Fetches remote JSON data and prints the response body.",
+      "output": "Response payload: {\"ip\":\"127.0.0.1\"}"
+    },
+    "goodname": "Fetch"
+  },
+  "exec_Post": {
+    "Description": "Asynchronous HTTP POST request wrapper available within the menu state environment.",
+    "Arguments": {
+      "string1": "url - Target endpoint URL",
+      "string2": "parameters - Encoded POST parameters or payload body",
+      "function1": "onSuccess - Callback receiving response body",
+      "function2": "onFailure - Callback receiving error message"
+    },
+    "Example": {
+      "code": `exec_Post("https://httpbin.org/post", "user=Exec&action=sync", function(body)
+    print("POST success: " .. body)
+end, function(err)
+    print("POST failed: " .. tostring(err))
+end)`,
+      "desc": "Dispatches form-encoded parameters via HTTP POST.",
+      "output": "POST success: { ... }"
+    },
+    "goodname": "Post"
+  },
+  "exec_cfg_GetValue": {
+    "Description": "Retrieves configuration parameter values from within the menu state.",
+    "Arguments": { "string": "cfgName - Key name of the configuration variable" },
+    "Returns": { "string/boolean/float/table": "The stored value" },
+    "Example": {
+      "code": 'local val = exec_cfg_GetValue("ESP_ENABLED")\nprint("ESP state: " .. tostring(val))',
+      "desc": "Reads the boolean state of ESP_ENABLED.",
+      "output": "ESP state: true"
+    },
+    "goodname": "cfg_GetValue"
+  },
+  "exec_cfg_SetValue": {
+    "Description": "Updates a configuration parameter value from within the menu state.",
+    "Arguments": {
+      "string": "cfgName - Key identifier of the configuration variable",
+      "string/boolean/float/table": "newValue - The value to store"
+    },
+    "Example": {
+      "code": 'exec_cfg_SetValue("ESP_ENABLED", true)',
+      "desc": "Enables the ESP_ENABLED configuration key.",
+      "output": "ESP_ENABLED updated to true"
+    },
+    "goodname": "cfg_SetValue"
+  },
+  "exec_menuaddtab": {
+    "Description": "Registers a new navigation tab inside the custom menu interface.",
+    "Arguments": {
+      "string": "tabName - Title of the tab",
+      "function": "contentConstructor - Function defining the controls inside the tab"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("General Settings", function()
+    exec_menuaddcheckbox("Auto Reload", 15, 30, "AUTO_RELOAD", "Automatically reloads weapon when empty")
+end)`,
+      "desc": "Creates a new tab titled 'General Settings' containing a checkbox.",
+      "output": "Tab registered in the menu interface."
+    },
+    "goodname": "menuaddtab"
+  },
+  "exec_menuaddbutton": {
+    "Description": "Adds an interactive push button to the active menu tab.",
+    "Arguments": {
+      "string": "buttonName - Button label text",
+      "number1": "x - Horizontal offset position",
+      "number2": "y - Vertical offset position",
+      "function": "onClick - Callback triggered upon clicking"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Actions", function()
+    exec_menuaddbutton("Reset Defaults", 15, 40, function()
+        exec_cfg_SetValue("AIM_ENABLED", false)
+        print("Config reset to defaults.")
+    end)
+end)`,
+      "desc": "Renders a button that resets configuration keys when clicked.",
+      "output": "Config reset to defaults."
+    },
+    "goodname": "menuaddbutton"
+  },
+  "exec_menuaddbinder": {
+    "Description": "Adds a key-binding selector widget to assign hotkeys to config variables.",
+    "Arguments": {
+      "string1": "label - Descriptive display name",
+      "number1": "x - Horizontal position",
+      "number2": "y - Vertical position",
+      "string2": "cfgName - Key name in configuration to store the bound keycode"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Binds", function()
+    exec_menuaddbinder("Menu Toggle Key", 15, 30, "MENU_KEY")
+end)`,
+      "desc": "Places a key-bind selector mapped to the MENU_KEY variable.",
+      "output": "Keybind component added."
+    },
+    "goodname": "menuaddbinder"
+  },
+  "exec_menuaddcheckbox": {
+    "Description": "Adds a toggle checkbox widget bound to a boolean configuration value.",
+    "Arguments": {
+      "string1": "name - Checkbox label text",
+      "number1": "x - Horizontal coordinate",
+      "number2": "y - Vertical coordinate",
+      "string2": "cfgName - Target configuration key",
+      "string3": "description - Tooltip description text"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Visuals", function()
+    exec_menuaddcheckbox("Draw Crosshair", 15, 30, "DRAW_CROSSHAIR", "Displays a custom static crosshair")
+end)`,
+      "desc": "Adds a checkbox bound to the DRAW_CROSSHAIR configuration key.",
+      "output": "Checkbox placed on tab."
+    },
+    "goodname": "menuaddcheckbox"
+  },
+  "exec_menuaddlabel": {
+    "Description": "Renders static text onto the tab canvas.",
+    "Arguments": {
+      "string1": "text - Label content",
+      "number1": "x - Horizontal position",
+      "number2": "y - Vertical position",
+      "number3": "fontSize - Font size between 10 and 25",
+      "number4": "w - Width allocation",
+      "number5": "h - Height allocation"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("About", function()
+    exec_menuaddlabel("Script Version 1.0.0", 15, 20, 14, 200, 20)
+end)`,
+      "desc": "Adds an informational text label to the About tab.",
+      "output": "Label rendered on tab."
+    },
+    "goodname": "menuaddlabel"
+  },
+  "exec_menuaddcolorpixer": {
+    "Description": "Renders an RGBA color picker widget bound to a configuration variable.",
+    "Arguments": {
+      "string": "cfgName - Configuration key holding color values",
+      "number1": "x - Horizontal position",
+      "number2": "y - Vertical position"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Colors", function()
+    exec_menuaddcolorpixer("ACCENT_COLOR", 15, 30)
+end)`,
+      "desc": "Embeds a color selector that binds its output to ACCENT_COLOR.",
+      "output": "Color picker mounted."
+    },
+    "goodname": "menuaddcolorpixer"
+  },
+  "exec_menuaddslider": {
+    "Description": "Renders a numeric slider widget to control scalar configuration properties.",
+    "Arguments": {
+      "string1": "name - Slider title label",
+      "number1": "x - Horizontal position",
+      "number2": "y - Vertical position",
+      "number3": "min - Minimum allowable numerical value",
+      "number4": "max - Maximum allowable numerical value",
+      "string2": "cfgName - Target configuration key"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Aimbot", function()
+    exec_menuaddslider("FOV Radius", 15, 30, 1, 180, "AIM_FOV")
+end)`,
+      "desc": "Creates a slider controlling AIM_FOV from 1 to 180.",
+      "output": "Slider widget rendered."
+    },
+    "goodname": "menuaddslider"
+  },
+  "exec_menuaddtextentry": {
+    "Description": "Adds an interactive single-line text input field.",
+    "Arguments": {
+      "number1": "x - Horizontal position",
+      "number2": "y - Vertical position",
+      "number3": "size - Field width in pixels",
+      "function": "onChange - Callback receiving the updated string content"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Config", function()
+    exec_menuaddtextentry(15, 30, 250, function(text)
+        print("Updated prefix: " .. text)
+    end)
+end)`,
+      "desc": "Adds a text box that logs user input changes.",
+      "output": "Updated prefix: [Admin]"
+    },
+    "goodname": "menuaddtextentry"
+  },
+  "exec_combobox": {
+    "Description": "Adds a dropdown selection combo box to the menu.",
+    "Arguments": {
+      "number1": "x - Horizontal position",
+      "number2": "y - Vertical position",
+      "string1": "cfgName - Key name to save selected option",
+      "table": "options - Array of string choices",
+      "string2": "name - Dropdown label title"
+    },
+    "Example": {
+      "code": `exec_menuaddtab("Combat", function()
+    exec_combobox(15, 30, "TARGET_HITBOX", {"Head", "Chest", "Pelvis"}, "Target Bone")
+end)`,
+      "desc": "Creates a combo box dropdown allowing selection between target bones.",
+      "output": "Hitbox selector added."
+    },
+    "goodname": "combobox"
+  },
+  "exec_CreateDir": {
+    "Description": "Creates a directory path relative to the script storage root.",
+    "Arguments": { "string": "directory - Relative path of the folder to create" },
+    "Example": {
+      "code": 'exec_CreateDir("custom_configs/profiles")',
+      "desc": "Creates a nested folder structure for saving profiles.",
+      "output": "Directory created."
+    },
+    "goodname": "CreateDir"
+  },
+  "exec_Delete": {
+    "Description": "Deletes a designated file or empty folder within the allowed storage boundary.",
+    "Arguments": { "string": "filenameOrDir - Path to target file or directory" },
+    "Example": {
+      "code": `if exec_Exists("temp_cache.txt") then
+    exec_Delete("temp_cache.txt")
+    print("Old cache deleted.")
+end`,
+      "desc": "Checks for and removes an obsolete cache file.",
+      "output": "Old cache deleted."
+    },
+    "goodname": "Delete"
+  },
+  "exec_Exists": {
+    "Description": "Verifies whether a file or directory exists at the relative path.",
+    "Arguments": { "string": "filenameOrDir - Path to test" },
+    "Returns": { "boolean": "True if path exists, false otherwise" },
+    "Example": {
+      "code": 'local exists = exec_Exists("settings.json")\nprint("Config exists: " .. tostring(exists))',
+      "desc": "Queries if settings.json is present in the filesystem.",
+      "output": "Config exists: true"
+    },
+    "goodname": "Exists"
+  },
+  "exec_IsDir": {
+    "Description": "Determines whether a given path refers to an existing directory.",
+    "Arguments": { "string": "dir - Path to inspect" },
+    "Returns": { "boolean": "True if directory, false if file or nonexistent" },
+    "Example": {
+      "code": 'local isFolder = exec_IsDir("configs")\nprint("Is directory: " .. tostring(isFolder))',
+      "desc": "Checks if the path is a valid folder.",
+      "output": "Is directory: true"
+    },
+    "goodname": "IsDir"
+  },
+  "exec_List": {
+    "Description": "Returns lists of files and subdirectories located within a specific directory.",
+    "Arguments": { "string": "directory - Target folder path" },
+    "Returns": {
+      "table1": "files - Array of filenames found",
+      "table2": "directories - Array of subdirectories found"
+    },
+    "Example": {
+      "code": `local files, dirs = exec_List("configs")
+for _, file in ipairs(files) do
+    print("Found config file: " .. file)
+end`,
+      "desc": "Enumerates all files in the configs directory.",
+      "output": "Found config file: default.cfgexec"
+    },
+    "goodname": "List"
+  },
+  "exec_Read": {
+    "Description": "Reads and returns the contents of a local file as a string.",
+    "Arguments": { "string": "path - File path to read" },
+    "Returns": { "string": "Raw content of the file" },
+    "Example": {
+      "code": 'local content = exec_Read("configs/default.txt")\nprint(content)',
+      "desc": "Loads text from a stored configuration file.",
+      "output": "AIM_ENABLED=true"
+    },
+    "goodname": "Read"
+  },
+  "exec_Write": {
+    "Description": "Writes raw text content to a specified file path, overwriting or creating it if missing.",
+    "Arguments": {
+      "string1": "path - Destination file path",
+      "string2": "content - Text content to write"
+    },
+    "Example": {
+      "code": 'exec_Write("configs/backup.txt", "AIM_ENABLED=false\\nESP_ENABLED=true")',
+      "desc": "Writes backup configuration parameters to disk.",
+      "output": "File written successfully."
+    },
+    "goodname": "Write"
+  },
+  "exec_notification": {
+    "Description": "Displays a popup notification banner within the menu state interface.",
+    "Arguments": { "string": "text - Message string to display" },
+    "Example": {
+      "code": 'exec_notification("Profile loaded successfully.")',
+      "desc": "Shows a confirmation banner in the menu GUI.",
+      "output": "Notification displayed on menu."
+    },
+    "goodname": "notification"
+  },
+  "exec_runtoclientside": {
+    "Description": "Transfers and evaluates a string of Lua code directly inside the client game state from the menu state.",
+    "Arguments": { "string": "code - Raw Lua script string to run" },
+    "Example": {
+      "code": `exec_runtoclientside([[
+    chat.AddText(Color(0, 255, 0), "[System] Script loaded on client.")
+]])`,
+      "desc": "Executes a chat print call inside the active game client.",
+      "output": "[System] Script loaded on client."
+    },
+    "goodname": "runtoclientside"
+  },
+  "exec_addclientcodetoautorun": {
+    "Description": "Registers Lua code to automatically execute on the client each time the user joins a server.",
+    "Arguments": {
+      "string1": "name - Unique identifier for the autorun entry",
+      "string2": "code - Lua code to execute on join"
+    },
+    "Example": {
+      "code": `exec_addclientcodetoautorun("InitMessage", [[
+    hook.Add("InitPostEntity", "WelcomeNotice", function()
+        print("Joined server successfully.")
+    end)
+]])`,
+      "desc": "Attaches an autorun script that prints to the console upon joining.",
+      "output": "Joined server successfully."
+    },
+    "goodname": "addclientcodetoautorun"
+  },
+  "exec_newclientrunned": {
+    "Description": "Callback invoked whenever a fresh client-side environment is initialized.",
+    "Example": {
+      "code": `local oldRunned = exec_newclientrunned
 exec_newclientrunned = function()
-	exec_runtoclientside(clientcode)
-	return oldexec_newclientrunned
-end
- 
-exec_menuaddtab("my tab",function()
-	exec_menuaddcheckbox("print 1 on spawnserver",15,30,"PRINTONSPAWN","description")
-end)`, "desc": "Print to console with checkbox", "output": "1 if checkbox enable<br><img src='https://i.imgur.com/UnTTX1Z.png' class='mt-2 rounded border border-gray-700 max-w-full'/>"
-        },
-        "goodname": "menuaddtab"
-      },
-      "exec_menuaddbutton": {
-        "Description": "Adds button in script tab",
-        "Arguments": { "string": "button name", "number1": "pos1", "number2": "pos2", "function": "on click" },
-        "Example": {
-          "code": `exec_menuaddtab("Prints",function()
-	exec_menuaddbutton("print 1 to menustate",15,30,function()
-		print(1)
-	end)
-end)`, "desc": "Add button on Prints tab"
-        },
-        "goodname": "menuaddbutton"
-      },
-      "exec_menuaddbinder": {
-        "Description": "Adds key binder to script tab",
-        "Arguments": { "string1": "Name", "number1": "pos1", "number2": "pos2", "string2": "cfg name" },
-        "goodname": "menuaddbinder"
-      },
-      "exec_menuaddcheckbox": {
-        "Description": "Adds checkbox to script tab",
-        "Arguments": { "string1": "Name", "number1": "pos1", "number2": "pos2", "string2": "cfg name", "string3": "description" },
-        "goodname": "menuaddcheckbox"
-      },
-      "exec_menuaddlabel": {
-        "Description": "Adds label to script tab",
-        "Arguments": { "string1": "Text", "number1": "pos1", "number2": "pos2", "number3": "Fontsize(10-25)", "number4": "size1", "number5": "size2" },
-        "goodname": "menuaddlabel"
-      },
-      "exec_menuaddcolorpixer": {
-        "Description": "Adds label to script tab",
-        "Arguments": { "string": "cfg name", "number1": "pos1", "number2": "pos2" },
-        "goodname": "menuaddcolorpixer"
-      },
-      "exec_menuaddslider": {
-        "Description": "Adds slider to script tab",
-        "Arguments": { "string1": "Name", "number1": "pos1", "number2": "pos2", "number3": "Min", "number4": "Max", "string2": "Cfg name" },
-        "goodname": "menuaddslider"
-      },
-      "exec_menuaddtextentry": {
-        "Description": "Adds text entry to script tab",
-        "Arguments": { "number1": "pos1", "number2": "pos2", "number3": "size", "function": "on change(argument string:text)" },
-        "goodname": "menuaddtextentry"
-      },
-      "exec_combobox": {
-        "Description": "Adds combobox entry to script tab",
-        "Arguments": { "number1": "pos1", "number2": "pos2", "string1": "Cfg name", "table": "all options", "string2": "Name" },
-        "Example": {
-          "code": `exec_menuaddtab("My script",function()
-	exec_combobox(15,30,"MYSHAT",{"yes","no"},"Select")
-end)`, "desc": "Add combobox on My script tab"
-        },
-        "goodname": "combobox"
-      },
-      "exec_CreateDir": {
-        "Description": "Creates a directory that is relative to the folder.",
-        "Arguments": { "string": "directory" },
-        "goodname": "CreateDir"
-      },
-      "exec_Delete": {
-        "Description": "Deletes a file or empty folder that is relative to the folder. You can't remove any files outside of folders",
-        "Arguments": { "string": "filename or dir" },
-        "goodname": "Delete"
-      },
-      "exec_Exists": {
-        "Description": "Returns a boolean of whether the file or directory exists or not.",
-        "Arguments": { "string": "filename or dir" },
-        "Returns": { "boolean": "false or true" },
-        "goodname": "Exists"
-      },
-      "exec_IsDir": {
-        "Description": "Returns whether the given file is a directory or not.",
-        "Arguments": { "string": "dir" },
-        "Returns": { "boolean": "false or true" },
-        "goodname": "IsDir"
-      },
-      "exec_List": {
-        "Description": "Returns a list of files and directories inside a single folder.",
-        "Arguments": { "string": "directory" },
-        "Returns": { "table1": "*", "table2": "*" },
-        "goodname": "List"
-      },
-      "exec_Read": {
-        "Description": "Returns the content of a file.",
-        "Arguments": { "string": "directory and filename" },
-        "Returns": { "string": "*" },
-        "Example": { "code": 'print(exec_Read("C:\\exec.txt"))', "desc": "Get text form file", "output": "1" },
-        "goodname": "Read"
-      },
-      "exec_Write": {
-        "Description": "Create file or dir",
-        "Arguments": { "string1": "directory and filename", "string2": "content" },
-        "Example": { "code": 'exec_Write("C:/exechack/1.txt","lol")', "desc": "Create file " },
-        "goodname": "Write"
-      },
-      "exec_notification": {
-        "Description": "Used to display notifications on the screen.",
-        "Arguments": { "string": "text" },
-        "Example": { "code": 'exec_notification("exec")', "desc": "Notification: exec" },
-        "goodname": "notification"
-      },
-      "exec_runtoclientside": {
-        "Description": "Run code to client",
-        "Arguments": { "string": "code" },
-        "goodname": "runtoclientside"
-      },
-      "exec_addclientcodetoautorun": {
-        "Description": "Auto run code on server",
-        "Arguments": { "string1": "name", "string2": "code" },
-        "Example": {
-          "code": `exec_addclientcodetoautorun("myclientcode",[[
-	print(123)
-]])`, "desc": "Print 123 on join server", "output": "123"
-        },
-        "goodname": "addclientcodetoautorun"
-      },
-      "exec_newclientrunned": {
-        "Description": "Function called in new clientside",
-        "Example": {
-          "code": `local oldexec_newclientrunned = exec_newclientrunned
-exec_newclientrunned = function()
-	exec_runtoclientside([[
-		print(1)
-	]])
-	return oldexec_newclientrunned
-end`, "desc": "Autorun print(1) in client", "output": "1"
-        },
-        "goodname": "newclientrunned"
-      },
-      "luaruncontrol": {
-        "Description": "hook called when loading a new lua",
-        "Arguments": { "string1": "filedirectory", "string2": "code" },
-        "Returns": { "string": "code" },
-        "Example": {
-          "code": `hook.Add("bitch","name",function(file,code)
-	if file=="lua/autorun/client/rat.lua"then
-		return "print(1)"
-	end 
-end)`, "desc": "Replace code", "output": "code in 'lua/autorun/client/rat.lua' replaces on 'print(1)'"
-        },
-        "goodname": "lua run control"
-      },
-      "cfg nameing": {
-        "Description": 'All cfgs name, open *.cfgexec through editor and you will get all cfg names https://pastebin.com/V0XaXS24',
-        "goodname": "cfg nameing"
-      }
-    };
+    exec_runtoclientside([[print("New client instance initialized.")]])
+    if oldRunned then return oldRunned() end
+end`,
+      "desc": "Hooks the client initialization lifecycle to execute bootstrap code.",
+      "output": "New client instance initialized."
+    },
+    "goodname": "newclientrunned"
+  },
+  "luaruncontrol": {
+    "Description": "Intercept hook triggered when Garry's Mod loads a Lua file, allowing runtime modification or substitution of incoming scripts.",
+    "Arguments": {
+      "string1": "fileDirectory - Path of the Lua file being loaded",
+      "string2": "code - Raw content of the file"
+    },
+    "Returns": { "string": "Replacement Lua code to be executed instead" },
+    "Example": {
+      "code": `hook.Add("luaruncontrol", "FilterScript", function(filePath, sourceCode)
+    if string.find(filePath, "screengrab.lua") then
+        return "print('Blocked screengrab execution')"
+    end
+end)`,
+      "desc": "Intercepts loading of screengrab.lua and substitutes it with a stub message.",
+      "output": "Blocked screengrab execution"
+    },
+    "goodname": "lua run control"
+  },
+  "cfg nameing": {
+    "Description": "Reference and listing of all configuration keys and types available across the configuration system.",
+    "Example": {
+      "code": `local currentAimbot = exec_cfg_GetValue("AIM_ENABLED")
+exec_cfg_SetValue("AIM_ENABLED", not currentAimbot)
+print("AIM_ENABLED toggled to: " .. tostring(exec_cfg_GetValue("AIM_ENABLED")))`,
+      "desc": "Example of reading and toggling a standard boolean configuration key.",
+      "output": "AIM_ENABLED toggled to: true"
+    },
+    "goodname": "cfg naming"
+  }
+};
 
     // Отрисовка бокового меню
     function renderSidebar() {
@@ -715,7 +1005,7 @@ end)</code></pre>
     document.addEventListener("DOMContentLoaded", () => {
       renderSidebar();
 
-      // Мобильная кнопка навигации
+      // Мобильная кнопка навигации API
       const btn = document.querySelector(".navigation-button");
       const backdrop = document.querySelector(".navigation_backdrop");
 
