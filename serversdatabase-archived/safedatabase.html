@@ -563,13 +563,10 @@
                                                     <div class="flex items-center gap-2">
                                                         <span class="font-mono text-brand-highlight text-xs">${escapeHtml(log.dateStr)}</span>
                                                         <span class="px-2 py-0.5 rounded text-[10px] font-semibold ${isSafe ? 'bg-brand-success/20 text-brand-success' : 'bg-brand-danger/20 text-brand-danger'}">
-                                                            ${isSafe ? 'Safe Disconnect (≥5 min)' : 'Ban / Short Session'}
+                                                            ${isSafe ? 'Safe Disconnect' : 'Bad Session'}
                                                         </span>
                                                     </div>
                                                     <div class="text-brand-muted break-words">${escapeHtml(log.banReason)}</div>
-                                                </div>
-                                                <div class="font-medium text-white text-xs truncate max-w-xs self-end sm:self-center">
-                                                    ${escapeHtml(log.serverName)}
                                                 </div>
                                             </div>
                                         `;
