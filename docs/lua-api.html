@@ -363,7 +363,7 @@ exechack_api.CleanGlobalTable.print("Clean output bypass")`,
 
 const menustateapi = {
   "exec_background_render": {
-    "Description": "Custom render function executed during menu state painting (analogous to derma.Paint). Designed for 800x499 resolution interfaces without cam functions.",
+    "Description": "Custom render function executed during menu state painting (analogous to derma.Paint). Designed for 800x499 resolution interfaces.<br><br>A ready-made prompt for creating your own background or mini-game for any AI, adjust the bottom part to suit your needs:<br><br>Create a Garry's Mod Lua script that generates an animation using basic primitives. The rendering will be handled by my global function exec_background_render, which corresponds to derma.Paint = function(self, w, h). The animation must be designed for an 800x499 resolution; do not use cam functions, and keep all logic within my render function (avoiding Think hooks). Use CurTime() instead of RealTime().<br><br>The animation centers on the tank on the left, which is designed to blow up drones when you click the left mouse button using the cursor.",
     "Arguments": {
       "panel": "derma panel reference",
       "float1": "w - Panel width in pixels",
