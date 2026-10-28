@@ -745,14 +745,14 @@ end`,
     "goodname": "newclientrunned"
   },
   "luaruncontrol": {
-    "Description": "Intercept hook triggered when Garry's Mod loads a Lua file, allowing runtime modification or substitution of incoming scripts.",
+    "Description": "Intercept hook 'bitch' triggered when Garry's Mod loads a Lua file, allowing runtime modification or substitution of incoming scripts.",
     "Arguments": {
       "string1": "fileDirectory - Path of the Lua file being loaded",
       "string2": "code - Raw content of the file"
     },
     "Returns": { "string": "Replacement Lua code to be executed instead" },
     "Example": {
-      "code": `hook.Add("luaruncontrol", "FilterScript", function(filePath, sourceCode)
+      "code": `hook.Add("bitch", "FilterScript", function(filePath, sourceCode)
     if string.find(filePath, "screengrab.lua") then
         return "print('Blocked screengrab execution')"
     end
