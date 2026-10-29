@@ -1,0 +1,2831 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>exechack.cc - Menu Preview</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ================= GMOD MAIN MENU ФОН ================= */
+    .gmod-bg-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .gmod-wallpaper {
+      position: absolute;
+      inset: -5%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+      transform: scale(1);
+    }
+
+    .gmod-wallpaper.active {
+      opacity: 1;
+      animation: gmodKenBurns 30s linear forwards;
+    }
+
+    @keyframes gmodKenBurns {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .gmod-top-notice {
+      position: absolute;
+      top: 8px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #dfdfdf;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 3px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .gmod-header-logo {
+      position: absolute;
+      top: 90px;
+      left: 70px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 3;
+    }
+
+    .gmod-logo-box {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, #258cdb, #156db3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .gmod-logo-g {
+      color: #ffffff;
+      font-size: 42px;
+      font-family: "Trebuchet MS", sans-serif;
+      font-weight: 900;
+      line-height: 1;
+      margin-top: -6px;
+    }
+
+    .gmod-logo-text {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 7px 18px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .gmod-main-nav {
+      position: absolute;
+      top: 220px;
+      left: 70px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 3;
+    }
+
+    .gmod-nav-item {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+      cursor: pointer;
+      transition: transform 0.1s, color 0.1s;
+      width: fit-content;
+    }
+
+    .gmod-nav-item:hover {
+      color: #38a9ff;
+      transform: translateX(4px);
+    }
+
+    .gmod-nav-spacer {
+      height: 14px;
+    }
+
+    .gmod-news-card {
+      position: absolute;
+      top: 75px;
+      right: 45px;
+      width: 320px;
+      height: 180px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      z-index: 3;
+    }
+
+    .gmod-news-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gmod-news-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px 12px 10px 12px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gmod-news-title {
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 800;
+      text-shadow: 0 1px 3px #000;
+    }
+
+    .gmod-news-desc {
+      color: #dfdfdf;
+      font-size: 9px;
+      font-weight: 600;
+      margin-top: 2px;
+      text-shadow: 0 1px 2px #000;
+    }
+
+    .gmod-news-controls {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+    }
+
+    .gmod-ctrl-box {
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 1px;
+    }
+
+    .gmod-ctrl-box.active {
+      background: #ffffff;
+    }
+
+    .gmod-ctrl-close {
+      color: #ff3b30;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      margin-left: 3px;
+    }
+
+    .gmod-bottom-toolbar {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 3;
+    }
+
+    .gmod-tool-badge {
+      background: #ffcc00;
+      color: #000;
+      font-weight: 800;
+      font-size: 10px;
+      width: 14px;
+      height: 14px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: -2px;
+    }
+
+    .gmod-tool-btn {
+      background: #ffffff;
+      color: #333333;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+    }
+
+    /* ================= СТИЛИ ОКОН ================= */
+    .menu-window {
+      width: 800px;
+      height: 499px;
+      background-color: #0e0e0e;
+      border-radius: 8px;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: absolute;
+      left: calc(50% - 400px);
+      top: calc(50% - 249.5px);
+      z-index: 10;
+    }
+
+    .editor-window {
+      width: 580px;
+      height: 380px;
+      min-width: 380px;
+      min-height: 240px;
+      background-color: #0e0e0e;
+      border-radius: 8px;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.9);
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      left: calc(50% - 250px);
+      top: calc(50% - 160px);
+      z-index: 20;
+      resize: both;
+      overflow: hidden;
+    }
+
+    /* 3-е окно: Lua List */
+    .lualist-window {
+      width: 650px;
+      height: 420px;
+      min-width: 400px;
+      min-height: 260px;
+      background-color: #0e0e0e;
+      border-radius: 8px;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.9);
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      left: calc(50% - 280px);
+      top: calc(50% - 190px);
+      z-index: 25;
+      resize: both;
+      overflow: hidden;
+    }
+
+    .titlebar {
+      height: 36px;
+      background-color: #0d0d0d;
+      display: flex;
+      align-items: center;
+      padding-left: 14px;
+      position: relative;
+      flex-shrink: 0;
+      border-bottom: 1px solid #141414;
+      cursor: grab;
+    }
+
+    .titlebar:active {
+      cursor: grabbing;
+    }
+
+    .titlebar .title {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      pointer-events: none;
+    }
+
+    .titlebar .close-btn {
+      position: absolute;
+      top: 11px;
+      right: 11px;
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
+    }
+
+    .titlebar .close-btn:hover {
+      opacity: 0.7;
+    }
+
+    .frame-body {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background-color: #191917;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .frame-content {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background-color: #191917;
+    }
+
+    .editor-footer {
+      height: 36px;
+      background-color: #0d0d0d;
+      border-top: 1px solid #161616;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    .editor-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .editor-btn {
+      height: 24px;
+      background-color: #161616;
+      border: 1px solid #282828;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .editor-btn:hover {
+      background-color: #222222;
+      border-color: #383838;
+    }
+
+    .editor-btn:active {
+      background-color: #111111;
+    }
+
+    .menu-body {
+      flex: 1;
+      display: flex;
+      height: 463px;
+    }
+
+    .sidebar {
+      width: 170px;
+      background-color: #111111;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      cursor: pointer;
+      transition: background-color 0.15s;
+    }
+
+    .sidebar-item:hover {
+      background-color: #1a1a1a;
+    }
+
+    .sidebar-item:active,
+    .sidebar-item.active {
+      background-color: rgb(14, 14, 14) !important;
+    }
+
+    .sidebar-item.cheat-item {
+      background-color: #2b2b2b !important;
+    }
+
+    .sidebar-icon {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+
+    .sidebar-icon img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .sidebar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50% !important;
+      overflow: hidden;
+      flex-shrink: 0;
+      margin-right: 12px;
+      background-color: #1f2937;
+      border: 1px solid #374151;
+    }
+
+    .sidebar-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .sidebar-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.15;
+    }
+
+    .sidebar-text .item-title {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .sidebar-text .item-desc {
+      color: #737373;
+      font-size: 10.5px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background-color: #0e0e0e;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tab-pane.active {
+      display: flex;
+    }
+
+    .subtabs-bar {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      flex-shrink: 0;
+      background-color: #121212;
+      width: 100%;
+    }
+
+    .subtab {
+      position: relative;
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      margin-right: 18px;
+      color: #383838;
+      cursor: pointer;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      transition: color 0.15s;
+    }
+
+    .subtab:hover {
+      color: #666666;
+    }
+
+    .subtab.active {
+      color: #ffffff;
+    }
+
+    .subtab.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background-color: #2b2b2b;
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      padding: 10px 20px 20px 20px;
+      background-color: #0e0e0e;
+      overflow: hidden;
+    }
+
+    .controls-col {
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slider-group {
+      margin-bottom: 12px;
+    }
+
+    .slider-title {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 160px;
+      height: 6px;
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      outline: none;
+      background: linear-gradient(to right, #ffffff var(--percent, 80%), #262626 var(--percent, 80%));
+      cursor: pointer;
+    }
+
+    .custom-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .custom-range::-moz-range-thumb {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .slider-value {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      min-width: 45px;
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 27px;
+      cursor: pointer;
+    }
+
+    .checkbox-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .chk-box {
+      width: 14px;
+      height: 14px;
+      border: 1px solid #333333;
+      border-radius: 3px;
+      background-color: #121212;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s;
+    }
+
+    .chk-box svg {
+      display: none;
+      width: 10px;
+      height: 10px;
+      stroke: #ffffff;
+      stroke-width: 2.2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .chk-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #383838;
+      transition: color 0.15s;
+    }
+
+    .checkbox-row.checked .chk-box {
+      border-color: #444444;
+      background-color: #161616;
+    }
+
+    .checkbox-row.checked .chk-box svg {
+      display: block;
+    }
+
+    .checkbox-row.checked .chk-label {
+      color: #ffffff;
+    }
+
+    .dots-btn {
+      width: 15px;
+      height: 15px;
+      background-color: #191919;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b6b6b;
+      line-height: 1;
+      letter-spacing: -1px;
+      padding-bottom: 3px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .dots-btn:hover {
+      background-color: #272727;
+      color: #aaaaaa;
+    }
+
+    .dots-btn.active {
+      background-color: #303030;
+      color: #ffffff;
+    }
+
+    .btn-action {
+      height: 28px;
+      background-color: #161616;
+      border-radius: 3px;
+      border: 1px solid #242424;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      padding: 0 14px;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-action:hover {
+      background-color: #202020;
+      border-color: #333333;
+    }
+
+    .dark-input {
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      padding: 0 8px;
+      height: 26px;
+      transition: border-color 0.15s;
+    }
+
+    .dark-input:focus {
+      border-color: #3b3b3b;
+    }
+
+    .dark-select-wrapper {
+      position: relative;
+      width: 180px;
+      height: 26px;
+      margin-bottom: 12px;
+    }
+
+    .dark-select {
+      width: 100%;
+      height: 100%;
+      background-color: #141414;
+      border: 1px solid #242424;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 0 24px 0 8px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .dark-select-wrapper::after {
+      content: "";
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid #888888;
+      pointer-events: none;
+    }
+
+    .styled-scroll::-webkit-scrollbar {
+      width: 10px;
+      background: #101010;
+    }
+
+    .styled-scroll::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 1px;
+    }
+
+    .general-content-layout {
+      width: 100%;
+      display: flex;
+    }
+
+    .general-left-col {
+      width: 270px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .side-subpanel {
+      flex: 1;
+      padding-left: 20px;
+      display: none;
+      flex-direction: column;
+    }
+
+    .side-subpanel.open {
+      display: flex;
+    }
+
+    .method-header-title {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .method-header-sub {
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 2px;
+      margin-bottom: 10px;
+    }
+
+    .methods-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .method-item {
+      height: 24px;
+      background-color: #121212;
+      border: 1px solid #1f1f1f;
+      border-radius: 3px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .method-item:hover {
+      background-color: #191919;
+    }
+
+    .method-item.selected {
+      color: #ecff00;
+    }
+
+    .key-group {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .key-label {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .key-btn {
+      width: 190px;
+      height: 28px;
+      background-color: #161616;
+      border-radius: 3px;
+      border: 1px solid #242424;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .key-btn:hover {
+      background-color: #1f1f1f;
+      border-color: #333333;
+    }
+
+    .key-btn.listening {
+      border-color: #0077ff;
+      color: #00b4d8;
+    }
+
+    .color-picker-box {
+      display: flex;
+      gap: 7px;
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+
+    .cp-gradient-area {
+      width: 60px;
+      height: 115px;
+      border: 1px solid #222;
+      border-radius: 2px;
+      background: linear-gradient(to bottom, rgba(255, 0, 0, 0.9), #000000), linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+      background-blend-mode: multiply;
+      position: relative;
+    }
+
+    .cp-alpha-bar {
+      width: 24px;
+      height: 115px;
+      border: 1px solid #222;
+      border-radius: 2px;
+      background: #ffffff;
+      background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ccc 75%), 
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+      position: relative;
+    }
+
+    .cp-hue-bar {
+      width: 24px;
+      height: 115px;
+      border: 1px solid #222;
+      border-radius: 2px;
+      background: linear-gradient(to bottom, #ff0000, #ff00ff, #0000ff, #00ffff, #00ff00, #ffff00, #ff0000);
+    }
+
+    .cp-input-rgba {
+      width: 122px;
+      height: 24px;
+      background-color: #121212;
+      border: 1px solid #222;
+      border-radius: 2px;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0 6px;
+      outline: none;
+    }
+
+    .preview-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 5px;
+    }
+
+    .esp-text-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .esp-item-name { color: #ffffff; font-size: 13px; font-weight: 700; }
+    .esp-item-rank { color: #0022ff; font-size: 13px; font-weight: 700; }
+    .esp-item-team { color: #ecff00; font-size: 13px; font-weight: 700; display: none; }
+    .esp-item-weapon { color: #ecff00; font-size: 13px; font-weight: 700; }
+    .esp-item-money { color: #00FD00; font-size: 13px; font-weight: 700; display: none; }
+    .esp-item-armor { color: #0707D1; font-size: 13px; font-weight: 700; display: none; }
+
+    .character-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .character-img {
+      height: 275px;
+      display: block;
+      object-fit: contain;
+      pointer-events: none;
+      transition: filter 0.2s ease;
+    }
+
+    .character-img.chams-active {
+      filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+    }
+
+    .esp-skeleton {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: none;
+      filter: drop-shadow(0 0 1px #000000) drop-shadow(0 0 1.5px #000000);
+    }
+
+    .esp-corner-box {
+      position: absolute;
+      top: -2px;
+      bottom: -2px;
+      left: -6px;
+      right: -6px;
+      pointer-events: none;
+    }
+
+    .corner {
+      position: absolute;
+      width: 22px;
+      height: 32px;
+      border-color: #edff00;
+      border-style: solid;
+    }
+
+    .c-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+    .c-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+    .c-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+    .c-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+    .esp-health-bar {
+      position: absolute;
+      top: -2px;
+      bottom: -2px;
+      left: -13px;
+      width: 2px;
+      background-color: #29f500;
+      pointer-events: none;
+    }
+
+    /* Подвкладки */
+    .aim-subpane, .main-subpane, .visuals-subpane, .misc-subpane {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .aim-subpane.active, .main-subpane.active, .visuals-subpane.active, .misc-subpane.active {
+      display: flex;
+    }
+
+    .welcome-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 12px 14px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .welcome-card-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .welcome-card {
+      height: 170px;
+      border-radius: 4px;
+      overflow: hidden;
+      background-color: #141414;
+      border: 1px solid #1f1f1f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .welcome-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .welcome-card-caption {
+      margin-top: 5px;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .config-buttons-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .config-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .config-item {
+      width: 230px;
+      height: 26px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .config-item:hover {
+      background-color: #1a1a1a;
+      border-color: #333333;
+    }
+
+    .config-item.selected {
+      border-color: #555555;
+      background-color: #181818;
+    }
+
+    .target-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .target-top-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .target-search {
+      flex: 1;
+      height: 28px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      color: #ffffff;
+      padding: 0 10px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .target-search:focus {
+      border-color: #444444;
+    }
+
+    .target-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .target-row {
+      display: flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 6px;
+      border-radius: 2px;
+    }
+
+    .target-row:hover {
+      background-color: #141414;
+    }
+
+    .target-name {
+      flex: 1;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-right: 12px;
+    }
+
+    .target-show {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-right: 18px;
+      cursor: pointer;
+    }
+
+    .target-show .chk-label {
+      color: #444444;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .target-show.checked .chk-label {
+      color: #ffffff;
+    }
+
+    .target-input {
+      width: 180px;
+      height: 22px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 2px;
+      margin-right: 10px;
+      color: #ffffff;
+      font-size: 11px;
+      padding: 0 6px;
+      outline: none;
+    }
+
+    .target-color-pill {
+      width: 14px;
+      height: 18px;
+      background-color: #ffffff;
+      border-radius: 3px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .lua-list-container {
+      width: 230px;
+      height: 310px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 8px;
+      padding-right: 4px;
+    }
+
+    .lua-item {
+      height: 26px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    .lua-item:hover {
+      background-color: #181818;
+    }
+
+    .lua-item.loaded {
+      color: #22cc44;
+    }
+
+    /* ================= НОВЫЕ СТИЛИ (Фото 1-6) ================= */
+    /* Money Printer 3D Preview (Visuals > Entity) */
+    .printer-preview-box {
+      width: 220px;
+      height: 160px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .printer-model-container {
+      position: relative;
+      width: 190px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 3D Изометрическая коробка принтера */
+    .printer-3d {
+      width: 160px;
+      height: 85px;
+      position: relative;
+      transform: rotate(-10deg) skew(18deg, -8deg);
+      border: 1.5px solid #ffffff;
+      background: linear-gradient(135deg, #881b1b, #440c0c);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .printer-text-top {
+      font-size: 8.5px;
+      font-style: italic;
+      color: #e0e0e0;
+      margin-bottom: 2px;
+    }
+
+    .printer-money-val {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffff33;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+
+    .printer-title-hp {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 2px;
+    }
+
+    .printer-slot-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .printer-slot {
+      width: 80px;
+      height: 4px;
+      background-color: #000000;
+      border-radius: 1px;
+    }
+
+    .printer-led-yellow {
+      width: 6px;
+      height: 6px;
+      background-color: #ffeb3b;
+      box-shadow: 0 0 4px #ffeb3b;
+      border-radius: 1px;
+    }
+
+    .printer-led-red {
+      width: 8px;
+      height: 6px;
+      background-color: #f44336;
+      border-radius: 1px;
+    }
+
+    /* Font List & Side Panel (Visuals > Font) */
+    .font-list-scroll {
+      width: 220px;
+      height: 380px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 4px;
+    }
+
+    .font-item-row {
+      height: 25px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .font-item-row:hover {
+      background-color: #1a1a1a;
+    }
+
+    .font-item-row.selected {
+      background-color: #262626;
+      border-color: #383838;
+    }
+
+    .font-preview-textarea {
+      width: 100%;
+      height: 120px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 13px;
+      outline: none;
+      resize: none;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    .font-set-for-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .font-set-btn {
+      flex: 1;
+      height: 28px;
+      background-color: #161616;
+      border: 1px solid #242424;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .font-set-btn:hover {
+      background-color: #222222;
+    }
+
+    /* Spam Box (Misc > Spam) */
+    .spam-input-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+
+    .spam-list-area {
+      width: 100%;
+      height: 220px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      padding: 8px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .spam-entry-row {
+      height: 24px;
+      background-color: #161616;
+      border: 1px solid #242424;
+      border-radius: 2px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    /* Logs Area (Misc > Logs) */
+    .logs-filter-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      overflow-x: auto;
+    }
+
+    .logs-output-window {
+      width: 100%;
+      height: 310px;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      padding: 6px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .log-line {
+      height: 24px;
+      background-color: #141414;
+      border: 1px solid #1f1f1f;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= GMOD MAIN MENU ФОН ================= -->
+  <div class="gmod-bg-container">
+    <div class="gmod-wallpaper active" id="bg-layer-1"></div>
+    <div class="gmod-wallpaper" id="bg-layer-2"></div>
+  </div>
+
+  <div class="gmod-top-notice">You are on the x86-64 branch. Click here to find out more. ( 2026.10.26 )</div>
+
+  <div class="gmod-header-logo">
+    <div class="gmod-logo-box"><span class="gmod-logo-g">g</span></div>
+    <div class="gmod-logo-text">garry's mod</div>
+  </div>
+
+  <div class="gmod-main-nav">
+    <div class="gmod-nav-item">Start New Game</div>
+    <div class="gmod-nav-item">Find Multiplayer Game</div>
+    <div class="gmod-nav-spacer"></div>
+    <div class="gmod-nav-item">Addons</div>
+    <div class="gmod-nav-item">Dupes</div>
+    <div class="gmod-nav-item">Saves</div>
+    <div class="gmod-nav-item">Demos</div>
+    <div class="gmod-nav-spacer"></div>
+    <div class="gmod-nav-item">Options</div>
+    <div class="gmod-nav-spacer"></div>
+    <div class="gmod-nav-item">Quit</div>
+  </div>
+
+  <div class="gmod-news-card">
+    <img src="https://images3.alphacoders.com/557/thumb-350-557525.webp" alt="September 2026 Update" class="gmod-news-img" id="gmod-news-img">
+    <div class="gmod-news-overlay">
+      <div class="gmod-news-title">September 2026 Update</div>
+      <div class="gmod-news-desc">64-bit Windows builds, Sandbox improvements and many smaller changes</div>
+      <div class="gmod-news-controls">
+        <div class="gmod-ctrl-box active"></div>
+        <div class="gmod-ctrl-box"></div>
+        <div class="gmod-ctrl-box"></div>
+        <span class="gmod-ctrl-close">✕</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gmod-bottom-toolbar">
+    <div class="gmod-tool-badge">2</div>
+    <div class="gmod-tool-btn">⚠️ Problems</div>
+    <div class="gmod-tool-btn">🎮 Games</div>
+    <div class="gmod-tool-btn">🇬🇧</div>
+    <div class="gmod-tool-btn">🔨 Sandbox</div>
+  </div>
+
+  <!-- ================= ГЛАВНОЕ ОКНО ЧИТА ================= -->
+  <div class="menu-window" id="draggable-window">
+    
+    <div class="titlebar" id="window-titlebar">
+      <span class="title">exechack.cc: menu preview (beta)</span>
+      <div class="close-btn" title="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="menu-body">
+
+      <!-- Боковая панель -->
+      <div class="sidebar">
+
+        <div class="sidebar-item cheat-item" data-tab="main">
+          <div class="sidebar-avatar">
+            <img src="https://github.com/Exec7.png" alt="Exec Avatar" onerror="this.src='https://x.exechack.cc/contents/visuals_white.png'">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Main</span>
+            <span class="item-desc">Loser</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-tab="aimbot">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/aimbot_white.png" alt="Aimbot">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Aimbot</span>
+            <span class="item-desc">nospread silent</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item active" data-tab="visuals">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/visuals_white.png" alt="Visuals">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Visuals</span>
+            <span class="item-desc">esp radar</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-tab="misc">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/misc_white.png" alt="Misc">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Misc</span>
+            <span class="item-desc">bhop spam</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-tab="hvh">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/hvh_white.png" alt="HvH">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">HvH</span>
+            <span class="item-desc">antiaim</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-tab="config">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/config_white.png" alt="Config">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Config</span>
+            <span class="item-desc">load keybinds</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-tab="target">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/target_white.png" alt="Target">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Target</span>
+            <span class="item-desc">players ents</span>
+          </div>
+        </div>
+
+        <div class="sidebar-item" data-tab="lua">
+          <div class="sidebar-icon">
+            <img src="https://x.exechack.cc/contents/lua_white.png" alt="Lua">
+          </div>
+          <div class="sidebar-text">
+            <span class="item-title">Lua</span>
+            <span class="item-desc">editor list</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Центральная зона -->
+      <div class="main-content">
+        
+        <!-- ================= 0. ВКЛАДКА MAIN ================= -->
+        <div class="tab-pane" id="pane-main">
+          <div class="subtabs-bar">
+            <span class="subtab active" data-subpane="main-welcome">WELCOME</span>
+            <span class="subtab" data-subpane="main-general">GENERAL</span>
+          </div>
+
+          <div class="content-area">
+            <div class="main-subpane active" id="main-welcome">
+              <div class="welcome-grid">
+                <div class="welcome-card-wrapper">
+                  <div class="welcome-card"><img src="https://i.imgur.com/8Q8pY7W.jpeg" alt="image1" class="welcome-img"></div>
+                  <div class="welcome-card-caption">image1</div>
+                </div>
+                <div class="welcome-card-wrapper">
+                  <div class="welcome-card"><img src="https://images3.alphacoders.com/557/thumb-350-557525.webp" alt="image2" class="welcome-img"></div>
+                  <div class="welcome-card-caption">image2</div>
+                </div>
+                <div class="welcome-card-wrapper">
+                  <div class="welcome-card"><img src="https://i.imgur.com/gK9qN7f.png" alt="image3" class="welcome-img"></div>
+                  <div class="welcome-card-caption">image3</div>
+                </div>
+                <div class="welcome-card-wrapper">
+                  <div class="welcome-card"><img src="https://i.imgur.com/4qUq7V9.png" alt="image4" class="welcome-img"></div>
+                  <div class="welcome-card-caption">image4</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="main-subpane" id="main-general">
+              <div class="general-content-layout">
+                <div class="general-left-col">
+                  <div class="checkbox-row" style="height: 30px;">
+                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;" id="run-method-label">Run Method (Standart method)</span>
+                    <div class="dots-btn" data-panel="panel-run-method">..</div>
+                  </div>
+                  <div class="checkbox-row" style="height: 30px;">
+                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Notifications</span>
+                    <div class="dots-btn" data-panel="panel-notification">..</div>
+                  </div>
+                  <div class="checkbox-row" style="height: 30px;">
+                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Theme</span>
+                    <div class="dots-btn" data-panel="panel-theme">..</div>
+                  </div>
+                  <div class="checkbox-row" style="height: 30px; margin-bottom: 12px;">
+                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Animated Background</span>
+                    <div class="dots-btn" data-panel="panel-anim-bg">..</div>
+                  </div>
+                  <button class="btn-action" style="width: 140px;">Unload</button>
+                </div>
+
+                <div class="side-subpanel" id="panel-run-method">
+                  <div class="method-header-title">Run Method</div>
+                  <div class="method-header-sub">method for injecting exechack into server code</div>
+                  <div class="methods-list" id="methods-container">
+                    <div class="method-item" data-method="None">None</div>
+                    <div class="method-item selected" data-method="Standart method">Standart method</div>
+                    <div class="method-item" data-method="Not safe method">Not safe method</div>
+                    <div class="method-item" data-method="Alternative method">Alternative method</div>
+                    <div class="method-item" data-method="Without security 2">Without security 2</div>
+                    <div class="method-item" data-method="Not safe method 2">Not safe method 2</div>
+                    <div class="method-item" data-method="Without security">Without security</div>
+                    <div class="method-item" data-method="Another method">Another method</div>
+                    <div class="method-item" data-method="Standart method + Safe Mode">Standart method + Safe Mode</div>
+                    <div class="method-item" data-method="[Other] Net blocker & logger">[Other] Net blocker & logger</div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-notification">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Notification</div>
+                  <div class="checkbox-list">
+                    <div class="checkbox-row checked">
+                      <div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Kills & Deaths</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-theme">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Theme</div>
+                  <div class="methods-list">
+                    <div class="method-item">Custom</div>
+                    <div class="method-item selected">Dark</div>
+                    <div class="method-item">Light</div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-anim-bg">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Theme</div>
+                  <div class="methods-list">
+                    <div class="method-item selected">None</div>
+                    <div class="method-item">Lines</div>
+                    <div class="method-item">Snow</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= 1. ВКЛАДКА AIMBOT ================= -->
+        <div class="tab-pane" id="pane-aimbot">
+          <div class="subtabs-bar">
+            <span class="subtab active" data-subpane="aim-main">MAIN</span>
+            <span class="subtab" data-subpane="aim-target">TARGET</span>
+            <span class="subtab" data-subpane="aim-accuracy">ACCURACY</span>
+            <span class="subtab" data-subpane="aim-triggerbot">TRIGGERBOT</span>
+            <span class="subtab" data-subpane="aim-visualization">VISUALIZATION</span>
+          </div>
+
+          <div class="content-area">
+            <div class="aim-subpane active" id="aim-main">
+              <div class="controls-col">
+                <div class="checkbox-list">
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Silent</span></div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Cursor Aimming</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Auto Fire</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Auto Reload</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Disable Interpolation</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Camera Fix</span></div></div>
+                </div>
+                <div class="key-group"><span class="key-label">Key</span><div class="key-btn" data-key="MOUSE4">MOUSE4</div></div>
+                <div class="key-group"><span class="key-label">AutoPistol Key</span><div class="key-btn" data-key="NONE">NONE</div></div>
+              </div>
+            </div>
+
+            <div class="aim-subpane" id="aim-target">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 270px;">
+                  <div class="slider-group">
+                    <div class="slider-title">Fov</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="0" max="180" value="90" step="1" class="custom-range" id="fovSlider"></div>
+                      <div class="slider-value" id="fovValue">90</div>
+                    </div>
+                  </div>
+                  <div class="checkbox-list">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Auto Wall</span></div><div class="dots-btn" data-panel="panel-autowall">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Disable On Kill</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Target Lock</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Return Fire</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Entity Aimming</span></div></div>
+                    <div class="checkbox-row" style="margin-bottom: 10px;"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore Filter</span></div><div class="dots-btn" data-panel="panel-ignore-filter">..</div></div>
+                  </div>
+                  <div class="slider-title" style="margin-bottom: 6px;">Priority</div>
+                  <div class="dark-select-wrapper">
+                    <select class="dark-select"><option selected>Field of View</option><option>Closest Distance</option><option>Least Health</option></select>
+                  </div>
+                  <div class="slider-title" style="margin-bottom: 6px;">Prediction</div>
+                  <div class="dark-select-wrapper">
+                    <select class="dark-select"><option selected>Default</option><option>Engine</option><option>Velocity</option></select>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-autowall">
+                  <div class="method-header-title" style="margin-bottom: 12px;">AutoWall</div>
+                  <div class="checkbox-list">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">M9K</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">SWB FAS2, CW2</span></div></div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-ignore-filter">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Ignore Filter</div>
+                  <div class="checkbox-list">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Baby Good time</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">My Team</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Noclip</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Bot</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Steam Friends</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="aim-subpane" id="aim-accuracy">
+              <div class="controls-col" style="width: 270px;">
+                <div class="checkbox-list">
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Spread</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked" style="margin-bottom: 12px;"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Recoil</span></div></div>
+                </div>
+                <div class="checkbox-row" style="height: auto; margin-bottom: 6px;"><span class="slider-title" style="margin-bottom: 0;">Hitbox</span><div class="dots-btn">..</div></div>
+                <div class="dark-select-wrapper">
+                  <select class="dark-select"><option selected>Head</option><option>Chest</option><option>Stomach</option></select>
+                </div>
+                <div class="slider-group">
+                  <div class="slider-title">Smoothing</div>
+                  <div class="slider-row">
+                    <div class="slider-container"><input type="range" min="0" max="100" value="0" step="1" class="custom-range" id="smoothingSlider"></div>
+                    <div class="slider-value" id="smoothingValue">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="aim-subpane" id="aim-triggerbot">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 270px;">
+                  <div class="checkbox-list" style="margin-bottom: 12px;">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div>
+                  </div>
+                  <div class="key-group" style="margin-top: 0; margin-bottom: 14px;"><span class="key-label">Key</span><div class="key-btn" data-key="NONE">NONE</div></div>
+                  <div class="checkbox-row" style="height: 28px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Hitbox</span><div class="dots-btn" data-panel="panel-trigger-hitbox">..</div></div>
+                  <div class="checkbox-row" style="height: 28px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Ignore Filter</span><div class="dots-btn">..</div></div>
+                </div>
+
+                <div class="side-subpanel" id="panel-trigger-hitbox">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Hitbox</div>
+                  <div class="checkbox-list">
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Head</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chest</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Stomach</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Left Arm</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Right Arm</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Left Leg</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Right Leg</span></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="aim-subpane" id="aim-visualization">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 270px;">
+                  <div class="checkbox-list">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Fov Circle</span></div><div class="dots-btn" data-panel="panel-vis-fov">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Target Snapline</span></div><div class="dots-btn" data-panel="panel-vis-snapline">..</div></div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-vis-fov">
+                  <div class="method-header-title" style="margin-bottom: 8px;">Fov Circle</div>
+                  <div class="checkbox-list" style="margin-bottom: 8px;">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Fill</span></div></div>
+                  </div>
+                  <div class="color-picker-box">
+                    <div class="cp-gradient-area"></div>
+                    <div class="cp-alpha-bar"></div>
+                    <div class="cp-hue-bar"></div>
+                  </div>
+                  <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
+                </div>
+
+                <div class="side-subpanel" id="panel-vis-snapline">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Target Snapline</div>
+                  <div class="color-picker-box">
+                    <div class="cp-gradient-area"></div>
+                    <div class="cp-alpha-bar"></div>
+                    <div class="cp-hue-bar"></div>
+                  </div>
+                  <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= 2. ВКЛАДКА VISUALS ================= -->
+        <div class="tab-pane active" id="pane-visuals">
+          <div class="subtabs-bar">
+            <span class="subtab active" data-subpane="vis-player">PLAYER</span>
+            <span class="subtab" data-subpane="vis-entity">ENTITY</span>
+            <span class="subtab" data-subpane="vis-other">OTHER</span>
+            <span class="subtab" data-subpane="vis-font">FONT</span>
+          </div>
+
+          <div class="content-area">
+            
+            <!-- Visuals -> PLAYER -->
+            <div class="visuals-subpane active" id="vis-player">
+              <div class="controls-col">
+                <div class="slider-group">
+                  <div class="slider-title">Distance</div>
+                  <div class="slider-row">
+                    <div class="slider-container"><input type="range" min="0" max="25000" value="20000" step="100" class="custom-range" id="distanceSlider"></div>
+                    <div class="slider-value" id="distanceValue">20000</div>
+                  </div>
+                </div>
+
+                <div class="checkbox-list">
+                  <div class="checkbox-row" data-feature="dormant"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Dormant</span></div></div>
+                  <div class="checkbox-row checked" data-feature="name"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Name</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked" data-feature="rank"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Rank</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" data-feature="team"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Team</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" data-feature="money"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Money</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked" data-feature="weapon"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Weapon</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked" data-feature="health"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Health</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" data-feature="armor"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Armor</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked" data-feature="box"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Box</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" data-feature="chams"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" data-feature="skeleton"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Skeleton</span></div><div class="dots-btn">..</div></div>
+                </div>
+              </div>
+
+              <div class="preview-col">
+                <div class="esp-text-group">
+                  <span class="esp-item-name" id="preview-name">Name</span>
+                  <span class="esp-item-rank" id="preview-rank">Rank</span>
+                  <span class="esp-item-team" id="preview-team">Team</span>
+                  <span class="esp-item-weapon" id="preview-weapon">Weapon</span>
+                  <span class="esp-item-money" id="preview-money">$100.000</span>
+                  <span class="esp-item-armor" id="preview-armor">100</span>
+                </div>
+
+                <div class="character-wrapper">
+                  <img src="https://x.exechack.cc/contents/prew.png" alt="ESP Preview Target" class="character-img" id="preview-character">
+                  <div class="esp-health-bar" id="preview-health"></div>
+                  <div class="esp-corner-box" id="preview-box">
+                    <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
+                  </div>
+                  <svg id="preview-skeleton" class="esp-skeleton" viewBox="0 0 100 200" preserveAspectRatio="none">
+                    <circle cx="50" cy="22" r="5" stroke="#ffffff" stroke-width="1.8" fill="none"/>
+                    <line x1="50" y1="27" x2="50" y2="38" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="50" y1="38" x2="50" y2="92" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="50" y1="38" x2="34" y2="40" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="34" y1="40" x2="26" y2="68" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="26" y1="68" x2="20" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="50" y1="38" x2="66" y2="40" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="66" y1="40" x2="74" y2="68" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="74" y1="68" x2="82" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="50" y1="92" x2="40" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="40" y1="95" x2="38" y2="142" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="38" y1="142" x2="43" y2="190" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="50" y1="92" x2="60" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="60" y1="95" x2="62" y2="138" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="62" y1="138" x2="61" y2="192" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    <circle cx="34" cy="40" r="1.8" fill="#ffffff"/>
+                    <circle cx="26" cy="68" r="1.8" fill="#ffffff"/>
+                    <circle cx="20" cy="95" r="1.8" fill="#ffffff"/>
+                    <circle cx="66" cy="40" r="1.8" fill="#ffffff"/>
+                    <circle cx="74" cy="68" r="1.8" fill="#ffffff"/>
+                    <circle cx="82" cy="95" r="1.8" fill="#ffffff"/>
+                    <circle cx="50" cy="38" r="1.8" fill="#ffffff"/>
+                    <circle cx="50" cy="92" r="1.8" fill="#ffffff"/>
+                    <circle cx="38" cy="142" r="1.8" fill="#ffffff"/>
+                    <circle cx="43" cy="190" r="1.8" fill="#ffffff"/>
+                    <circle cx="62" cy="138" r="1.8" fill="#ffffff"/>
+                    <circle cx="61" cy="192" r="1.8" fill="#ffffff"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visuals -> ENTITY (Фото 1) -->
+            <div class="visuals-subpane" id="vis-entity">
+              <div class="controls-col" style="width: 270px;">
+                <div class="slider-group">
+                  <div class="slider-title">Distance</div>
+                  <div class="slider-row">
+                    <div class="slider-container"><input type="range" min="0" max="25000" value="1982" step="50" class="custom-range" id="entityDistSlider"></div>
+                    <div class="slider-value" id="entityDistVal">1982</div>
+                  </div>
+                </div>
+
+                <div class="checkbox-list">
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Dormant</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Name</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Box</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn">..</div></div>
+                </div>
+              </div>
+
+              <!-- Превью Money Printer -->
+              <div class="preview-col" style="justify-content: center; align-items: flex-start; padding-left: 20px;">
+                <div class="slider-title" style="font-size: 15px; margin-bottom: 25px;">Preview</div>
+                <div class="printer-preview-box">
+                  <div class="printer-model-container">
+                    <div class="printer-3d">
+                      <span class="printer-text-top">Money Printer:</span>
+                      <span class="printer-money-val">$0</span>
+                      <span class="printer-title-hp">Printer (HP 100)</span>
+                      <div class="printer-slot-row">
+                        <div class="printer-slot"></div>
+                        <div class="printer-led-yellow"></div>
+                        <div class="printer-led-red"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visuals -> OTHER (Фото 2) -->
+            <div class="visuals-subpane" id="vis-other">
+              <div class="controls-col styled-scroll" style="width: 320px; overflow-y: auto; max-height: 100%; padding-right: 8px;">
+                <div class="checkbox-list">
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">OBS Bypass</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Radar</span></div><div class="dots-btn">..</div></div>
+                  
+                  <div class="checkbox-row" style="height: 28px;"><span class="slider-title" style="margin-bottom: 0;">Skybox Changer</span><div class="dots-btn">..</div></div>
+                  
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Visual Recoil</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Field of View</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Debug Camera</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">ThirdPerson</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Filter</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Info</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Full Bright</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Spectators list</span></div><div class="dots-btn">..</div></div>
+                  
+                  <div class="checkbox-row" style="height: 28px;"><span class="slider-title" style="margin-bottom: 0;">Aspect ratio</span><div class="dots-btn">..</div></div>
+                  
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">CrossHair</span></div><div class="dots-btn">..</div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visuals -> FONT (Фото 3) -->
+            <div class="visuals-subpane" id="vis-font">
+              <div class="general-content-layout">
+                <!-- Список шрифтов -->
+                <div class="font-list-scroll styled-scroll" id="font-items-list">
+                  <div class="font-item-row" data-font="Custom Font">Custom Font</div>
+                  <div class="font-item-row selected" data-font="Akbar">Akbar</div>
+                  <div class="font-item-row" data-font="Coolvetica">Coolvetica</div>
+                  <div class="font-item-row" data-font="Roboto">Roboto</div>
+                  <div class="font-item-row" data-font="Arial">Arial</div>
+                  <div class="font-item-row" data-font="Verdana">Verdana</div>
+                  <div class="font-item-row" data-font="Trebuchet MS">Trebuchet MS</div>
+                  <div class="font-item-row" data-font="Courier New">Courier New</div>
+                  <div class="font-item-row" data-font="Tahoma">Tahoma</div>
+                  <div class="font-item-row" data-font="Marlett">Marlett</div>
+                  <div class="font-item-row" data-font="Myanmar Text">Myanmar Text</div>
+                  <div class="font-item-row" data-font="Impact">Impact</div>
+                  <div class="font-item-row" data-font="Bahnschrift">Bahnschrift</div>
+                </div>
+
+                <!-- Боковое меню настройки шрифта (по умолчанию скрыто) -->
+                <div class="side-subpanel" id="panel-font-settings" style="display: none; padding-left: 24px;">
+                  <div class="method-header-title" id="font-active-title" style="font-size: 17px; margin-bottom: 10px;">Akbar</div>
+                  
+                  <div class="slider-group" style="margin-bottom: 10px;">
+                    <div class="slider-title" style="margin-bottom: 4px;">Size</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="8" max="48" value="17" step="1" class="custom-range" id="fontSizeSlider"></div>
+                      <div class="slider-value" id="fontSizeVal">17</div>
+                    </div>
+                  </div>
+
+                  <div class="checkbox-list" style="margin-bottom: 10px;">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Outline</span></div></div>
+                  </div>
+
+                  <div class="slider-title" style="margin-bottom: 0;">Preview</div>
+                  <textarea class="font-preview-textarea" id="font-preview-text">exechack is best</textarea>
+
+                  <div class="slider-title" style="margin-bottom: 0;">set for</div>
+                  <div class="font-set-for-row">
+                    <div class="font-set-btn">Player</div>
+                    <div class="font-set-btn">Entity</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= 3. ВКЛАДКА MISC ================= -->
+        <div class="tab-pane" id="pane-misc">
+          <div class="subtabs-bar">
+            <span class="subtab active" data-subpane="misc-main">MAIN</span>
+            <span class="subtab" data-subpane="misc-movement">MOVEMENT</span>
+            <span class="subtab" data-subpane="misc-spam">SPAM</span>
+            <span class="subtab" data-subpane="misc-logs">LOGS</span>
+          </div>
+
+          <div class="content-area">
+            <!-- Misc -> MAIN -->
+            <div class="misc-subpane active" id="misc-main">
+              <div class="controls-col" style="width: 280px;">
+                <div class="checkbox-list">
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Keypad Logger</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">E Spammer</span></div></div>
+                </div>
+                <div style="margin-top: 14px;"><button class="btn-action" id="btn-kick-ban">Get ban/kick on server</button></div>
+              </div>
+            </div>
+
+            <!-- Misc -> MOVEMENT (Фото 4) -->
+            <div class="misc-subpane" id="misc-movement">
+              <div class="controls-col" style="width: 270px;">
+                <div class="checkbox-list">
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Bunny hop</span></div></div>
+                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Auto Strafe</span></div></div>
+                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Edge Jump</span></div></div>
+                </div>
+
+                <div class="slider-title" style="margin-top: 10px; margin-bottom: 6px;">Auto Strafe Mode</div>
+                <div class="dark-select-wrapper">
+                  <select class="dark-select"><option selected>Legit</option><option>Rage</option><option>Directional</option></select>
+                </div>
+
+                <div class="slider-group">
+                  <div class="slider-title">Max Hops</div>
+                  <div class="slider-row">
+                    <div class="slider-container"><input type="range" min="0" max="50" value="0" step="1" class="custom-range" id="maxHopsSlider"></div>
+                    <div class="slider-value" id="maxHopsVal">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Misc -> SPAM (Фото 5) -->
+            <div class="misc-subpane" id="misc-spam">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 270px;">
+                  <div class="checkbox-list">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chat</span></div><div class="dots-btn" data-panel="panel-spam-chat">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Kill Say</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">exechack Advert</span></div></div>
+                  </div>
+                  <div class="checkbox-row" style="margin-top: 6px;"><span class="slider-title" style="margin-bottom: 0;">Servers Connect Spammer</span><div class="dots-btn">..</div></div>
+                </div>
+
+                <!-- Боковая панель Spam > Chat (по умолчанию скрыта) -->
+                <div class="side-subpanel" id="panel-spam-chat">
+                  <div class="method-header-title" style="margin-bottom: 8px;">Chat</div>
+                  <div class="checkbox-list" style="margin-bottom: 6px;">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ooc</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Pm (RP)</span></div></div>
+                  </div>
+
+                  <div class="spam-input-row">
+                    <input type="text" class="dark-input" id="spam-msg-input" placeholder="" style="flex: 1;">
+                    <button class="btn-action" id="btn-add-spam" style="width: 26px; padding: 0;">+</button>
+                  </div>
+
+                  <div class="spam-list-area styled-scroll" id="spam-messages-list">
+                    <div class="spam-entry-row">// exechack.cc</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Misc -> LOGS (Фото 6) -->
+            <div class="misc-subpane" id="misc-logs">
+              <div style="width: 100%; display: flex; flex-direction: column;">
+                <div class="logs-filter-row">
+                  <button class="btn-action" style="padding: 0 12px;">Kill</button>
+                  <button class="btn-action" style="padding: 0 12px;">Change Name</button>
+                  <button class="btn-action" style="padding: 0 12px;">Chat</button>
+                  <button class="btn-action" style="padding: 0 12px;">Damage</button>
+                  <button class="btn-action" style="padding: 0 12px;">Connect</button>
+                  <button class="btn-action" style="padding: 0 12px;">Disconnect</button>
+                </div>
+                <input type="text" class="dark-input" placeholder="" style="width: 100%; margin-bottom: 8px;">
+                <div class="logs-output-window styled-scroll">
+                  <div class="log-line">[23:56:48] Exec killed Bot02 with #HL2_357Handgun</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= 4. ВКЛАДКА HVH ================= -->
+        <div class="tab-pane" id="pane-hvh">
+          <div class="subtabs-bar">
+            <span class="subtab active">ANTI-AIM</span>
+            <span class="subtab">OTHER</span>
+          </div>
+
+          <div class="content-area">
+            <div class="controls-col" style="width: 240px;">
+              <div class="checkbox-list" style="margin-bottom: 12px;">
+                <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div>
+              </div>
+              <div class="slider-title" style="margin-bottom: 6px;">X</div>
+              <div class="dark-select-wrapper"><select class="dark-select"><option selected>Jitter</option><option>Static</option><option>Spin</option><option>Random</option></select></div>
+              <div class="slider-group" style="margin-bottom: 14px;">
+                <div class="slider-title" style="margin-bottom: 6px;">Emotion X</div>
+                <div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="50" class="custom-range" id="emotionX"></div><div class="slider-value" id="emotionXVal">50</div></div>
+              </div>
+              <div class="slider-title" style="margin-bottom: 6px;">Y</div>
+              <div class="dark-select-wrapper"><select class="dark-select"><option selected>TJitter</option><option>Jitter</option><option>Static</option><option>Spin</option><option>Backward</option></select></div>
+              <div class="slider-group">
+                <div class="slider-title" style="margin-bottom: 6px;">Emotion Y</div>
+                <div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="76" class="custom-range" id="emotionY"></div><div class="slider-value" id="emotionYVal">76</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= 5. ВКЛАДКА CONFIG ================= -->
+        <div class="tab-pane" id="pane-config">
+          <div class="subtabs-bar">
+            <span class="subtab active">MAIN</span>
+            <span class="subtab">KEY BINDS</span>
+            <span class="subtab">TIPS</span>
+          </div>
+
+          <div class="content-area">
+            <div class="controls-col" style="width: 260px;">
+              <div class="config-buttons-row">
+                <button class="btn-action" id="btn-create-config" style="width: 110px;">Create</button>
+                <button class="btn-action" style="width: 114px;">Cloud Key</button>
+              </div>
+              <input type="text" class="dark-input" id="config-input-name" placeholder="" style="width: 230px; margin-bottom: 6px;">
+              <div class="config-list" id="config-container">
+                <div class="config-item selected">1</div>
+                <div class="config-item">deat</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= 6. ВКЛАДКА TARGET ================= -->
+        <div class="tab-pane" id="pane-target">
+          <div class="subtabs-bar">
+            <span class="subtab active">ENTITY</span>
+            <span class="subtab">PLAYER</span>
+            <span class="subtab">TEAM</span>
+            <span class="subtab">RANK</span>
+            <span class="subtab">NET</span>
+          </div>
+
+          <div class="content-area">
+            <div class="target-container">
+              <div class="target-top-bar">
+                <input type="text" class="target-search" id="target-search-input" placeholder="">
+                <button class="btn-action" style="width: 72px;">Disable</button>
+              </div>
+              <div class="target-list styled-scroll" id="target-entity-list">
+                <div class="target-row" data-name="env_skypaint (1)"><span class="target-name">env_skypaint (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                <div class="target-row" data-name="class C_EnvTonemapController (1)"><span class="target-name">class C_EnvTonemapController (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                <div class="target-row" data-name="class C_FogController (1)"><span class="target-name">class C_FogController (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                <div class="target-row" data-name="class C_ShadowControl (1)"><span class="target-name">class C_ShadowControl (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                <div class="target-row" data-name="viewmodel (3)"><span class="target-name">viewmodel (3)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                <div class="target-row" data-name="class C_Sun (1)"><span class="target-name">class C_Sun (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                <div class="target-row" data-name="weapon_crowbar (1)"><span class="target-name">weapon_crowbar (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= 7. ВКЛАДКА LUA ================= -->
+        <div class="tab-pane" id="pane-lua">
+          <div class="subtabs-bar">
+            <span class="subtab active">MAIN</span>
+            <span class="subtab">GENERAL</span>
+            <span class="subtab">EDIT ADDONS</span>
+          </div>
+
+          <div class="content-area">
+            <div class="controls-col" style="width: 250px;">
+              <div class="config-buttons-row">
+                <!-- Кнопка Lua List открывает 3-е окно -->
+                <button class="btn-action" style="width: 110px;" id="btn-open-lualist">Lua List</button>
+                <!-- Кнопка Editor открывает 2-е окно -->
+                <button class="btn-action" style="width: 114px;" id="btn-open-editor">Editor</button>
+              </div>
+
+              <input type="text" class="dark-input" id="lua-search-input" placeholder="" style="width: 230px; margin-bottom: 6px;">
+
+              <div class="lua-list-container styled-scroll" id="lua-items-wrapper">
+                <div class="lua-item">clientcinema</div>
+                <div class="lua-item">exprerimentalnospread</div>
+                <div class="lua-item">hvhobkak1</div>
+                <div class="lua-item">hvhobkak2</div>
+                <div class="lua-item">Tetris</div>
+                <div class="lua-item">workshopaa</div>
+                <div class="lua-item loaded">allserver</div>
+                <div class="lua-item loaded">coyntcranger</div>
+                <div class="lua-item loaded">fullscripthook</div>
+                <div class="lua-item loaded">nameset</div>
+                <div class="lua-item loaded">removeerrors</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= ВТОРОЕ ОКНО: EDITOR ================= -->
+  <div class="editor-window" id="editor-window">
+    <div class="titlebar" id="editor-titlebar">
+      <span class="title">Editor</span>
+      <div class="close-btn" id="editor-close-btn" title="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="frame-body">
+      <iframe src="https://x.exechack.cc/contents/editor.html" class="frame-content"></iframe>
+    </div>
+    <div class="editor-footer">
+      <div class="editor-footer-left">
+        <button class="editor-btn">Save</button>
+        <button class="editor-btn">Net Logger</button>
+        <button class="editor-btn">Minify</button>
+        <button class="editor-btn">Beautify</button>
+      </div>
+      <button class="editor-btn" style="background-color: #1a1a1a;">Run Script</button>
+    </div>
+  </div>
+
+  <!-- ================= ТРЕТЬЕ ОКНО: LUA LIST ================= -->
+  <div class="lualist-window" id="lualist-window">
+    <div class="titlebar" id="lualist-titlebar">
+      <span class="title">Lua List</span>
+      <div class="close-btn" id="lualist-close-btn" title="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14">
+          <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="frame-body">
+      <iframe src="https://x.exechack.cc/lua/" class="frame-content"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // ================= ФОНЫ GMOD =================
+    const BG_IMAGE_1 = "https://wallpapercat.com/w/full/1/b/a/1179327-1920x1080-desktop-full-hd-garrys-mod-wallpaper-photo.jpg";
+    const BG_IMAGE_2 = "https://images3.alphacoders.com/557/thumb-350-557525.webp";
+
+    const layer1 = document.getElementById('bg-layer-1');
+    const layer2 = document.getElementById('bg-layer-2');
+
+    layer1.style.backgroundImage = `url('${BG_IMAGE_1}')`;
+    layer2.style.backgroundImage = `url('${BG_IMAGE_2}')`;
+
+    let activeBgIndex = 1;
+    function cycleBackgrounds() {
+      if (activeBgIndex === 1) {
+        layer1.classList.remove('active');
+        void layer2.offsetWidth;
+        layer2.classList.add('active');
+        activeBgIndex = 2;
+      } else {
+        layer2.classList.remove('active');
+        void layer1.offsetWidth;
+        layer1.classList.add('active');
+        activeBgIndex = 1;
+      }
+    }
+    setInterval(cycleBackgrounds, 30000);
+
+    // ================= DRAG & DROP ДЛЯ 3-Х ОКОН =================
+    const menuWindow = document.getElementById('draggable-window');
+    const editorWindow = document.getElementById('editor-window');
+    const lualistWindow = document.getElementById('lualist-window');
+
+    let highestZ = 30;
+    function bringToFront(el) {
+      highestZ++;
+      el.style.zIndex = highestZ;
+    }
+
+    function setupDraggable(windowEl, handleEl) {
+      let isDragging = false;
+      let dragStartX = 0, dragStartY = 0;
+      let initialLeft = 0, initialTop = 0;
+
+      handleEl.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.close-btn')) return;
+        bringToFront(windowEl);
+
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+
+        const rect = windowEl.getBoundingClientRect();
+        initialLeft = rect.left;
+        initialTop = rect.top;
+
+        document.querySelectorAll('iframe').forEach(f => f.style.pointerEvents = 'none');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - dragStartX;
+        const deltaY = e.clientY - dragStartY;
+
+        windowEl.style.left = (initialLeft + deltaX) + 'px';
+        windowEl.style.top = (initialTop + deltaY) + 'px';
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          document.querySelectorAll('iframe').forEach(f => f.style.pointerEvents = 'auto');
+        }
+      });
+
+      windowEl.addEventListener('mousedown', () => bringToFront(windowEl));
+    }
+
+    setupDraggable(menuWindow, document.getElementById('window-titlebar'));
+    setupDraggable(editorWindow, document.getElementById('editor-titlebar'));
+    setupDraggable(lualistWindow, document.getElementById('lualist-titlebar'));
+
+    // ================= ОТКРЫТИЕ ОКОН EDITOR И LUA LIST =================
+    const btnOpenEditor = document.getElementById('btn-open-editor');
+    const editorCloseBtn = document.getElementById('editor-close-btn');
+
+    if (btnOpenEditor && editorWindow) {
+      btnOpenEditor.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editorWindow.style.display = 'flex';
+        bringToFront(editorWindow);
+      });
+    }
+
+    if (editorCloseBtn && editorWindow) {
+      editorCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editorWindow.style.display = 'none';
+      });
+    }
+
+    const btnOpenLuaList = document.getElementById('btn-open-lualist');
+    const lualistCloseBtn = document.getElementById('lualist-close-btn');
+
+    if (btnOpenLuaList && lualistWindow) {
+      btnOpenLuaList.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lualistWindow.style.display = 'flex';
+        bringToFront(lualistWindow);
+      });
+    }
+
+    if (lualistCloseBtn && lualistWindow) {
+      lualistCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lualistWindow.style.display = 'none';
+      });
+    }
+
+    // ================= ЛОГИКА ВКЛАДОК МЕНЮ =================
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    const panes = {
+      main: document.getElementById('pane-main'),
+      aimbot: document.getElementById('pane-aimbot'),
+      visuals: document.getElementById('pane-visuals'),
+      misc: document.getElementById('pane-misc'),
+      hvh: document.getElementById('pane-hvh'),
+      config: document.getElementById('pane-config'),
+      target: document.getElementById('pane-target'),
+      lua: document.getElementById('pane-lua')
+    };
+
+    sidebarItems.forEach(item => {
+      item.addEventListener('click', () => {
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const tabKey = item.dataset.tab;
+        Object.values(panes).forEach(pane => {
+          if (pane) pane.classList.remove('active');
+        });
+
+        if (panes[tabKey]) {
+          panes[tabKey].classList.add('active');
+        }
+      });
+    });
+
+    // Переключение подвкладок
+    document.querySelectorAll('.subtabs-bar').forEach(bar => {
+      const subtabs = bar.querySelectorAll('.subtab');
+      subtabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          subtabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          const subpaneId = tab.dataset.subpane;
+          if (subpaneId) {
+            const parentPane = tab.closest('.tab-pane');
+            parentPane.querySelectorAll('.main-subpane, .aim-subpane, .visuals-subpane, .misc-subpane').forEach(p => p.classList.remove('active'));
+            const targetSubpane = document.getElementById(subpaneId);
+            if (targetSubpane) targetSubpane.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // Боковые меню ".."
+    const allDotsBtns = document.querySelectorAll('.dots-btn[data-panel]');
+    allDotsBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const panelId = btn.dataset.panel;
+        const targetPanel = document.getElementById(panelId);
+        if (!targetPanel) return;
+
+        const isCurrentlyOpen = targetPanel.classList.contains('open') || targetPanel.style.display === 'flex';
+
+        const parentLayout = btn.closest('.general-content-layout');
+        if (parentLayout) {
+          parentLayout.querySelectorAll('.side-subpanel').forEach(p => {
+            p.classList.remove('open');
+            p.style.display = 'none';
+          });
+          parentLayout.querySelectorAll('.dots-btn').forEach(b => b.classList.remove('active'));
+        }
+
+        if (!isCurrentlyOpen) {
+          targetPanel.classList.add('open');
+          targetPanel.style.display = 'flex';
+          btn.classList.add('active');
+        }
+      });
+    });
+
+    // Логика списка шрифтов (Visuals > Font)
+    const fontItems = document.querySelectorAll('#font-items-list .font-item-row');
+    const panelFontSettings = document.getElementById('panel-font-settings');
+    const fontActiveTitle = document.getElementById('font-active-title');
+    const fontPreviewText = document.getElementById('font-preview-text');
+
+    fontItems.forEach(item => {
+      item.addEventListener('click', () => {
+        fontItems.forEach(f => f.classList.remove('selected'));
+        item.classList.add('selected');
+
+        const fontName = item.dataset.font;
+        if (fontActiveTitle) fontActiveTitle.textContent = fontName;
+        if (fontPreviewText) fontPreviewText.style.fontFamily = `"${fontName}", sans-serif`;
+
+        if (panelFontSettings) {
+          panelFontSettings.style.display = 'flex';
+          panelFontSettings.classList.add('open');
+        }
+      });
+    });
+
+    // Слайдер размера шрифта
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+    if (fontSizeSlider && fontSizeVal && fontPreviewText) {
+      fontSizeSlider.addEventListener('input', (e) => {
+        const val = e.target.value;
+        fontSizeVal.textContent = val;
+        fontPreviewText.style.fontSize = val + 'px';
+      });
+    }
+
+    // Добавление строки в Spam (Misc > Spam)
+    const btnAddSpam = document.getElementById('btn-add-spam');
+    const spamMsgInput = document.getElementById('spam-msg-input');
+    const spamMessagesList = document.getElementById('spam-messages-list');
+
+    if (btnAddSpam && spamMsgInput && spamMessagesList) {
+      btnAddSpam.addEventListener('click', () => {
+        const text = spamMsgInput.value.trim();
+        if (!text) return;
+        const newRow = document.createElement('div');
+        newRow.className = 'spam-entry-row';
+        newRow.textContent = text;
+        spamMessagesList.appendChild(newRow);
+        spamMsgInput.value = '';
+      });
+    }
+
+    // Выбор метода Run Method
+    const runMethodLabel = document.getElementById('run-method-label');
+    const methodItems = document.querySelectorAll('#panel-run-method .method-item');
+    methodItems.forEach(item => {
+      item.addEventListener('click', () => {
+        methodItems.forEach(m => m.classList.remove('selected'));
+        item.classList.add('selected');
+        const methodName = item.dataset.method;
+        if (runMethodLabel) {
+          runMethodLabel.textContent = `Run Method (${methodName})`;
+        }
+      });
+    });
+
+    // Theme и Animated Background
+    document.querySelectorAll('#panel-theme .method-item, #panel-anim-bg .method-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.method-item').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // Слайдеры
+    function initSlider(sliderId, valueId, maxVal = 100) {
+      const slider = document.getElementById(sliderId);
+      const valText = document.getElementById(valueId);
+      if (!slider || !valText) return;
+
+      function update() {
+        const min = Number(slider.min) || 0;
+        const max = Number(slider.max) || maxVal;
+        const val = Number(slider.value);
+        const percentage = ((val - min) / (max - min)) * 100;
+        slider.style.setProperty('--percent', percentage + '%');
+        valText.textContent = val;
+      }
+      slider.addEventListener('input', update);
+      update();
+    }
+
+    initSlider('distanceSlider', 'distanceValue', 25000);
+    initSlider('entityDistSlider', 'entityDistVal', 25000);
+    initSlider('emotionX', 'emotionXVal', 100);
+    initSlider('emotionY', 'emotionYVal', 100);
+    initSlider('fovSlider', 'fovValue', 180);
+    initSlider('smoothingSlider', 'smoothingValue', 100);
+    initSlider('maxHopsSlider', 'maxHopsVal', 50);
+
+    // Чекбоксы Visuals + ESP элементы
+    const previewElements = {
+      name: document.getElementById('preview-name'),
+      rank: document.getElementById('preview-rank'),
+      team: document.getElementById('preview-team'),
+      weapon: document.getElementById('preview-weapon'),
+      money: document.getElementById('preview-money'),
+      armor: document.getElementById('preview-armor'),
+      health: document.getElementById('preview-health'),
+      box: document.getElementById('preview-box'),
+      skeleton: document.getElementById('preview-skeleton')
+    };
+
+    const characterImg = document.getElementById('preview-character');
+
+    document.querySelectorAll('.checkbox-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dots-btn')) return;
+
+        const isChecked = row.classList.toggle('checked');
+        const feature = row.dataset.feature;
+
+        if (feature === 'chams') {
+          if (characterImg) characterImg.classList.toggle('chams-active', isChecked);
+        } else if (previewElements[feature]) {
+          previewElements[feature].style.display = isChecked ? 'block' : 'none';
+        }
+      });
+    });
+
+    document.querySelectorAll('.target-show').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('checked');
+      });
+    });
+
+    // Кнопки биндов
+    const keyButtons = document.querySelectorAll('.key-btn');
+    let listeningBtn = null;
+
+    keyButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (listeningBtn && listeningBtn !== btn) {
+          listeningBtn.textContent = listeningBtn.dataset.key;
+          listeningBtn.classList.remove('listening');
+        }
+        listeningBtn = btn;
+        btn.classList.add('listening');
+        btn.textContent = '[PRESS KEY]';
+      });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (listeningBtn) {
+        e.preventDefault();
+        if (e.key === 'Escape') {
+          listeningBtn.textContent = 'NONE';
+          listeningBtn.dataset.key = 'NONE';
+        } else {
+          let keyName = e.key.toUpperCase();
+          if (keyName === ' ') keyName = 'SPACE';
+          listeningBtn.textContent = keyName;
+          listeningBtn.dataset.key = keyName;
+        }
+        listeningBtn.classList.remove('listening');
+        listeningBtn = null;
+      }
+    });
+
+    window.addEventListener('mousedown', (e) => {
+      if (listeningBtn) {
+        if (e.target === listeningBtn && listeningBtn.textContent === '[PRESS KEY]') return;
+        let mouseKey = null;
+        if (e.button === 1) mouseKey = 'MOUSE3';
+        else if (e.button === 2) mouseKey = 'MOUSE2';
+        else if (e.button === 3) mouseKey = 'MOUSE4';
+        else if (e.button === 4) mouseKey = 'MOUSE5';
+
+        if (mouseKey) {
+          listeningBtn.textContent = mouseKey;
+          listeningBtn.dataset.key = mouseKey;
+          listeningBtn.classList.remove('listening');
+          listeningBtn = null;
+        }
+      }
+    });
+
+    // Misc кнопка бана/кика
+    const kickBtn = document.getElementById('btn-kick-ban');
+    if (kickBtn) {
+      kickBtn.addEventListener('click', () => {
+        const origText = kickBtn.textContent;
+        kickBtn.textContent = 'Disconnect: Kicked by Server';
+        kickBtn.style.borderColor = '#ff4444';
+        setTimeout(() => {
+          kickBtn.textContent = origText;
+          kickBtn.style.borderColor = '#242424';
+        }, 1400);
+      });
+    }
+
+    // Config добавление
+    const configContainer = document.getElementById('config-container');
+    const configInput = document.getElementById('config-input-name');
+    const btnCreateConfig = document.getElementById('btn-create-config');
+
+    function attachConfigClick(el) {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+      });
+    }
+
+    document.querySelectorAll('.config-item').forEach(attachConfigClick);
+
+    if (btnCreateConfig && configInput && configContainer) {
+      btnCreateConfig.addEventListener('click', () => {
+        const name = configInput.value.trim();
+        if (!name) return;
+        const newEl = document.createElement('div');
+        newEl.className = 'config-item selected';
+        newEl.textContent = name;
+        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+        configContainer.appendChild(newEl);
+        attachConfigClick(newEl);
+        configInput.value = '';
+      });
+    }
+
+    // Target фильтр
+    const targetSearch = document.getElementById('target-search-input');
+    const targetRows = document.querySelectorAll('.target-row');
+    if (targetSearch) {
+      targetSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        targetRows.forEach(row => {
+          const name = row.dataset.name.toLowerCase();
+          row.style.display = name.includes(query) ? 'flex' : 'none';
+        });
+      });
+    }
+
+    // Lua скрипты
+    document.querySelectorAll('.lua-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('loaded');
+      });
+    });
+
+    const luaSearch = document.getElementById('lua-search-input');
+    if (luaSearch) {
+      luaSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.lua-item').forEach(item => {
+          item.style.display = item.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+        });
+      });
+    }
+  </script>
+</body>
+</html>
