@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>exechack.cc - Menu Preview</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <title>exechack.cc - menu preview</title>
   <style>
     * {
       box-sizing: border-box;
@@ -243,7 +244,7 @@
       cursor: pointer;
     }
 
-    /* ================= СТИЛИ ОКОН ================= */
+    /* ================= ОКНА ================= */
     .menu-window {
       width: 800px;
       height: 499px;
@@ -259,41 +260,35 @@
       z-index: 10;
     }
 
+    .editor-window, .lualist-window {
+      background-color: #0e0e0e;
+      border-radius: 8px;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.9);
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      resize: both;
+      overflow: hidden;
+    }
+
     .editor-window {
       width: 580px;
       height: 380px;
       min-width: 380px;
       min-height: 240px;
-      background-color: #0e0e0e;
-      border-radius: 8px;
-      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.9);
-      display: none;
-      flex-direction: column;
-      position: absolute;
       left: calc(50% - 250px);
       top: calc(50% - 160px);
       z-index: 20;
-      resize: both;
-      overflow: hidden;
     }
 
-    /* 3-е окно: Lua List */
     .lualist-window {
       width: 650px;
       height: 420px;
       min-width: 400px;
       min-height: 260px;
-      background-color: #0e0e0e;
-      border-radius: 8px;
-      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.9);
-      display: none;
-      flex-direction: column;
-      position: absolute;
       left: calc(50% - 280px);
       top: calc(50% - 190px);
       z-index: 25;
-      resize: both;
-      overflow: hidden;
     }
 
     .titlebar {
@@ -390,10 +385,6 @@
     .editor-btn:hover {
       background-color: #222222;
       border-color: #383838;
-    }
-
-    .editor-btn:active {
-      background-color: #111111;
     }
 
     .menu-body {
@@ -505,6 +496,53 @@
       display: flex;
     }
 
+    /* ================= АНИМАЦИИ ПЕРЕХОДОВ ================= */
+    @keyframes subtabsSlideDown {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes contentSlideLeft {
+      0% {
+        transform: translateX(35px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes panelSlideLeft {
+      0% {
+        transform: translateX(30px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .tab-pane.active .subtabs-bar {
+      animation: subtabsSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tab-pane.active .content-area {
+      animation: contentSlideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .side-subpanel.open {
+      display: flex !important;
+      animation: panelSlideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
     .subtabs-bar {
       height: 38px;
       display: flex;
@@ -513,6 +551,7 @@
       flex-shrink: 0;
       background-color: #121212;
       width: 100%;
+      z-index: 5;
     }
 
     .subtab {
@@ -652,6 +691,7 @@
       align-items: center;
       justify-content: center;
       transition: all 0.1s;
+      flex-shrink: 0;
     }
 
     .chk-box svg {
@@ -1044,13 +1084,13 @@
     }
 
     /* Подвкладки */
-    .aim-subpane, .main-subpane, .visuals-subpane, .misc-subpane {
+    .aim-subpane, .main-subpane, .visuals-subpane, .misc-subpane, .lua-subpane, .target-subpane, .config-subpane, .hvh-subpane {
       display: none;
       width: 100%;
       height: 100%;
     }
 
-    .aim-subpane.active, .main-subpane.active, .visuals-subpane.active, .misc-subpane.active {
+    .aim-subpane.active, .main-subpane.active, .visuals-subpane.active, .misc-subpane.active, .lua-subpane.active, .target-subpane.active, .config-subpane.active, .hvh-subpane.active {
       display: flex;
     }
 
@@ -1129,6 +1169,87 @@
     .config-item.selected {
       border-color: #555555;
       background-color: #181818;
+    }
+
+    .config-params-panel {
+      flex: 1;
+      padding-left: 20px;
+      display: none;
+      flex-direction: column;
+    }
+
+    .config-params-panel.open {
+      display: flex;
+    }
+
+    .config-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 6px 10px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .config-params-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 6px;
+      padding-right: 6px;
+      max-height: 280px;
+    }
+
+    .config-param-entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .config-color-circle {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* Tips карточки */
+    .tips-container {
+      width: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 6px;
+    }
+
+    .tip-card {
+      width: 250px;
+      background-color: #141414;
+      border: 1px solid #1f1f1f;
+      border-radius: 5px;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tip-title {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tip-desc {
+      color: #ffcc00;
+      font-size: 10px;
+      font-weight: 700;
     }
 
     .target-container {
@@ -1268,8 +1389,12 @@
       color: #22cc44;
     }
 
-    /* ================= НОВЫЕ СТИЛИ (Фото 1-6) ================= */
-    /* Money Printer 3D Preview (Visuals > Entity) */
+    .lua-item.selected {
+      border-color: #555555;
+      background-color: #222222;
+    }
+
+    /* 3D Money Printer */
     .printer-preview-box {
       width: 220px;
       height: 160px;
@@ -1289,7 +1414,6 @@
       justify-content: center;
     }
 
-    /* 3D Изометрическая коробка принтера */
     .printer-3d {
       width: 160px;
       height: 85px;
@@ -1303,6 +1427,16 @@
       align-items: center;
       justify-content: center;
       color: #ffffff;
+      transition: background 0.2s, border 0.2s;
+    }
+
+    .printer-3d.no-box {
+      border: none !important;
+      box-shadow: none !important;
+    }
+
+    .printer-3d.chams-active {
+      background: linear-gradient(135deg, #5a5a5a, #2e2e2e) !important;
     }
 
     .printer-text-top {
@@ -1356,7 +1490,7 @@
       border-radius: 1px;
     }
 
-    /* Font List & Side Panel (Visuals > Font) */
+    /* Font List */
     .font-list-scroll {
       width: 220px;
       height: 380px;
@@ -1431,7 +1565,6 @@
       background-color: #222222;
     }
 
-    /* Spam Box (Misc > Spam) */
     .spam-input-row {
       display: flex;
       gap: 6px;
@@ -1465,7 +1598,6 @@
       font-weight: 700;
     }
 
-    /* Logs Area (Misc > Logs) */
     .logs-filter-row {
       display: flex;
       gap: 6px;
@@ -1499,6 +1631,173 @@
       font-weight: 700;
       white-space: nowrap;
     }
+
+    /* Таблицы Target */
+    .target-content-box {
+      width: 100%;
+      height: 330px;
+      border: 1px solid #1f1f1f;
+      border-radius: 3px;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .team-entry-row, .player-entry-row, .rank-entry-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 22px;
+    }
+
+    .team-entry-title {
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 700;
+      width: 220px;
+    }
+
+    .team-chk-group {
+      display: flex;
+      gap: 36px;
+    }
+
+    .net-entry-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .net-name {
+      color: #ffffff;
+      width: 240px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .net-path {
+      color: #ffffff;
+      text-align: right;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Меню Lua параметров скрипта */
+    .lua-actions-panel {
+      flex: 1;
+      padding-left: 20px;
+      display: none;
+      flex-direction: column;
+    }
+
+    .lua-actions-panel.open {
+      display: flex;
+    }
+
+    .lua-btns-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 8px 10px;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      width: 230px;
+    }
+
+    .lua-action-btn {
+      height: 28px;
+      background-color: #121212;
+      border: 1px solid #1f1f1f;
+      border-radius: 3px;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.1s;
+    }
+
+    .lua-action-btn:hover {
+      background-color: #191919;
+    }
+
+    /* Addon Disabler / File список */
+    .disabler-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      max-height: 270px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .disabler-item {
+      height: 22px;
+      background-color: #121212;
+      border: 1px solid #1f1f1f;
+      border-radius: 2px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .disabler-item:hover {
+      background-color: #181818;
+    }
+
+    /* Встроенный редактор в Edit Addons */
+    .addon-editor-container {
+      width: 100%;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+    }
+
+    .addon-editor-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .addon-editor-title {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .addon-editor-frame-box {
+      flex: 1;
+      width: 100%;
+      border: 1px solid #1c1c1c;
+      border-radius: 3px;
+      overflow: hidden;
+      background-color: #191917;
+      margin-bottom: 8px;
+    }
+
+    .addon-editor-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
   </style>
 </head>
 <body>
@@ -1509,7 +1808,7 @@
     <div class="gmod-wallpaper" id="bg-layer-2"></div>
   </div>
 
-  <div class="gmod-top-notice">You are on the x86-64 branch. Click here to find out more. ( 2026.10.26 )</div>
+  <div class="gmod-top-notice">You are on the x86-64 branch. Click here to find out more. ( 2067.11.9 )</div>
 
   <div class="gmod-header-logo">
     <div class="gmod-logo-box"><span class="gmod-logo-g">g</span></div>
@@ -1533,8 +1832,8 @@
   <div class="gmod-news-card">
     <img src="https://images3.alphacoders.com/557/thumb-350-557525.webp" alt="September 2026 Update" class="gmod-news-img" id="gmod-news-img">
     <div class="gmod-news-overlay">
-      <div class="gmod-news-title">September 2026 Update</div>
-      <div class="gmod-news-desc">64-bit Windows builds, Sandbox improvements and many smaller changes</div>
+      <div class="gmod-news-title">SixSeven 2067 Gmod Update</div>
+      <div class="gmod-news-desc">nothing new or worthwhile</div>
       <div class="gmod-news-controls">
         <div class="gmod-ctrl-box active"></div>
         <div class="gmod-ctrl-box"></div>
@@ -1548,7 +1847,7 @@
     <div class="gmod-tool-badge">2</div>
     <div class="gmod-tool-btn">⚠️ Problems</div>
     <div class="gmod-tool-btn">🎮 Games</div>
-    <div class="gmod-tool-btn">🇬🇧</div>
+    <div class="gmod-tool-btn">UK</div>
     <div class="gmod-tool-btn">🔨 Sandbox</div>
   </div>
 
@@ -1556,7 +1855,7 @@
   <div class="menu-window" id="draggable-window">
     
     <div class="titlebar" id="window-titlebar">
-      <span class="title">exechack.cc: menu preview (beta)</span>
+      <span class="title">exechack.cc: web menu preview</span>
       <div class="close-btn" title="Close">
         <svg width="14" height="14" viewBox="0 0 14 14">
           <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
@@ -1569,87 +1868,50 @@
 
       <!-- Боковая панель -->
       <div class="sidebar">
-
         <div class="sidebar-item cheat-item" data-tab="main">
           <div class="sidebar-avatar">
-            <img src="https://github.com/Exec7.png" alt="Exec Avatar" onerror="this.src='https://x.exechack.cc/contents/visuals_white.png'">
+            <img src="https://x.exechack.cc/contents/putin.jpg" alt="Exec Avatar" onerror="this.src='https://x.exechack.cc/contents/visuals_white.png'">
           </div>
           <div class="sidebar-text">
             <span class="item-title">Main</span>
-            <span class="item-desc">Loser</span>
+            <span class="item-desc">Exec</span>
           </div>
         </div>
 
         <div class="sidebar-item" data-tab="aimbot">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/aimbot_white.png" alt="Aimbot">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">Aimbot</span>
-            <span class="item-desc">nospread silent</span>
-          </div>
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/aimbot_white.png" alt="Aimbot"></div>
+          <div class="sidebar-text"><span class="item-title">Aimbot</span><span class="item-desc">nospread silent</span></div>
         </div>
 
-        <div class="sidebar-item active" data-tab="visuals">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/visuals_white.png" alt="Visuals">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">Visuals</span>
-            <span class="item-desc">esp radar</span>
-          </div>
+        <div class="sidebar-item" data-tab="visuals">
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/visuals_white.png" alt="Visuals"></div>
+          <div class="sidebar-text"><span class="item-title">Visuals</span><span class="item-desc">esp radar</span></div>
         </div>
 
         <div class="sidebar-item" data-tab="misc">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/misc_white.png" alt="Misc">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">Misc</span>
-            <span class="item-desc">bhop spam</span>
-          </div>
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/misc_white.png" alt="Misc"></div>
+          <div class="sidebar-text"><span class="item-title">Misc</span><span class="item-desc">bhop spam</span></div>
         </div>
 
         <div class="sidebar-item" data-tab="hvh">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/hvh_white.png" alt="HvH">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">HvH</span>
-            <span class="item-desc">antiaim</span>
-          </div>
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/hvh_white.png" alt="HvH"></div>
+          <div class="sidebar-text"><span class="item-title">HvH</span><span class="item-desc">antiaim</span></div>
         </div>
 
         <div class="sidebar-item" data-tab="config">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/config_white.png" alt="Config">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">Config</span>
-            <span class="item-desc">load keybinds</span>
-          </div>
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/config_white.png" alt="Config"></div>
+          <div class="sidebar-text"><span class="item-title">Config</span><span class="item-desc">load keybinds</span></div>
         </div>
 
         <div class="sidebar-item" data-tab="target">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/target_white.png" alt="Target">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">Target</span>
-            <span class="item-desc">players ents</span>
-          </div>
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/target_white.png" alt="Target"></div>
+          <div class="sidebar-text"><span class="item-title">Target</span><span class="item-desc">players ents</span></div>
         </div>
 
-        <div class="sidebar-item" data-tab="lua">
-          <div class="sidebar-icon">
-            <img src="https://x.exechack.cc/contents/lua_white.png" alt="Lua">
-          </div>
-          <div class="sidebar-text">
-            <span class="item-title">Lua</span>
-            <span class="item-desc">editor list</span>
-          </div>
+        <div class="sidebar-item active" data-tab="lua">
+          <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/lua_white.png" alt="Lua"></div>
+          <div class="sidebar-text"><span class="item-title">Lua</span><span class="item-desc">editor list</span></div>
         </div>
-
       </div>
 
       <!-- Центральная зона -->
@@ -1661,51 +1923,25 @@
             <span class="subtab active" data-subpane="main-welcome">WELCOME</span>
             <span class="subtab" data-subpane="main-general">GENERAL</span>
           </div>
-
           <div class="content-area">
             <div class="main-subpane active" id="main-welcome">
               <div class="welcome-grid">
-                <div class="welcome-card-wrapper">
-                  <div class="welcome-card"><img src="https://i.imgur.com/8Q8pY7W.jpeg" alt="image1" class="welcome-img"></div>
-                  <div class="welcome-card-caption">image1</div>
-                </div>
-                <div class="welcome-card-wrapper">
-                  <div class="welcome-card"><img src="https://images3.alphacoders.com/557/thumb-350-557525.webp" alt="image2" class="welcome-img"></div>
-                  <div class="welcome-card-caption">image2</div>
-                </div>
-                <div class="welcome-card-wrapper">
-                  <div class="welcome-card"><img src="https://i.imgur.com/gK9qN7f.png" alt="image3" class="welcome-img"></div>
-                  <div class="welcome-card-caption">image3</div>
-                </div>
-                <div class="welcome-card-wrapper">
-                  <div class="welcome-card"><img src="https://i.imgur.com/4qUq7V9.png" alt="image4" class="welcome-img"></div>
-                  <div class="welcome-card-caption">image4</div>
-                </div>
+                <div class="welcome-card-wrapper"><div class="welcome-card"><img src="https://i.postimg.cc/ydwkztnB/image.png" alt="image1" class="welcome-img"></div><div class="welcome-card-caption">Новый сервер от execserver.online: Поле</div></div>
+                <div class="welcome-card-wrapper"><div class="welcome-card"><img src="https://i.postimg.cc/tJjpkj2V/image.png" alt="image2" class="welcome-img"></div><div class="welcome-card-caption">Урбаничка на параде гордости!</div></div>
+                <div class="welcome-card-wrapper"><div class="welcome-card"><img src="https://i.postimg.cc/85wtKdbp/image.png" alt="image3" class="welcome-img"></div><div class="welcome-card-caption">Радий Егоров сажает Руби Шейха!</div></div>
+                <div class="welcome-card-wrapper"><div class="welcome-card"><img src="https://i.postimg.cc/fL3Kw3n7/image.png" alt="image4" class="welcome-img"></div><div class="welcome-card-caption">юбилей фаршмака</div></div>
               </div>
             </div>
 
             <div class="main-subpane" id="main-general">
               <div class="general-content-layout">
                 <div class="general-left-col">
-                  <div class="checkbox-row" style="height: 30px;">
-                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;" id="run-method-label">Run Method (Standart method)</span>
-                    <div class="dots-btn" data-panel="panel-run-method">..</div>
-                  </div>
-                  <div class="checkbox-row" style="height: 30px;">
-                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Notifications</span>
-                    <div class="dots-btn" data-panel="panel-notification">..</div>
-                  </div>
-                  <div class="checkbox-row" style="height: 30px;">
-                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Theme</span>
-                    <div class="dots-btn" data-panel="panel-theme">..</div>
-                  </div>
-                  <div class="checkbox-row" style="height: 30px; margin-bottom: 12px;">
-                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Animated Background</span>
-                    <div class="dots-btn" data-panel="panel-anim-bg">..</div>
-                  </div>
+                  <div class="checkbox-row" style="height: 30px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;" id="run-method-label">Run Method (Standart method)</span><div class="dots-btn" data-panel="panel-run-method">..</div></div>
+                  <div class="checkbox-row" style="height: 30px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Notifications</span><div class="dots-btn" data-panel="panel-notification">..</div></div>
+                  <div class="checkbox-row" style="height: 30px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Theme</span><div class="dots-btn" data-panel="panel-theme">..</div></div>
+                  <div class="checkbox-row" style="height: 30px; margin-bottom: 12px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Animated Background</span><div class="dots-btn" data-panel="panel-anim-bg">..</div></div>
                   <button class="btn-action" style="width: 140px;">Unload</button>
                 </div>
-
                 <div class="side-subpanel" id="panel-run-method">
                   <div class="method-header-title">Run Method</div>
                   <div class="method-header-sub">method for injecting exechack into server code</div>
@@ -1722,33 +1958,9 @@
                     <div class="method-item" data-method="[Other] Net blocker & logger">[Other] Net blocker & logger</div>
                   </div>
                 </div>
-
-                <div class="side-subpanel" id="panel-notification">
-                  <div class="method-header-title" style="margin-bottom: 10px;">Notification</div>
-                  <div class="checkbox-list">
-                    <div class="checkbox-row checked">
-                      <div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Kills & Deaths</span></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="side-subpanel" id="panel-theme">
-                  <div class="method-header-title" style="margin-bottom: 10px;">Theme</div>
-                  <div class="methods-list">
-                    <div class="method-item">Custom</div>
-                    <div class="method-item selected">Dark</div>
-                    <div class="method-item">Light</div>
-                  </div>
-                </div>
-
-                <div class="side-subpanel" id="panel-anim-bg">
-                  <div class="method-header-title" style="margin-bottom: 10px;">Theme</div>
-                  <div class="methods-list">
-                    <div class="method-item selected">None</div>
-                    <div class="method-item">Lines</div>
-                    <div class="method-item">Snow</div>
-                  </div>
-                </div>
+                <div class="side-subpanel" id="panel-notification"><div class="method-header-title" style="margin-bottom: 10px;">Notification</div><div class="checkbox-list"><div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Kills & Deaths</span></div></div></div></div>
+                <div class="side-subpanel" id="panel-theme"><div class="method-header-title" style="margin-bottom: 10px;">Theme</div><div class="methods-list"><div class="method-item">Custom</div><div class="method-item selected">Dark</div><div class="method-item">Light</div></div></div>
+                <div class="side-subpanel" id="panel-anim-bg"><div class="method-header-title" style="margin-bottom: 10px;">Theme</div><div class="methods-list"><div class="method-item selected">None</div><div class="method-item">Lines</div><div class="method-item">Snow</div></div></div>
               </div>
             </div>
           </div>
@@ -1763,7 +1975,6 @@
             <span class="subtab" data-subpane="aim-triggerbot">TRIGGERBOT</span>
             <span class="subtab" data-subpane="aim-visualization">VISUALIZATION</span>
           </div>
-
           <div class="content-area">
             <div class="aim-subpane active" id="aim-main">
               <div class="controls-col">
@@ -1784,13 +1995,7 @@
             <div class="aim-subpane" id="aim-target">
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 270px;">
-                  <div class="slider-group">
-                    <div class="slider-title">Fov</div>
-                    <div class="slider-row">
-                      <div class="slider-container"><input type="range" min="0" max="180" value="90" step="1" class="custom-range" id="fovSlider"></div>
-                      <div class="slider-value" id="fovValue">90</div>
-                    </div>
-                  </div>
+                  <div class="slider-group"><div class="slider-title">Fov</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="180" value="90" step="1" class="custom-range" id="fovSlider"></div><div class="slider-value" id="fovValue">90</div></div></div>
                   <div class="checkbox-list">
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Auto Wall</span></div><div class="dots-btn" data-panel="panel-autowall">..</div></div>
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Disable On Kill</span></div></div>
@@ -1799,68 +2004,31 @@
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Entity Aimming</span></div></div>
                     <div class="checkbox-row" style="margin-bottom: 10px;"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore Filter</span></div><div class="dots-btn" data-panel="panel-ignore-filter">..</div></div>
                   </div>
-                  <div class="slider-title" style="margin-bottom: 6px;">Priority</div>
-                  <div class="dark-select-wrapper">
-                    <select class="dark-select"><option selected>Field of View</option><option>Closest Distance</option><option>Least Health</option></select>
-                  </div>
-                  <div class="slider-title" style="margin-bottom: 6px;">Prediction</div>
-                  <div class="dark-select-wrapper">
-                    <select class="dark-select"><option selected>Default</option><option>Engine</option><option>Velocity</option></select>
-                  </div>
+                  <div class="slider-title" style="margin-bottom: 6px;">Priority</div><div class="dark-select-wrapper"><select class="dark-select"><option selected>Field of View</option><option>Closest Distance</option><option>Least Health</option></select></div>
+                  <div class="slider-title" style="margin-bottom: 6px;">Prediction</div><div class="dark-select-wrapper"><select class="dark-select"><option selected>Default</option><option>Engine</option><option>Velocity</option></select></div>
                 </div>
-
-                <div class="side-subpanel" id="panel-autowall">
-                  <div class="method-header-title" style="margin-bottom: 12px;">AutoWall</div>
-                  <div class="checkbox-list">
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">M9K</span></div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">SWB FAS2, CW2</span></div></div>
-                  </div>
-                </div>
-
-                <div class="side-subpanel" id="panel-ignore-filter">
-                  <div class="method-header-title" style="margin-bottom: 12px;">Ignore Filter</div>
-                  <div class="checkbox-list">
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Baby Good time</span></div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">My Team</span></div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Noclip</span></div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Bot</span></div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Steam Friends</span></div></div>
-                  </div>
-                </div>
+                <div class="side-subpanel" id="panel-autowall"><div class="method-header-title" style="margin-bottom: 12px;">AutoWall</div><div class="checkbox-list"><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">M9K</span></div></div><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">SWB FAS2, CW2</span></div></div></div></div>
+                <div class="side-subpanel" id="panel-ignore-filter"><div class="method-header-title" style="margin-bottom: 12px;">Ignore Filter</div><div class="checkbox-list"><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Baby Good time</span></div></div><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">My Team</span></div></div><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Noclip</span></div></div><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Bot</span></div></div><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Steam Friends</span></div></div></div></div>
               </div>
             </div>
 
             <div class="aim-subpane" id="aim-accuracy">
               <div class="controls-col" style="width: 270px;">
-                <div class="checkbox-list">
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Spread</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked" style="margin-bottom: 12px;"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Recoil</span></div></div>
-                </div>
+                <div class="checkbox-list"><div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Spread</span></div><div class="dots-btn">..</div></div><div class="checkbox-row checked" style="margin-bottom: 12px;"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Recoil</span></div></div></div>
                 <div class="checkbox-row" style="height: auto; margin-bottom: 6px;"><span class="slider-title" style="margin-bottom: 0;">Hitbox</span><div class="dots-btn">..</div></div>
-                <div class="dark-select-wrapper">
-                  <select class="dark-select"><option selected>Head</option><option>Chest</option><option>Stomach</option></select>
-                </div>
-                <div class="slider-group">
-                  <div class="slider-title">Smoothing</div>
-                  <div class="slider-row">
-                    <div class="slider-container"><input type="range" min="0" max="100" value="0" step="1" class="custom-range" id="smoothingSlider"></div>
-                    <div class="slider-value" id="smoothingValue">0</div>
-                  </div>
-                </div>
+                <div class="dark-select-wrapper"><select class="dark-select"><option selected>Head</option><option>Chest</option><option>Stomach</option></select></div>
+                <div class="slider-group"><div class="slider-title">Smoothing</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="0" step="1" class="custom-range" id="smoothingSlider"></div><div class="slider-value" id="smoothingValue">0</div></div></div>
               </div>
             </div>
 
             <div class="aim-subpane" id="aim-triggerbot">
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 270px;">
-                  <div class="checkbox-list" style="margin-bottom: 12px;">
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div>
-                  </div>
+                  <div class="checkbox-list" style="margin-bottom: 12px;"><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div></div>
                   <div class="key-group" style="margin-top: 0; margin-bottom: 14px;"><span class="key-label">Key</span><div class="key-btn" data-key="NONE">NONE</div></div>
                   <div class="checkbox-row" style="height: 28px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Hitbox</span><div class="dots-btn" data-panel="panel-trigger-hitbox">..</div></div>
                   <div class="checkbox-row" style="height: 28px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Ignore Filter</span><div class="dots-btn">..</div></div>
                 </div>
-
                 <div class="side-subpanel" id="panel-trigger-hitbox">
                   <div class="method-header-title" style="margin-bottom: 10px;">Hitbox</div>
                   <div class="checkbox-list">
@@ -1884,27 +2052,15 @@
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Target Snapline</span></div><div class="dots-btn" data-panel="panel-vis-snapline">..</div></div>
                   </div>
                 </div>
-
                 <div class="side-subpanel" id="panel-vis-fov">
                   <div class="method-header-title" style="margin-bottom: 8px;">Fov Circle</div>
-                  <div class="checkbox-list" style="margin-bottom: 8px;">
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Fill</span></div></div>
-                  </div>
-                  <div class="color-picker-box">
-                    <div class="cp-gradient-area"></div>
-                    <div class="cp-alpha-bar"></div>
-                    <div class="cp-hue-bar"></div>
-                  </div>
+                  <div class="checkbox-list" style="margin-bottom: 8px;"><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Fill</span></div></div></div>
+                  <div class="color-picker-box"><div class="cp-gradient-area"></div><div class="cp-alpha-bar"></div><div class="cp-hue-bar"></div></div>
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
                 </div>
-
                 <div class="side-subpanel" id="panel-vis-snapline">
                   <div class="method-header-title" style="margin-bottom: 12px;">Target Snapline</div>
-                  <div class="color-picker-box">
-                    <div class="cp-gradient-area"></div>
-                    <div class="cp-alpha-bar"></div>
-                    <div class="cp-hue-bar"></div>
-                  </div>
+                  <div class="color-picker-box"><div class="cp-gradient-area"></div><div class="cp-alpha-bar"></div><div class="cp-hue-bar"></div></div>
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
                 </div>
               </div>
@@ -1913,7 +2069,7 @@
         </div>
 
         <!-- ================= 2. ВКЛАДКА VISUALS ================= -->
-        <div class="tab-pane active" id="pane-visuals">
+        <div class="tab-pane" id="pane-visuals">
           <div class="subtabs-bar">
             <span class="subtab active" data-subpane="vis-player">PLAYER</span>
             <span class="subtab" data-subpane="vis-entity">ENTITY</span>
@@ -1922,153 +2078,375 @@
           </div>
 
           <div class="content-area">
-            
-            <!-- Visuals -> PLAYER -->
+            <!-- Visuals -> PLAYER (Фото 1) -->
             <div class="visuals-subpane active" id="vis-player">
-              <div class="controls-col">
-                <div class="slider-group">
-                  <div class="slider-title">Distance</div>
-                  <div class="slider-row">
-                    <div class="slider-container"><input type="range" min="0" max="25000" value="20000" step="100" class="custom-range" id="distanceSlider"></div>
-                    <div class="slider-value" id="distanceValue">20000</div>
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 270px;">
+                  <div class="slider-group">
+                    <div class="slider-title">Distance</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="0" max="25000" value="2506" step="1" class="custom-range" id="distanceSlider"></div>
+                      <div class="slider-value" id="distanceValue">2506</div>
+                    </div>
+                  </div>
+                  <div class="checkbox-list">
+                    <div class="checkbox-row" data-feature="dormant"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Dormant</span></div></div>
+                    <div class="checkbox-row checked" data-feature="name"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Name</span></div><div class="dots-btn" data-panel="panel-vis-player-name">..</div></div>
+                    <div class="checkbox-row checked" data-feature="rank"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Rank</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row checked" data-feature="team"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Team</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row" data-feature="money"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Money</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row checked" data-feature="weapon"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Weapon</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row checked" data-feature="health"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Health</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row" data-feature="armor"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Armor</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row checked" data-feature="box"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Box</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row" data-feature="chams"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row" data-feature="skeleton"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Skeleton</span></div><div class="dots-btn">..</div></div>
                   </div>
                 </div>
 
-                <div class="checkbox-list">
-                  <div class="checkbox-row" data-feature="dormant"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Dormant</span></div></div>
-                  <div class="checkbox-row checked" data-feature="name"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Name</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked" data-feature="rank"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Rank</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row" data-feature="team"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Team</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row" data-feature="money"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Money</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked" data-feature="weapon"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Weapon</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked" data-feature="health"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Health</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row" data-feature="armor"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Armor</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked" data-feature="box"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Box</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row" data-feature="chams"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row" data-feature="skeleton"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Skeleton</span></div><div class="dots-btn">..</div></div>
-                </div>
-              </div>
-
-              <div class="preview-col">
-                <div class="esp-text-group">
-                  <span class="esp-item-name" id="preview-name">Name</span>
-                  <span class="esp-item-rank" id="preview-rank">Rank</span>
-                  <span class="esp-item-team" id="preview-team">Team</span>
-                  <span class="esp-item-weapon" id="preview-weapon">Weapon</span>
-                  <span class="esp-item-money" id="preview-money">$100.000</span>
-                  <span class="esp-item-armor" id="preview-armor">100</span>
-                </div>
-
-                <div class="character-wrapper">
-                  <img src="https://x.exechack.cc/contents/prew.png" alt="ESP Preview Target" class="character-img" id="preview-character">
-                  <div class="esp-health-bar" id="preview-health"></div>
-                  <div class="esp-corner-box" id="preview-box">
-                    <div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div>
+                <!-- Превью персонажа -->
+                <div class="preview-col" id="player-preview-col">
+                  <div class="esp-text-group">
+                    <span class="esp-item-name" id="preview-name">Name</span><span class="esp-item-rank" id="preview-rank">Rank</span><span class="esp-item-team" id="preview-team">Team</span><span class="esp-item-weapon" id="preview-weapon">Weapon</span><span class="esp-item-money" id="preview-money">$100.000</span><span class="esp-item-armor" id="preview-armor">100</span>
                   </div>
-                  <svg id="preview-skeleton" class="esp-skeleton" viewBox="0 0 100 200" preserveAspectRatio="none">
-                    <circle cx="50" cy="22" r="5" stroke="#ffffff" stroke-width="1.8" fill="none"/>
-                    <line x1="50" y1="27" x2="50" y2="38" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="50" y1="38" x2="50" y2="92" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="50" y1="38" x2="34" y2="40" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="34" y1="40" x2="26" y2="68" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="26" y1="68" x2="20" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="50" y1="38" x2="66" y2="40" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="66" y1="40" x2="74" y2="68" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="74" y1="68" x2="82" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="50" y1="92" x2="40" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="40" y1="95" x2="38" y2="142" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="38" y1="142" x2="43" y2="190" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="50" y1="92" x2="60" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="60" y1="95" x2="62" y2="138" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="62" y1="138" x2="61" y2="192" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-                    <circle cx="34" cy="40" r="1.8" fill="#ffffff"/>
-                    <circle cx="26" cy="68" r="1.8" fill="#ffffff"/>
-                    <circle cx="20" cy="95" r="1.8" fill="#ffffff"/>
-                    <circle cx="66" cy="40" r="1.8" fill="#ffffff"/>
-                    <circle cx="74" cy="68" r="1.8" fill="#ffffff"/>
-                    <circle cx="82" cy="95" r="1.8" fill="#ffffff"/>
-                    <circle cx="50" cy="38" r="1.8" fill="#ffffff"/>
-                    <circle cx="50" cy="92" r="1.8" fill="#ffffff"/>
-                    <circle cx="38" cy="142" r="1.8" fill="#ffffff"/>
-                    <circle cx="43" cy="190" r="1.8" fill="#ffffff"/>
-                    <circle cx="62" cy="138" r="1.8" fill="#ffffff"/>
-                    <circle cx="61" cy="192" r="1.8" fill="#ffffff"/>
-                  </svg>
+                  <div class="character-wrapper">
+                    <img src="https://x.exechack.cc/contents/prew.png" alt="ESP Preview Target" class="character-img" id="preview-character">
+                    <div class="esp-health-bar" id="preview-health"></div>
+                    <div class="esp-corner-box" id="preview-box"><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div></div>
+                    <svg id="preview-skeleton" class="esp-skeleton" viewBox="0 0 100 200" preserveAspectRatio="none">
+                      <circle cx="50" cy="22" r="5" stroke="#ffffff" stroke-width="1.8" fill="none"/>
+                      <line x1="50" y1="27" x2="50" y2="38" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="50" y1="38" x2="50" y2="92" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="50" y1="38" x2="34" y2="40" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="34" y1="40" x2="26" y2="68" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="26" y1="68" x2="20" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="50" y1="38" x2="66" y2="40" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="66" y1="40" x2="74" y2="68" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="74" y1="68" x2="82" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="50" y1="92" x2="40" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="40" y1="95" x2="38" y2="142" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="38" y1="142" x2="43" y2="190" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                      <line x1="50" y1="92" x2="60" y2="95" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="60" y1="95" x2="62" y2="138" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line x1="62" y1="138" x2="61" y2="192" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                      <circle cx="34" cy="40" r="1.8" fill="#ffffff"/><circle cx="26" cy="68" r="1.8" fill="#ffffff"/><circle cx="20" cy="95" r="1.8" fill="#ffffff"/><circle cx="66" cy="40" r="1.8" fill="#ffffff"/><circle cx="74" cy="68" r="1.8" fill="#ffffff"/><circle cx="82" cy="95" r="1.8" fill="#ffffff"/>
+                      <circle cx="50" cy="38" r="1.8" fill="#ffffff"/><circle cx="50" cy="92" r="1.8" fill="#ffffff"/><circle cx="38" cy="142" r="1.8" fill="#ffffff"/><circle cx="43" cy="190" r="1.8" fill="#ffffff"/><circle cx="62" cy="138" r="1.8" fill="#ffffff"/><circle cx="61" cy="192" r="1.8" fill="#ffffff"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Player -> Name (Фото 1) -->
+                <div class="side-subpanel" id="panel-vis-player-name" style="display: none;">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Name</div>
+                  <div style="display: flex; align-items: center; justify-content: space-between; width: 175px; margin-bottom: 14px;">
+                    <div class="checkbox-row checked" style="gap: 8px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label">Friend Color</span>
+                    </div>
+                    <div style="width: 14px; height: 10px; background-color: #00ff00; border-radius: 2px;"></div>
+                  </div>
+
+                  <div class="slider-title" style="margin-bottom: 6px;">Position</div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+                    <div class="dark-select-wrapper" style="width: 145px; margin-bottom: 0;">
+                      <select class="dark-select">
+                        <option selected>Up</option>
+                        <option>Down</option>
+                        <option>Left</option>
+                        <option>Right</option>
+                      </select>
+                    </div>
+                    <button class="btn-action" style="height: 26px; padding: 0 10px;">Priority</button>
+                  </div>
+
+                  <div class="color-picker-box" style="margin-top: 0;">
+                    <div class="cp-gradient-area"></div>
+                    <div class="cp-alpha-bar"></div>
+                    <div class="cp-hue-bar"></div>
+                  </div>
+                  <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
                 </div>
               </div>
             </div>
 
-            <!-- Visuals -> ENTITY (Фото 1) -->
+            <!-- Visuals -> ENTITY -->
             <div class="visuals-subpane" id="vis-entity">
               <div class="controls-col" style="width: 270px;">
-                <div class="slider-group">
-                  <div class="slider-title">Distance</div>
-                  <div class="slider-row">
-                    <div class="slider-container"><input type="range" min="0" max="25000" value="1982" step="50" class="custom-range" id="entityDistSlider"></div>
-                    <div class="slider-value" id="entityDistVal">1982</div>
-                  </div>
-                </div>
-
+                <div class="slider-group"><div class="slider-title">Distance</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="25000" value="1982" step="50" class="custom-range" id="entityDistSlider"></div><div class="slider-value" id="entityDistVal">1982</div></div></div>
                 <div class="checkbox-list">
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Dormant</span></div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Name</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Box</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" data-feature="dormant"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Dormant</span></div></div>
+                  <div class="checkbox-row checked" id="ent-chk-name"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Name</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row checked" id="ent-chk-box"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Box</span></div><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" id="ent-chk-chams"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn">..</div></div>
                 </div>
               </div>
 
-              <!-- Превью Money Printer -->
               <div class="preview-col" style="justify-content: center; align-items: flex-start; padding-left: 20px;">
                 <div class="slider-title" style="font-size: 15px; margin-bottom: 25px;">Preview</div>
                 <div class="printer-preview-box">
                   <div class="printer-model-container">
-                    <div class="printer-3d">
-                      <span class="printer-text-top">Money Printer:</span>
+                    <div class="printer-3d" id="printer-3d-model">
+                      <span class="printer-text-top" id="printer-text-top">Money Printer:</span>
                       <span class="printer-money-val">$0</span>
-                      <span class="printer-title-hp">Printer (HP 100)</span>
-                      <div class="printer-slot-row">
-                        <div class="printer-slot"></div>
-                        <div class="printer-led-yellow"></div>
-                        <div class="printer-led-red"></div>
-                      </div>
+                      <span class="printer-title-hp" id="printer-title-hp">Printer (HP 100)</span>
+                      <div class="printer-slot-row"><div class="printer-slot"></div><div class="printer-led-yellow"></div><div class="printer-led-red"></div></div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Visuals -> OTHER (Фото 2) -->
+            <!-- Visuals -> OTHER (Все панели и новые опции) -->
             <div class="visuals-subpane" id="vis-other">
-              <div class="controls-col styled-scroll" style="width: 320px; overflow-y: auto; max-height: 100%; padding-right: 8px;">
-                <div class="checkbox-list">
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">OBS Bypass</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Radar</span></div><div class="dots-btn">..</div></div>
-                  
-                  <div class="checkbox-row" style="height: 28px;"><span class="slider-title" style="margin-bottom: 0;">Skybox Changer</span><div class="dots-btn">..</div></div>
-                  
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Visual Recoil</span></div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Field of View</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Debug Camera</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">ThirdPerson</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Filter</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Info</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Full Bright</span></div></div>
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Spectators list</span></div><div class="dots-btn">..</div></div>
-                  
-                  <div class="checkbox-row" style="height: 28px;"><span class="slider-title" style="margin-bottom: 0;">Aspect ratio</span><div class="dots-btn">..</div></div>
-                  
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">CrossHair</span></div><div class="dots-btn">..</div></div>
+              <div class="general-content-layout">
+                <div class="controls-col styled-scroll" style="width: 270px; overflow-y: auto; max-height: 380px; padding-right: 8px;">
+                  <div class="checkbox-list">
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">OBS Bypass</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Radar</span></div><div class="dots-btn" data-panel="panel-vis-radar">..</div></div>
+                    <div class="checkbox-row" style="height: 28px;"><span class="slider-title" style="margin-bottom: 0;">Skybox Changer</span><div class="dots-btn" data-panel="panel-vis-skybox">..</div></div>
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">No Visual Recoil</span></div></div>
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Field of View</span></div><div class="dots-btn" data-panel="panel-vis-fov-settings">..</div></div>
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Debug Camera</span></div><div class="dots-btn" data-panel="panel-vis-debugcam">..</div></div>
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">ThirdPerson</span></div><div class="dots-btn" data-panel="panel-vis-thirdperson">..</div></div>
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Filter</span></div><div class="dots-btn" data-panel="panel-vis-filter">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Info</span></div><div class="dots-btn" data-panel="panel-vis-info">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Full Bright</span></div></div>
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Spectators list</span></div><div class="dots-btn" data-panel="panel-vis-spectators">..</div></div>
+                    <div class="checkbox-row" style="height: 28px;"><span class="slider-title" style="margin-bottom: 0;">Aspect ratio</span><div class="dots-btn" data-panel="panel-vis-aspect">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">CrossHair</span></div><div class="dots-btn" data-panel="panel-vis-crosshair">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Out of View</span></div><div class="dots-btn" data-panel="panel-vis-outofview">..</div></div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Radar -->
+                <div class="side-subpanel" id="panel-vis-radar">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Radar</div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Distance</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="0" max="100" value="13" class="custom-range" id="radarDistSlider"></div>
+                      <div class="slider-value" id="radarDistVal">13</div>
+                    </div>
+                  </div>
+                  <div class="slider-title" style="margin-bottom: 6px;">Type</div>
+                  <div class="dark-select-wrapper">
+                    <select class="dark-select">
+                      <option selected>Triangle</option>
+                      <option>Circle</option>
+                      <option>Square</option>
+                    </select>
+                  </div>
+                  <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;">
+                    <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                    <span class="chk-label" style="color: #555;">Show Name</span>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Skybox Changer -->
+                <div class="side-subpanel" id="panel-vis-skybox">
+                  <div class="method-header-title" style="font-size: 16px; margin-bottom: 4px;">Skybox Changer</div>
+                  <div style="color: #ffffff; font-size: 11.5px; font-weight: 700; margin-bottom: 8px;">folder: garrysmod/materials/skybox/</div>
+                  <div class="disabler-list styled-scroll" style="max-height: 250px; margin-bottom: 8px;">
+                    <div class="disabler-item">assault</div>
+                    <div class="disabler-item">cx</div>
+                    <div class="disabler-item">de_cobble_hdr</div>
+                    <div class="disabler-item">de_cobble</div>
+                    <div class="disabler-item">de_piranesi</div>
+                    <div class="disabler-item">hav</div>
+                    <div class="disabler-item">italy</div>
+                    <div class="disabler-item">jungle</div>
+                    <div class="disabler-item">militia_hdr</div>
+                    <div class="disabler-item">militia</div>
+                    <div class="disabler-item">office</div>
+                  </div>
+                  <button class="btn-action" style="width: 110px;">auto change</button>
+                </div>
+
+                <!-- Боковая панель: Field of View -->
+                <div class="side-subpanel" id="panel-vis-fov-settings">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Field of View</div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Desired</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="70" max="150" value="90" step="1" class="custom-range" id="fovDesiredSlider"></div>
+                      <div class="slider-value" id="fovDesiredVal">90</div>
+                    </div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">View Model</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="10" max="150" value="68" step="1" class="custom-range" id="fovVmSlider"></div>
+                      <div class="slider-value" id="fovVmVal">68</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Debug Camera -->
+                <div class="side-subpanel" id="panel-vis-debugcam">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Debug Camera</div>
+                  <div class="key-group" style="margin-top: 0; margin-bottom: 12px;">
+                    <span class="key-label">Key</span>
+                    <div class="key-btn" data-key="NONE">NONE</div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Speed</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="1" max="10" value="1" step="1" class="custom-range" id="camSpeedSlider"></div>
+                      <div class="slider-value" id="camSpeedVal">1</div>
+                    </div>
+                  </div>
+                  <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;">
+                    <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                    <span class="chk-label" style="color: #666;">Render whole map</span>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: ThirdPerson -->
+                <div class="side-subpanel" id="panel-vis-thirdperson">
+                  <div class="method-header-title" style="margin-bottom: 12px;">ThirdPerson</div>
+                  <div class="key-group" style="margin-top: 0; margin-bottom: 12px;">
+                    <span class="key-label">Key</span>
+                    <div class="key-btn" data-key="NONE">NONE</div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Distance</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="70" max="300" value="100" step="1" class="custom-range" id="tpDistSlider"></div>
+                      <div class="slider-value" id="tpDistVal">100</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Filter -->
+                <div class="side-subpanel" id="panel-vis-filter">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Filter</div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Brightness</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="0" max="1" value="0.5" step="0.05" class="custom-range" id="filterBrightSlider"></div>
+                      <div class="slider-value" id="filterBrightVal">0.5</div>
+                    </div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Contrast</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="0" max="5" value="1" step="0.1" class="custom-range" id="filterContrastSlider"></div>
+                      <div class="slider-value" id="filterContrastVal">1</div>
+                    </div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Saturation</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="0" max="5" value="1" step="0.1" class="custom-range" id="filterSatSlider"></div>
+                      <div class="slider-value" id="filterSatVal">1</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Spectators list -->
+                <div class="side-subpanel" id="panel-vis-spectators">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Spectators list</div>
+                  <div class="checkbox-list" style="margin-bottom: 12px;">
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px; height: 24px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label" style="color: #555;">Show only LocalPlayer</span>
+                    </div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px; height: 24px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label" style="color: #555;">Set aimbot to legit upon observation</span>
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 24px;">
+                    <div>
+                      <div class="slider-title" style="margin-bottom: 6px;">LocalPlayer</div>
+                      <div class="color-picker-box" style="margin-top: 0;">
+                        <div class="cp-gradient-area"></div>
+                        <div class="cp-alpha-bar" style="background: red;"></div>
+                        <div class="cp-hue-bar"></div>
+                      </div>
+                      <input type="text" class="cp-input-rgba" value="255 0 0 255" readonly>
+                    </div>
+                    <div>
+                      <div class="slider-title" style="margin-bottom: 6px;">Players</div>
+                      <div class="color-picker-box" style="margin-top: 0;">
+                        <div class="cp-gradient-area"></div>
+                        <div class="cp-alpha-bar"></div>
+                        <div class="cp-hue-bar"></div>
+                      </div>
+                      <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Aspect ratio -->
+                <div class="side-subpanel" id="panel-vis-aspect">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Aspect ratio</div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Value</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="1" max="20" value="1" step="0.1" class="custom-range" id="aspectValSlider"></div>
+                      <div class="slider-value" id="aspectValVal">1</div>
+                    </div>
+                  </div>
+                  <button class="btn-action" style="width: 90px;">Change</button>
+                </div>
+
+                <!-- Боковая панель: CrossHair -->
+                <div class="side-subpanel" id="panel-vis-crosshair">
+                  <div class="method-header-title" style="margin-bottom: 10px;">CrossHair</div>
+                  <div class="checkbox-list" style="margin-bottom: 10px;">
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #666;">Classic</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #666;">Cicle</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #666;">Box</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #666;">Swas</span></div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Size</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="1" max="50" value="10" step="1" class="custom-range" id="crosshairSizeSlider"></div>
+                      <div class="slider-value" id="crosshairSizeVal">10</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Out of View -->
+                <div class="side-subpanel" id="panel-vis-outofview">
+                  <div class="method-header-title" style="margin-bottom: 12px;">Out of View</div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Fov</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="50" max="400" value="90" step="1" class="custom-range" id="oovFovSlider"></div>
+                      <div class="slider-value" id="oovFovVal">90</div>
+                    </div>
+                  </div>
+                  <div class="slider-group">
+                    <div class="slider-title" style="margin-bottom: 6px;">Radius</div>
+                    <div class="slider-row">
+                      <div class="slider-container"><input type="range" min="3" max="20" value="10" step="1" class="custom-range" id="oovRadiusSlider"></div>
+                      <div class="slider-value" id="oovRadiusVal">10</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Боковая панель: Info -->
+                <div class="side-subpanel" id="panel-vis-info">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Info</div>
+                  <div class="checkbox-list styled-scroll" style="max-height: 330px; overflow-y: auto; padding-right: 4px; gap: 4px;">
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Health</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Armor</span></div>
+                    <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Velocity</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Server</span></div>
+                    <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Online</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Map</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Entities</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Frames</span></div>
+                    <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ping</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Date</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Time</span></div>
+                    <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Tickrate</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label" style="color: #555;">Gamemode</span></div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Visuals -> FONT (Фото 3) -->
+            <!-- Visuals -> FONT -->
             <div class="visuals-subpane" id="vis-font">
               <div class="general-content-layout">
-                <!-- Список шрифтов -->
                 <div class="font-list-scroll styled-scroll" id="font-items-list">
                   <div class="font-item-row" data-font="Custom Font">Custom Font</div>
-                  <div class="font-item-row selected" data-font="Akbar">Akbar</div>
+                  <div class="font-item-row" data-font="Akbar">Akbar</div>
                   <div class="font-item-row" data-font="Coolvetica">Coolvetica</div>
                   <div class="font-item-row" data-font="Roboto">Roboto</div>
                   <div class="font-item-row" data-font="Arial">Arial</div>
@@ -2082,7 +2460,6 @@
                   <div class="font-item-row" data-font="Bahnschrift">Bahnschrift</div>
                 </div>
 
-                <!-- Боковое меню настройки шрифта (по умолчанию скрыто) -->
                 <div class="side-subpanel" id="panel-font-settings" style="display: none; padding-left: 24px;">
                   <div class="method-header-title" id="font-active-title" style="font-size: 17px; margin-bottom: 10px;">Akbar</div>
                   
@@ -2123,18 +2500,23 @@
           </div>
 
           <div class="content-area">
-            <!-- Misc -> MAIN -->
             <div class="misc-subpane active" id="misc-main">
-              <div class="controls-col" style="width: 280px;">
-                <div class="checkbox-list">
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Keypad Logger</span></div><div class="dots-btn">..</div></div>
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">E Spammer</span></div></div>
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 270px;">
+                  <div class="checkbox-list">
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Keypad Logger</span></div><div class="dots-btn" data-panel="panel-keypad-color">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">E Spammer</span></div></div>
+                  </div>
+                  <div style="margin-top: 14px;"><button class="btn-action" id="btn-kick-ban">Get ban/kick on server</button></div>
                 </div>
-                <div style="margin-top: 14px;"><button class="btn-action" id="btn-kick-ban">Get ban/kick on server</button></div>
+                <div class="side-subpanel" id="panel-keypad-color">
+                  <div class="method-header-title" style="margin-bottom: 8px;">Keypad Logger</div>
+                  <div class="color-picker-box"><div class="cp-gradient-area"></div><div class="cp-alpha-bar"></div><div class="cp-hue-bar"></div></div>
+                  <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly>
+                </div>
               </div>
             </div>
 
-            <!-- Misc -> MOVEMENT (Фото 4) -->
             <div class="misc-subpane" id="misc-movement">
               <div class="controls-col" style="width: 270px;">
                 <div class="checkbox-list">
@@ -2144,33 +2526,26 @@
                 </div>
 
                 <div class="slider-title" style="margin-top: 10px; margin-bottom: 6px;">Auto Strafe Mode</div>
-                <div class="dark-select-wrapper">
-                  <select class="dark-select"><option selected>Legit</option><option>Rage</option><option>Directional</option></select>
-                </div>
+                <div class="dark-select-wrapper"><select class="dark-select"><option selected>Legit</option><option>Rage</option><option>Directional</option></select></div>
 
                 <div class="slider-group">
                   <div class="slider-title">Max Hops</div>
-                  <div class="slider-row">
-                    <div class="slider-container"><input type="range" min="0" max="50" value="0" step="1" class="custom-range" id="maxHopsSlider"></div>
-                    <div class="slider-value" id="maxHopsVal">0</div>
-                  </div>
+                  <div class="slider-row"><div class="slider-container"><input type="range" min="0" max="50" value="0" step="1" class="custom-range" id="maxHopsSlider"></div><div class="slider-value" id="maxHopsVal">0</div></div>
                 </div>
               </div>
             </div>
 
-            <!-- Misc -> SPAM (Фото 5) -->
             <div class="misc-subpane" id="misc-spam">
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 270px;">
                   <div class="checkbox-list">
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Chat</span></div><div class="dots-btn" data-panel="panel-spam-chat">..</div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Kill Say</span></div><div class="dots-btn">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Kill Say</span></div><div class="dots-btn" data-panel="panel-spam-killsay">..</div></div>
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">exechack Advert</span></div></div>
                   </div>
-                  <div class="checkbox-row" style="margin-top: 6px;"><span class="slider-title" style="margin-bottom: 0;">Servers Connect Spammer</span><div class="dots-btn">..</div></div>
+                  <div class="checkbox-row" style="margin-top: 6px;"><span class="slider-title" style="margin-bottom: 0;">Servers Connect Spammer</span><div class="dots-btn" data-panel="panel-spam-servers">..</div></div>
                 </div>
 
-                <!-- Боковая панель Spam > Chat (по умолчанию скрыта) -->
                 <div class="side-subpanel" id="panel-spam-chat">
                   <div class="method-header-title" style="margin-bottom: 8px;">Chat</div>
                   <div class="checkbox-list" style="margin-bottom: 6px;">
@@ -2187,10 +2562,39 @@
                     <div class="spam-entry-row">// exechack.cc</div>
                   </div>
                 </div>
+
+                <div class="side-subpanel" id="panel-spam-killsay">
+                  <div class="method-header-title" style="margin-bottom: 8px;">Kill Say</div>
+                  <div class="checkbox-list" style="margin-bottom: 6px;">
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label" style="color: #666;">Ooc</span>
+                    </div>
+                  </div>
+
+                  <div class="spam-input-row" style="margin-top: 4px;">
+                    <input type="text" class="dark-input" id="killsay-msg-input" placeholder="" style="flex: 1;">
+                    <button class="btn-action" id="btn-add-killsay" style="width: 26px; padding: 0;">+</button>
+                  </div>
+
+                  <div class="spam-list-area styled-scroll" id="killsay-messages-list"></div>
+                </div>
+
+                <div class="side-subpanel" id="panel-spam-servers">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Servers Connect Spammer</div>
+                  <button class="btn-action" style="width: 130px; margin-bottom: 10px;">Search Servers</button>
+                  <div style="color: #ffffff; font-size: 13px; font-weight: 700; margin-bottom: 8px;">servers found: 0</div>
+                  <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                    <button class="btn-action" style="width: 80px;">Start</button>
+                    <button class="btn-action" style="width: 80px;">Stop</button>
+                  </div>
+                  <div style="color: #ffff00; font-size: 11px; font-weight: 800; margin-bottom: 4px;">change your steam username to ads material</div>
+                  <div style="color: #ffffff; font-size: 11px; font-weight: 700; margin-bottom: 4px;">work only on server with default chat</div>
+                  <div style="color: #ffffff; font-size: 11px; font-weight: 700;">there is a chance to get VAC ban from developers</div>
+                </div>
               </div>
             </div>
 
-            <!-- Misc -> LOGS (Фото 6) -->
             <div class="misc-subpane" id="misc-logs">
               <div style="width: 100%; display: flex; flex-direction: column;">
                 <div class="logs-filter-row">
@@ -2207,33 +2611,39 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
 
         <!-- ================= 4. ВКЛАДКА HVH ================= -->
         <div class="tab-pane" id="pane-hvh">
           <div class="subtabs-bar">
-            <span class="subtab active">ANTI-AIM</span>
-            <span class="subtab">OTHER</span>
+            <span class="subtab active" data-subpane="hvh-antiaim">ANTI-AIM</span>
+            <span class="subtab" data-subpane="hvh-other">OTHER</span>
           </div>
-
           <div class="content-area">
-            <div class="controls-col" style="width: 240px;">
-              <div class="checkbox-list" style="margin-bottom: 12px;">
-                <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div>
+            <div class="hvh-subpane active" id="hvh-antiaim">
+              <div class="controls-col" style="width: 240px;">
+                <div class="checkbox-list" style="margin-bottom: 12px;"><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div></div></div>
+                <div class="slider-title" style="margin-bottom: 6px;">X</div><div class="dark-select-wrapper"><select class="dark-select"><option selected>Jitter</option><option>Static</option><option>Spin</option><option>Random</option></select></div>
+                <div class="slider-group" style="margin-bottom: 14px;"><div class="slider-title" style="margin-bottom: 6px;">Emotion X</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="50" class="custom-range" id="emotionX"></div><div class="slider-value" id="emotionXVal">50</div></div></div>
+                <div class="slider-title" style="margin-bottom: 6px;">Y</div><div class="dark-select-wrapper"><select class="dark-select"><option selected>TJitter</option><option>Jitter</option><option>Static</option><option>Spin</option><option>Backward</option></select></div>
+                <div class="slider-group"><div class="slider-title" style="margin-bottom: 6px;">Emotion Y</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="76" class="custom-range" id="emotionY"></div><div class="slider-value" id="emotionYVal">76</div></div></div>
               </div>
-              <div class="slider-title" style="margin-bottom: 6px;">X</div>
-              <div class="dark-select-wrapper"><select class="dark-select"><option selected>Jitter</option><option>Static</option><option>Spin</option><option>Random</option></select></div>
-              <div class="slider-group" style="margin-bottom: 14px;">
-                <div class="slider-title" style="margin-bottom: 6px;">Emotion X</div>
-                <div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="50" class="custom-range" id="emotionX"></div><div class="slider-value" id="emotionXVal">50</div></div>
-              </div>
-              <div class="slider-title" style="margin-bottom: 6px;">Y</div>
-              <div class="dark-select-wrapper"><select class="dark-select"><option selected>TJitter</option><option>Jitter</option><option>Static</option><option>Spin</option><option>Backward</option></select></div>
-              <div class="slider-group">
-                <div class="slider-title" style="margin-bottom: 6px;">Emotion Y</div>
-                <div class="slider-row"><div class="slider-container"><input type="range" min="0" max="100" value="76" class="custom-range" id="emotionY"></div><div class="slider-value" id="emotionYVal">76</div></div>
+            </div>
+
+            <div class="hvh-subpane" id="hvh-other">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 260px;">
+                  <div class="checkbox-list">
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Hit Sound</span></div><div class="dots-btn" data-panel="panel-hitsound">..</div></div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-hitsound" style="display: none;">
+                  <div class="method-header-title" style="font-size: 16px; margin-bottom: 4px;">Hit Sound</div>
+                  <div style="color: #ffffff; font-size: 12.5px; font-weight: 700; margin-bottom: 8px;">Folder: garrysmod/sound/*.wav</div>
+                  <input type="text" class="dark-input" value="buttons/bell1.wav" style="width: 230px;">
+                </div>
               </div>
             </div>
           </div>
@@ -2242,88 +2652,307 @@
         <!-- ================= 5. ВКЛАДКА CONFIG ================= -->
         <div class="tab-pane" id="pane-config">
           <div class="subtabs-bar">
-            <span class="subtab active">MAIN</span>
-            <span class="subtab">KEY BINDS</span>
-            <span class="subtab">TIPS</span>
+            <span class="subtab active" data-subpane="config-main">MAIN</span>
+            <span class="subtab" data-subpane="config-keybinds">KEY BINDS</span>
+            <span class="subtab" data-subpane="config-tips">TIPS</span>
           </div>
 
           <div class="content-area">
-            <div class="controls-col" style="width: 260px;">
-              <div class="config-buttons-row">
-                <button class="btn-action" id="btn-create-config" style="width: 110px;">Create</button>
-                <button class="btn-action" style="width: 114px;">Cloud Key</button>
-              </div>
-              <input type="text" class="dark-input" id="config-input-name" placeholder="" style="width: 230px; margin-bottom: 6px;">
-              <div class="config-list" id="config-container">
-                <div class="config-item selected">1</div>
-                <div class="config-item">deat</div>
+            <div class="config-subpane active" id="config-main">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 250px;">
+                  <div class="config-buttons-row">
+                    <button class="btn-action" id="btn-show-create-cfg" style="width: 110px;">Create</button>
+                    <button class="btn-action" id="btn-show-cloud-cfg" style="width: 114px;">Cloud Key</button>
+                  </div>
+                  <input type="text" class="dark-input" placeholder="" style="width: 230px; margin-bottom: 6px;">
+                  <div class="config-list" id="config-container">
+                    <div class="config-item" data-cfgname="1">1</div>
+                    <div class="config-item" data-cfgname="deat">deat</div>
+                  </div>
+                </div>
+
+                <div class="config-params-panel" id="panel-config-params">
+                  <div class="method-header-title" id="cfg-active-title" style="font-size: 18px; margin-bottom: 4px;">1</div>
+                  <div class="config-actions-grid" style="width: 280px;">
+                    <button class="btn-action">Load</button>
+                    <button class="btn-action">Rewrite</button>
+                    <button class="btn-action">Delete</button>
+                    <button class="btn-action">Cloud Key</button>
+                  </div>
+                  <div class="slider-title" style="font-size: 13px; margin-bottom: 6px;">Parameters</div>
+                  <input type="text" class="dark-input" placeholder="" style="width: 280px; margin-bottom: 6px;">
+                  
+                  <div class="config-params-list styled-scroll">
+                    <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label">wh fovview enabled</span>
+                    </div>
+                    <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label">wh radar shownames</span>
+                    </div>
+                    <div class="config-param-entry">wh box typetype: Corner</div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;">
+                      <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                      <span class="chk-label" style="color: #666;">aim drawfov</span>
+                    </div>
+                    <div class="config-param-entry">wh money priority: 4</div>
+                    <div class="config-param-entry">
+                      <span class="config-color-circle" style="background-color: #ffb7b7;"></span>
+                      wh entity name color
+                    </div>
+                    <div class="config-param-entry">misc spectatorlist s y: 108</div>
+                    <div class="config-param-entry">wh entity name colortype: Entity</div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-config-create" style="display: none;">
+                  <div class="method-header-title" style="font-size: 18px; margin-bottom: 10px;">Create</div>
+                  <input type="text" class="dark-input" id="cfg-create-input" placeholder="" style="width: 260px; margin-bottom: 12px;">
+                  <button class="btn-action" id="btn-submit-create-cfg" style="width: 90px;">Create</button>
+                </div>
+
+                <div class="side-subpanel" id="panel-config-cloud" style="display: none;">
+                  <div class="method-header-title" style="font-size: 18px; margin-bottom: 10px;">Cloud Key</div>
+                  <input type="text" class="dark-input" id="cfg-cloud-input" placeholder="" style="width: 260px; margin-bottom: 12px;">
+                  <button class="btn-action" style="width: 90px;">Load</button>
+                </div>
               </div>
             </div>
+
+            <div class="config-subpane" id="config-keybinds">
+              <div class="controls-col" style="width: 270px; gap: 14px;">
+                <div class="key-group" style="margin-top: 0;">
+                  <span class="key-label">Panic Key</span>
+                  <div class="key-btn" style="width: 210px;" data-key="[">[</div>
+                </div>
+                <div class="key-group" style="margin-top: 0;">
+                  <span class="key-label">Menu Key</span>
+                  <div class="key-btn" style="width: 210px;" data-key="]">]</div>
+                </div>
+                <div class="key-group" style="margin-top: 0;">
+                  <span class="key-label">Add Friend/Entity Key</span>
+                  <div class="key-btn" style="width: 210px;" data-key="B">b</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="config-subpane" id="config-tips">
+              <div class="tips-container styled-scroll">
+                <div class="tip-card"><span class="tip-title">Player Chams</span><span class="tip-desc">not recommended for low PCs</span></div>
+                <div class="tip-card"><span class="tip-title">Player Skeletons</span><span class="tip-desc">not recommended for low PCs</span></div>
+                <div class="tip-card"><span class="tip-title">Player Dormant</span><span class="tip-desc">dormant disabled</span></div>
+                <div class="tip-card"><span class="tip-title">Entity Dormant</span><span class="tip-desc">dormant disabled</span></div>
+                <div class="tip-card"><span class="tip-title">Debug Camera Render Whole Map</span><span class="tip-desc">reduces performance</span></div>
+                <div class="tip-card"><span class="tip-title">Aimbot Smoothing Disabled</span><span class="tip-desc">detected by anticheat and in spectate</span></div>
+                <div class="tip-card"><span class="tip-title">Aimbot Autowall</span><span class="tip-desc">can drop fps</span></div>
+              </div>
+            </div>
+
           </div>
         </div>
 
         <!-- ================= 6. ВКЛАДКА TARGET ================= -->
         <div class="tab-pane" id="pane-target">
           <div class="subtabs-bar">
-            <span class="subtab active">ENTITY</span>
-            <span class="subtab">PLAYER</span>
-            <span class="subtab">TEAM</span>
-            <span class="subtab">RANK</span>
-            <span class="subtab">NET</span>
+            <span class="subtab active" data-subpane="target-entity">ENTITY</span>
+            <span class="subtab" data-subpane="target-player">PLAYER</span>
+            <span class="subtab" data-subpane="target-team">TEAM</span>
+            <span class="subtab" data-subpane="target-rank">RANK</span>
+            <span class="subtab" data-subpane="target-net">NET</span>
           </div>
 
           <div class="content-area">
-            <div class="target-container">
-              <div class="target-top-bar">
-                <input type="text" class="target-search" id="target-search-input" placeholder="">
-                <button class="btn-action" style="width: 72px;">Disable</button>
-              </div>
-              <div class="target-list styled-scroll" id="target-entity-list">
-                <div class="target-row" data-name="env_skypaint (1)"><span class="target-name">env_skypaint (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
-                <div class="target-row" data-name="class C_EnvTonemapController (1)"><span class="target-name">class C_EnvTonemapController (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
-                <div class="target-row" data-name="class C_FogController (1)"><span class="target-name">class C_FogController (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
-                <div class="target-row" data-name="class C_ShadowControl (1)"><span class="target-name">class C_ShadowControl (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
-                <div class="target-row" data-name="viewmodel (3)"><span class="target-name">viewmodel (3)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
-                <div class="target-row" data-name="class C_Sun (1)"><span class="target-name">class C_Sun (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
-                <div class="target-row" data-name="weapon_crowbar (1)"><span class="target-name">weapon_crowbar (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+            <div class="target-subpane active" id="target-entity">
+              <div class="target-container">
+                <div class="target-top-bar"><input type="text" class="target-search" id="target-search-input" placeholder=""><button class="btn-action" style="width: 72px;">Disable</button></div>
+                <div class="target-list styled-scroll" id="target-entity-list">
+                  <div class="target-row" data-name="env_skypaint (1)"><span class="target-name">env_skypaint (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                  <div class="target-row" data-name="class C_EnvTonemapController (1)"><span class="target-name">class C_EnvTonemapController (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                  <div class="target-row" data-name="class C_FogController (1)"><span class="target-name">class C_FogController (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                  <div class="target-row" data-name="class C_ShadowControl (1)"><span class="target-name">class C_ShadowControl (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                  <div class="target-row" data-name="viewmodel (3)"><span class="target-name">viewmodel (3)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                  <div class="target-row" data-name="class C_Sun (1)"><span class="target-name">class C_Sun (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                  <div class="target-row" data-name="weapon_crowbar (1)"><span class="target-name">weapon_crowbar (1)</span><div class="target-show"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Show</span></div><input type="text" class="target-input"><div class="target-color-pill"></div></div>
+                </div>
               </div>
             </div>
+
+            <div class="target-subpane" id="target-player">
+              <div class="target-container">
+                <div class="target-top-bar"><input type="text" class="target-search" placeholder=""><button class="btn-action" style="width: 72px;">Disable</button></div>
+                <div class="target-content-box styled-scroll">
+                  <div class="player-entry-row">
+                    <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Exec</span>
+                    <div class="checkbox-row" style="gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Friend</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="target-subpane" id="target-team">
+              <div class="target-container">
+                <div class="target-top-bar"><input type="text" class="target-search" placeholder=""><button class="btn-action" style="width: 72px;">Disable</button></div>
+                <div class="target-content-box styled-scroll">
+                  <div class="team-entry-row"><span class="team-entry-title">Unassigned</span><div class="team-chk-group"><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore</span></div><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore esp</span></div></div></div>
+                  <div class="team-entry-row"><span class="team-entry-title">Joining/Connecting</span><div class="team-chk-group"><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore</span></div><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore esp</span></div></div></div>
+                  <div class="team-entry-row"><span class="team-entry-title">Spectator</span><div class="team-chk-group"><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore</span></div><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore esp</span></div></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="target-subpane" id="target-rank">
+              <div class="target-container">
+                <div class="target-top-bar"><input type="text" class="target-search" placeholder=""><button class="btn-action" style="width: 72px;">Disable</button></div>
+                <div class="target-content-box styled-scroll">
+                  <div class="rank-entry-row"><span class="team-entry-title">superadmin</span><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore</span></div></div>
+                  <div class="rank-entry-row"><span class="team-entry-title">user</span><div class="checkbox-row" style="gap: 6px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Ignore</span></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="target-subpane" id="target-net">
+              <div class="target-container">
+                <div class="target-top-bar"><input type="text" class="target-search" id="net-search-input" placeholder="" style="width: 100%;"></div>
+                <div class="target-content-box styled-scroll" id="net-items-container">
+                  <div class="net-entry-row"><span class="net-name">arccw_sendbullet</span><span class="net-path">lua/arccw/shared/sh_physbullet2.lua</span></div>
+                  <div class="net-entry-row"><span class="net-name">tfaSoundEventStop</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">CamEffector.Data</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">Ka52ToggleGuidanceMode</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">PlayerKilledSelf</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">weapon_pistol</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">AdvDupe2_ReportModel</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">weapon_oldmanharpoon</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">scene_manager</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">npc_satchel</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">ammo_rpgclip</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">arccw_networksound</span><span class="net-path">lua/weapons/arccw_base/sh_timers.lua</span></div>
+                  <div class="net-entry-row"><span class="net-name">tfaSDLP</span><span class="net-path">server</span></div>
+                  <div class="net-entry-row"><span class="net-name">Ka52MusicError</span><span class="net-path">server</span></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
         <!-- ================= 7. ВКЛАДКА LUA ================= -->
-        <div class="tab-pane" id="pane-lua">
+        <div class="tab-pane active" id="pane-lua">
           <div class="subtabs-bar">
-            <span class="subtab active">MAIN</span>
-            <span class="subtab">GENERAL</span>
-            <span class="subtab">EDIT ADDONS</span>
+            <span class="subtab active" data-subpane="lua-main">MAIN</span>
+            <span class="subtab" data-subpane="lua-general">GENERAL</span>
+            <span class="subtab" data-subpane="lua-editaddons">EDIT ADDONS</span>
           </div>
 
           <div class="content-area">
-            <div class="controls-col" style="width: 250px;">
-              <div class="config-buttons-row">
-                <!-- Кнопка Lua List открывает 3-е окно -->
-                <button class="btn-action" style="width: 110px;" id="btn-open-lualist">Lua List</button>
-                <!-- Кнопка Editor открывает 2-е окно -->
-                <button class="btn-action" style="width: 114px;" id="btn-open-editor">Editor</button>
-              </div>
+            <div class="lua-subpane active" id="lua-main">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 250px;">
+                  <div class="config-buttons-row">
+                    <button class="btn-action" style="width: 110px;" id="btn-open-lualist">Lua List</button>
+                    <button class="btn-action" style="width: 114px;" id="btn-open-editor">Editor</button>
+                  </div>
+                  <input type="text" class="dark-input" id="lua-search-input" placeholder="" style="width: 230px; margin-bottom: 6px;">
 
-              <input type="text" class="dark-input" id="lua-search-input" placeholder="" style="width: 230px; margin-bottom: 6px;">
+                  <div class="lua-list-container styled-scroll" id="lua-items-wrapper">
+                    <div class="lua-item" data-luaname="clientcinema">clientcinema</div>
+                    <div class="lua-item" data-luaname="exprerimentalnospread">exprerimentalnospread</div>
+                    <div class="lua-item" data-luaname="hvhobkak1">hvhobkak1</div>
+                    <div class="lua-item" data-luaname="hvhobkak2">hvhobkak2</div>
+                    <div class="lua-item" data-luaname="Tetris">Tetris</div>
+                    <div class="lua-item" data-luaname="workshopaa">workshopaa</div>
+                    <div class="lua-item loaded" data-luaname="allserver">allserver</div>
+                    <div class="lua-item loaded" data-luaname="coyntcranger">coyntcranger</div>
+                    <div class="lua-item loaded" data-luaname="fullscripthook">fullscripthook</div>
+                    <div class="lua-item loaded" data-luaname="nameset">nameset</div>
+                    <div class="lua-item loaded" data-luaname="removeerrors">removeerrors</div>
+                  </div>
+                </div>
 
-              <div class="lua-list-container styled-scroll" id="lua-items-wrapper">
-                <div class="lua-item">clientcinema</div>
-                <div class="lua-item">exprerimentalnospread</div>
-                <div class="lua-item">hvhobkak1</div>
-                <div class="lua-item">hvhobkak2</div>
-                <div class="lua-item">Tetris</div>
-                <div class="lua-item">workshopaa</div>
-                <div class="lua-item loaded">allserver</div>
-                <div class="lua-item loaded">coyntcranger</div>
-                <div class="lua-item loaded">fullscripthook</div>
-                <div class="lua-item loaded">nameset</div>
-                <div class="lua-item loaded">removeerrors</div>
+                <div class="lua-actions-panel" id="panel-lua-actions">
+                  <div class="method-header-title" id="lua-selected-title" style="font-size: 18px; margin-bottom: 6px;">clientcinema</div>
+                  <div class="lua-btns-grid">
+                    <button class="lua-action-btn">Run</button>
+                    <button class="lua-action-btn" id="btn-lua-edit">Edit</button>
+                    <button class="lua-action-btn">Delete</button>
+                    <button class="lua-action-btn">Unload</button>
+                  </div>
+                  <button class="lua-action-btn" style="width: 230px; margin-bottom: 12px;">Set Password</button>
+                  <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;">
+                    <div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div>
+                    <span class="chk-label">Auto running on server</span>
+                  </div>
+                </div>
               </div>
             </div>
+
+            <div class="lua-subpane" id="lua-general">
+              <div class="general-content-layout">
+                <div class="controls-col" style="width: 250px;">
+                  <div class="checkbox-list">
+                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Lua Stealer</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Save Mode</span></div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Addon Disabler</span></div><div class="dots-btn" data-panel="panel-addon-disabler">..</div></div>
+                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Editor</span></div></div>
+                  </div>
+                </div>
+
+                <div class="side-subpanel" id="panel-addon-disabler" style="display: none; padding-left: 20px;">
+                  <div class="method-header-title" style="margin-bottom: 6px;">Addon Disabler</div>
+                  <div class="disabler-list styled-scroll">
+                    <div class="disabler-item">propprotection</div>
+                    <div class="disabler-item">gmod_player_stat</div>
+                    <div class="disabler-item">discordannounce</div>
+                    <div class="disabler-item">gmod_geo_joinleave</div>
+                    <div class="disabler-item">simple_votekick_907370751</div>
+                    <div class="disabler-item">chat_commands</div>
+                    <div class="disabler-item">disablehud</div>
+                    <div class="disabler-item">fpv_drone_addon</div>
+                    <div class="disabler-item">exec_reconnect</div>
+                    <div class="disabler-item">thirdperson</div>
+                  </div>
+                  <button class="btn-action" style="width: 120px;">clear blacklist</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="lua-subpane" id="lua-editaddons">
+              <div id="editaddons-list-view" style="width: 100%; display: flex; flex-direction: column;">
+                <div class="checkbox-row" style="margin-bottom: 10px; width: fit-content; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"/></svg></div><span class="chk-label">Enabled</span></div>
+                <input type="text" class="dark-input" placeholder="" style="width: 100%; margin-bottom: 10px;">
+                <div class="disabler-list styled-scroll" style="max-height: 290px;" id="addons-files-list">
+                  <div class="disabler-item" data-path="lua/includes/init.lua">lua/includes/init.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/util.lua">lua/includes/util.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/util/color.lua">lua/includes/util/color.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/util/sql.lua">lua/includes/util/sql.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/extensions/net.lua">lua/includes/extensions/net.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/modules/baseclass.lua">lua/includes/modules/baseclass.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/modules/concommand.lua">lua/includes/modules/concommand.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/modules/saverestore.lua">lua/includes/modules/saverestore.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/modules/hook.lua">lua/includes/modules/hook.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/modules/gamemode.lua">lua/includes/modules/gamemode.lua</div>
+                  <div class="disabler-item" data-path="lua/includes/modules/weapons.lua">lua/includes/modules/weapons.lua</div>
+                </div>
+              </div>
+
+              <div class="addon-editor-container" id="editaddons-editor-view">
+                <div class="addon-editor-top">
+                  <span class="addon-editor-title" id="addon-editor-current-file">lua/includes/init.lua</span>
+                  <button class="btn-action" id="btn-back-to-addons" style="height: 24px; padding: 0 12px;">Back</button>
+                </div>
+                <div class="addon-editor-frame-box">
+                  <iframe src="https://x.exechack.cc/contents/editor.html" class="frame-content"></iframe>
+                </div>
+                <div class="addon-editor-footer">
+                  <button class="btn-action">Show Original</button>
+                  <button class="btn-action">Show My Modify</button>
+                  <button class="btn-action">Delete</button>
+                  <button class="btn-action">Save</button>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -2333,15 +2962,12 @@
 
   </div>
 
-  <!-- ================= ВТОРОЕ ОКНО: EDITOR ================= -->
+  <!-- ================= ОКНО: EDITOR ================= -->
   <div class="editor-window" id="editor-window">
     <div class="titlebar" id="editor-titlebar">
       <span class="title">Editor</span>
       <div class="close-btn" id="editor-close-btn" title="Close">
-        <svg width="14" height="14" viewBox="0 0 14 14">
-          <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+        <svg width="14" height="14" viewBox="0 0 14 14"><line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/></svg>
       </div>
     </div>
     <div class="frame-body">
@@ -2358,15 +2984,12 @@
     </div>
   </div>
 
-  <!-- ================= ТРЕТЬЕ ОКНО: LUA LIST ================= -->
+  <!-- ================= ОКНО: LUA LIST ================= -->
   <div class="lualist-window" id="lualist-window">
     <div class="titlebar" id="lualist-titlebar">
       <span class="title">Lua List</span>
       <div class="close-btn" id="lualist-close-btn" title="Close">
-        <svg width="14" height="14" viewBox="0 0 14 14">
-          <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
-          <line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/>
-        </svg>
+        <svg width="14" height="14" viewBox="0 0 14 14"><line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/><line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"/></svg>
       </div>
     </div>
     <div class="frame-body">
@@ -2377,7 +3000,7 @@
   <script>
     // ================= ФОНЫ GMOD =================
     const BG_IMAGE_1 = "https://wallpapercat.com/w/full/1/b/a/1179327-1920x1080-desktop-full-hd-garrys-mod-wallpaper-photo.jpg";
-    const BG_IMAGE_2 = "https://images3.alphacoders.com/557/thumb-350-557525.webp";
+    const BG_IMAGE_2 = "https://images.alphacoders.com/557/557555.jpg";
 
     const layer1 = document.getElementById('bg-layer-1');
     const layer2 = document.getElementById('bg-layer-2');
@@ -2401,7 +3024,7 @@
     }
     setInterval(cycleBackgrounds, 30000);
 
-    // ================= DRAG & DROP ДЛЯ 3-Х ОКОН =================
+    // ================= DRAG & DROP =================
     const menuWindow = document.getElementById('draggable-window');
     const editorWindow = document.getElementById('editor-window');
     const lualistWindow = document.getElementById('lualist-window');
@@ -2455,44 +3078,70 @@
     setupDraggable(editorWindow, document.getElementById('editor-titlebar'));
     setupDraggable(lualistWindow, document.getElementById('lualist-titlebar'));
 
-    // ================= ОТКРЫТИЕ ОКОН EDITOR И LUA LIST =================
+    // ================= ОКНА MODAL =================
     const btnOpenEditor = document.getElementById('btn-open-editor');
+    const btnLuaEdit = document.getElementById('btn-lua-edit');
     const editorCloseBtn = document.getElementById('editor-close-btn');
 
-    if (btnOpenEditor && editorWindow) {
-      btnOpenEditor.addEventListener('click', (e) => {
-        e.stopPropagation();
-        editorWindow.style.display = 'flex';
-        bringToFront(editorWindow);
-      });
+    function openEditorModal() {
+      editorWindow.style.display = 'flex';
+      bringToFront(editorWindow);
     }
 
-    if (editorCloseBtn && editorWindow) {
-      editorCloseBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        editorWindow.style.display = 'none';
-      });
-    }
+    if (btnOpenEditor) btnOpenEditor.addEventListener('click', openEditorModal);
+    if (btnLuaEdit) btnLuaEdit.addEventListener('click', openEditorModal);
+    if (editorCloseBtn) editorCloseBtn.addEventListener('click', () => editorWindow.style.display = 'none');
 
     const btnOpenLuaList = document.getElementById('btn-open-lualist');
     const lualistCloseBtn = document.getElementById('lualist-close-btn');
 
-    if (btnOpenLuaList && lualistWindow) {
-      btnOpenLuaList.addEventListener('click', (e) => {
-        e.stopPropagation();
-        lualistWindow.style.display = 'flex';
-        bringToFront(lualistWindow);
+    if (btnOpenLuaList) btnOpenLuaList.addEventListener('click', () => { lualistWindow.style.display = 'flex'; bringToFront(lualistWindow); });
+    if (lualistCloseBtn) lualistCloseBtn.addEventListener('click', () => lualistWindow.style.display = 'none');
+
+    // ================= LUA -> MAIN =================
+    const luaItems = document.querySelectorAll('#lua-items-wrapper .lua-item');
+    const panelLuaActions = document.getElementById('panel-lua-actions');
+    const luaSelectedTitle = document.getElementById('lua-selected-title');
+
+    luaItems.forEach(item => {
+      item.addEventListener('click', () => {
+        luaItems.forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+
+        const scriptName = item.dataset.luaname || item.textContent;
+        if (luaSelectedTitle) luaSelectedTitle.textContent = scriptName;
+
+        if (panelLuaActions) {
+          panelLuaActions.style.display = 'flex';
+          panelLuaActions.classList.add('open');
+        }
+      });
+    });
+
+    // ================= LUA -> EDIT ADDONS =================
+    const addonsFilesList = document.querySelectorAll('#addons-files-list .disabler-item');
+    const editaddonsListView = document.getElementById('editaddons-list-view');
+    const editaddonsEditorView = document.getElementById('editaddons-editor-view');
+    const addonEditorCurrentFile = document.getElementById('addon-editor-current-file');
+    const btnBackToAddons = document.getElementById('btn-back-to-addons');
+
+    addonsFilesList.forEach(item => {
+      item.addEventListener('click', () => {
+        const filePath = item.dataset.path || item.textContent;
+        if (addonEditorCurrentFile) addonEditorCurrentFile.textContent = filePath;
+        if (editaddonsListView) editaddonsListView.style.display = 'none';
+        if (editaddonsEditorView) editaddonsEditorView.style.display = 'flex';
+      });
+    });
+
+    if (btnBackToAddons) {
+      btnBackToAddons.addEventListener('click', () => {
+        if (editaddonsEditorView) editaddonsEditorView.style.display = 'none';
+        if (editaddonsListView) editaddonsListView.style.display = 'flex';
       });
     }
 
-    if (lualistCloseBtn && lualistWindow) {
-      lualistCloseBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        lualistWindow.style.display = 'none';
-      });
-    }
-
-    // ================= ЛОГИКА ВКЛАДОК МЕНЮ =================
+    // ================= ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК И ПОДВКЛАДОК =================
     const sidebarItems = document.querySelectorAll('.sidebar-item');
     const panes = {
       main: document.getElementById('pane-main'),
@@ -2521,7 +3170,6 @@
       });
     });
 
-    // Переключение подвкладок
     document.querySelectorAll('.subtabs-bar').forEach(bar => {
       const subtabs = bar.querySelectorAll('.subtab');
       subtabs.forEach(tab => {
@@ -2532,7 +3180,7 @@
           const subpaneId = tab.dataset.subpane;
           if (subpaneId) {
             const parentPane = tab.closest('.tab-pane');
-            parentPane.querySelectorAll('.main-subpane, .aim-subpane, .visuals-subpane, .misc-subpane').forEach(p => p.classList.remove('active'));
+            parentPane.querySelectorAll('.main-subpane, .aim-subpane, .visuals-subpane, .misc-subpane, .hvh-subpane, .config-subpane, .lua-subpane, .target-subpane').forEach(p => p.classList.remove('active'));
             const targetSubpane = document.getElementById(subpaneId);
             if (targetSubpane) targetSubpane.classList.add('active');
           }
@@ -2540,7 +3188,7 @@
       });
     });
 
-    // Боковые меню ".."
+    // ================= БОКОВЫЕ МЕНЮ ".." =================
     const allDotsBtns = document.querySelectorAll('.dots-btn[data-panel]');
     allDotsBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -2550,6 +3198,23 @@
         if (!targetPanel) return;
 
         const isCurrentlyOpen = targetPanel.classList.contains('open') || targetPanel.style.display === 'flex';
+
+        // Специальная логика для Visuals -> Player -> Name
+        const playerPreviewCol = document.getElementById('player-preview-col');
+        if (panelId === 'panel-vis-player-name' && playerPreviewCol) {
+          if (isCurrentlyOpen) {
+            targetPanel.classList.remove('open');
+            targetPanel.style.display = 'none';
+            btn.classList.remove('active');
+            playerPreviewCol.style.display = 'flex';
+          } else {
+            playerPreviewCol.style.display = 'none';
+            targetPanel.classList.add('open');
+            targetPanel.style.display = 'flex';
+            btn.classList.add('active');
+          }
+          return;
+        }
 
         const parentLayout = btn.closest('.general-content-layout');
         if (parentLayout) {
@@ -2568,80 +3233,7 @@
       });
     });
 
-    // Логика списка шрифтов (Visuals > Font)
-    const fontItems = document.querySelectorAll('#font-items-list .font-item-row');
-    const panelFontSettings = document.getElementById('panel-font-settings');
-    const fontActiveTitle = document.getElementById('font-active-title');
-    const fontPreviewText = document.getElementById('font-preview-text');
-
-    fontItems.forEach(item => {
-      item.addEventListener('click', () => {
-        fontItems.forEach(f => f.classList.remove('selected'));
-        item.classList.add('selected');
-
-        const fontName = item.dataset.font;
-        if (fontActiveTitle) fontActiveTitle.textContent = fontName;
-        if (fontPreviewText) fontPreviewText.style.fontFamily = `"${fontName}", sans-serif`;
-
-        if (panelFontSettings) {
-          panelFontSettings.style.display = 'flex';
-          panelFontSettings.classList.add('open');
-        }
-      });
-    });
-
-    // Слайдер размера шрифта
-    const fontSizeSlider = document.getElementById('fontSizeSlider');
-    const fontSizeVal = document.getElementById('fontSizeVal');
-    if (fontSizeSlider && fontSizeVal && fontPreviewText) {
-      fontSizeSlider.addEventListener('input', (e) => {
-        const val = e.target.value;
-        fontSizeVal.textContent = val;
-        fontPreviewText.style.fontSize = val + 'px';
-      });
-    }
-
-    // Добавление строки в Spam (Misc > Spam)
-    const btnAddSpam = document.getElementById('btn-add-spam');
-    const spamMsgInput = document.getElementById('spam-msg-input');
-    const spamMessagesList = document.getElementById('spam-messages-list');
-
-    if (btnAddSpam && spamMsgInput && spamMessagesList) {
-      btnAddSpam.addEventListener('click', () => {
-        const text = spamMsgInput.value.trim();
-        if (!text) return;
-        const newRow = document.createElement('div');
-        newRow.className = 'spam-entry-row';
-        newRow.textContent = text;
-        spamMessagesList.appendChild(newRow);
-        spamMsgInput.value = '';
-      });
-    }
-
-    // Выбор метода Run Method
-    const runMethodLabel = document.getElementById('run-method-label');
-    const methodItems = document.querySelectorAll('#panel-run-method .method-item');
-    methodItems.forEach(item => {
-      item.addEventListener('click', () => {
-        methodItems.forEach(m => m.classList.remove('selected'));
-        item.classList.add('selected');
-        const methodName = item.dataset.method;
-        if (runMethodLabel) {
-          runMethodLabel.textContent = `Run Method (${methodName})`;
-        }
-      });
-    });
-
-    // Theme и Animated Background
-    document.querySelectorAll('#panel-theme .method-item, #panel-anim-bg .method-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const parent = btn.parentElement;
-        parent.querySelectorAll('.method-item').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      });
-    });
-
-    // Слайдеры
+    // ================= СЛАЙДЕРЫ =================
     function initSlider(sliderId, valueId, maxVal = 100) {
       const slider = document.getElementById(sliderId);
       const valText = document.getElementById(valueId);
@@ -2659,6 +3251,7 @@
       update();
     }
 
+    // Инициализация всех слайдеров
     initSlider('distanceSlider', 'distanceValue', 25000);
     initSlider('entityDistSlider', 'entityDistVal', 25000);
     initSlider('emotionX', 'emotionXVal', 100);
@@ -2666,8 +3259,191 @@
     initSlider('fovSlider', 'fovValue', 180);
     initSlider('smoothingSlider', 'smoothingValue', 100);
     initSlider('maxHopsSlider', 'maxHopsVal', 50);
+    initSlider('fontSizeSlider', 'fontSizeVal', 48);
+    initSlider('radarDistSlider', 'radarDistVal', 100);
 
-    // Чекбоксы Visuals + ESP элементы
+    // Новые слайдеры Visuals > Other
+    initSlider('fovDesiredSlider', 'fovDesiredVal', 150);
+    initSlider('fovVmSlider', 'fovVmVal', 150);
+    initSlider('camSpeedSlider', 'camSpeedVal', 10);
+    initSlider('tpDistSlider', 'tpDistVal', 300);
+    initSlider('filterBrightSlider', 'filterBrightVal', 1);
+    initSlider('filterContrastSlider', 'filterContrastVal', 5);
+    initSlider('filterSatSlider', 'filterSatVal', 5);
+    initSlider('aspectValSlider', 'aspectValVal', 20);
+    initSlider('crosshairSizeSlider', 'crosshairSizeVal', 50);
+    initSlider('oovFovSlider', 'oovFovVal', 400);
+    initSlider('oovRadiusSlider', 'oovRadiusVal', 20);
+
+    // ================= ШРИФТЫ =================
+    const fontItems = document.querySelectorAll('#font-items-list .font-item-row');
+    const panelFontSettings = document.getElementById('panel-font-settings');
+    const fontActiveTitle = document.getElementById('font-active-title');
+    const fontPreviewText = document.getElementById('font-preview-text');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeVal = document.getElementById('fontSizeVal');
+
+    fontItems.forEach(item => {
+      item.addEventListener('click', () => {
+        fontItems.forEach(f => f.classList.remove('selected'));
+        item.classList.add('selected');
+
+        const fontName = item.dataset.font;
+        if (fontActiveTitle) fontActiveTitle.textContent = fontName;
+        if (fontPreviewText) fontPreviewText.style.fontFamily = `"${fontName}", sans-serif`;
+
+        if (panelFontSettings) {
+          panelFontSettings.style.display = 'flex';
+          panelFontSettings.classList.add('open');
+
+          if (fontSizeSlider && fontSizeVal) {
+            const min = Number(fontSizeSlider.min) || 8;
+            const max = Number(fontSizeSlider.max) || 48;
+            const val = Number(fontSizeSlider.value);
+            const percentage = ((val - min) / (max - min)) * 100;
+            fontSizeSlider.style.setProperty('--percent', percentage + '%');
+            fontSizeVal.textContent = val;
+            fontPreviewText.style.fontSize = val + 'px';
+          }
+        }
+      });
+    });
+
+    if (fontSizeSlider && fontPreviewText) {
+      fontSizeSlider.addEventListener('input', (e) => {
+        fontPreviewText.style.fontSize = e.target.value + 'px';
+      });
+    }
+
+    // ================= CONFIG -> MAIN =================
+    const panelConfigParams = document.getElementById('panel-config-params');
+    const panelConfigCreate = document.getElementById('panel-config-create');
+    const panelConfigCloud = document.getElementById('panel-config-cloud');
+    const cfgActiveTitle = document.getElementById('cfg-active-title');
+    const configContainer = document.getElementById('config-container');
+    const btnShowCreateCfg = document.getElementById('btn-show-create-cfg');
+    const btnShowCloudCfg = document.getElementById('btn-show-cloud-cfg');
+    const btnSubmitCreateCfg = document.getElementById('btn-submit-create-cfg');
+    const cfgCreateInput = document.getElementById('cfg-create-input');
+
+    function hideAllConfigSidePanels() {
+      if (panelConfigParams) { panelConfigParams.style.display = 'none'; panelConfigParams.classList.remove('open'); }
+      if (panelConfigCreate) { panelConfigCreate.style.display = 'none'; panelConfigCreate.classList.remove('open'); }
+      if (panelConfigCloud) { panelConfigCloud.style.display = 'none'; panelConfigCloud.classList.remove('open'); }
+    }
+
+    function attachConfigClick(el) {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        
+        hideAllConfigSidePanels();
+        const name = el.dataset.cfgname || el.textContent;
+        if (cfgActiveTitle) cfgActiveTitle.textContent = name;
+        if (panelConfigParams) {
+          panelConfigParams.style.display = 'flex';
+          panelConfigParams.classList.add('open');
+        }
+      });
+    }
+
+    document.querySelectorAll('.config-item').forEach(attachConfigClick);
+
+    if (btnShowCreateCfg) {
+      btnShowCreateCfg.addEventListener('click', () => {
+        hideAllConfigSidePanels();
+        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+        if (panelConfigCreate) {
+          panelConfigCreate.style.display = 'flex';
+          panelConfigCreate.classList.add('open');
+        }
+      });
+    }
+
+    if (btnShowCloudCfg) {
+      btnShowCloudCfg.addEventListener('click', () => {
+        hideAllConfigSidePanels();
+        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+        if (panelConfigCloud) {
+          panelConfigCloud.style.display = 'flex';
+          panelConfigCloud.classList.add('open');
+        }
+      });
+    }
+
+    if (btnSubmitCreateCfg && cfgCreateInput && configContainer) {
+      btnSubmitCreateCfg.addEventListener('click', () => {
+        const name = cfgCreateInput.value.trim();
+        if (!name) return;
+        const newEl = document.createElement('div');
+        newEl.className = 'config-item selected';
+        newEl.textContent = name;
+        newEl.dataset.cfgname = name;
+        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+        configContainer.appendChild(newEl);
+        attachConfigClick(newEl);
+        cfgCreateInput.value = '';
+
+        hideAllConfigSidePanels();
+        if (cfgActiveTitle) cfgActiveTitle.textContent = name;
+        if (panelConfigParams) {
+          panelConfigParams.style.display = 'flex';
+          panelConfigParams.classList.add('open');
+        }
+      });
+    }
+
+    // ================= SPAM =================
+    const btnAddSpam = document.getElementById('btn-add-spam');
+    const spamMsgInput = document.getElementById('spam-msg-input');
+    const spamMessagesList = document.getElementById('spam-messages-list');
+    if (btnAddSpam && spamMsgInput && spamMessagesList) {
+      btnAddSpam.addEventListener('click', () => {
+        const text = spamMsgInput.value.trim();
+        if (!text) return;
+        const newRow = document.createElement('div');
+        newRow.className = 'spam-entry-row';
+        newRow.textContent = text;
+        spamMessagesList.appendChild(newRow);
+        spamMsgInput.value = '';
+      });
+    }
+
+    const btnAddKillsay = document.getElementById('btn-add-killsay');
+    const killsayMsgInput = document.getElementById('killsay-msg-input');
+    const killsayMessagesList = document.getElementById('killsay-messages-list');
+    if (btnAddKillsay && killsayMsgInput && killsayMessagesList) {
+      btnAddKillsay.addEventListener('click', () => {
+        const text = killsayMsgInput.value.trim();
+        if (!text) return;
+        const newRow = document.createElement('div');
+        newRow.className = 'spam-entry-row';
+        newRow.textContent = text;
+        killsayMessagesList.appendChild(newRow);
+        killsayMsgInput.value = '';
+      });
+    }
+
+    // ================= RUN METHOD =================
+    const runMethodLabel = document.getElementById('run-method-label');
+    const methodItems = document.querySelectorAll('#panel-run-method .method-item');
+    methodItems.forEach(item => {
+      item.addEventListener('click', () => {
+        methodItems.forEach(m => m.classList.remove('selected'));
+        item.classList.add('selected');
+        const methodName = item.dataset.method;
+        if (runMethodLabel) runMethodLabel.textContent = `Run Method (${methodName})`;
+      });
+    });
+
+    document.querySelectorAll('#panel-theme .method-item, #panel-anim-bg .method-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.parentElement.querySelectorAll('.method-item').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // ================= ЧЕКБОКСЫ & VISUALS =================
     const previewElements = {
       name: document.getElementById('preview-name'),
       rank: document.getElementById('preview-rank'),
@@ -2682,7 +3458,7 @@
 
     const characterImg = document.getElementById('preview-character');
 
-    document.querySelectorAll('.checkbox-row').forEach(row => {
+    document.querySelectorAll('#vis-player .checkbox-row').forEach(row => {
       row.addEventListener('click', (e) => {
         if (e.target.classList.contains('dots-btn')) return;
 
@@ -2697,13 +3473,53 @@
       });
     });
 
-    document.querySelectorAll('.target-show').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.toggle('checked');
+    // MONEY PRINTER в Visuals -> Entity
+    const printer3dModel = document.getElementById('printer-3d-model');
+    const printerTextTop = document.getElementById('printer-text-top');
+    const printerTitleHp = document.getElementById('printer-title-hp');
+
+    const entChkName = document.getElementById('ent-chk-name');
+    const entChkBox = document.getElementById('ent-chk-box');
+    const entChkChams = document.getElementById('ent-chk-chams');
+
+    if (entChkName) {
+      entChkName.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dots-btn')) return;
+        const isChecked = entChkName.classList.toggle('checked');
+        if (printerTextTop) printerTextTop.style.display = isChecked ? 'block' : 'none';
+        if (printerTitleHp) printerTitleHp.style.display = isChecked ? 'block' : 'none';
+      });
+    }
+
+    if (entChkBox) {
+      entChkBox.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dots-btn')) return;
+        const isChecked = entChkBox.classList.toggle('checked');
+        if (printer3dModel) printer3dModel.classList.toggle('no-box', !isChecked);
+      });
+    }
+
+    if (entChkChams) {
+      entChkChams.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dots-btn')) return;
+        const isChecked = entChkChams.classList.toggle('checked');
+        if (printer3dModel) printer3dModel.classList.toggle('chams-active', isChecked);
+      });
+    }
+
+    // Все остальные чекбоксы
+    document.querySelectorAll('.checkbox-row:not(#vis-player .checkbox-row):not(#ent-chk-name):not(#ent-chk-box):not(#ent-chk-chams)').forEach(row => {
+      row.addEventListener('click', (e) => {
+        if (e.target.classList.contains('dots-btn')) return;
+        row.classList.toggle('checked');
       });
     });
 
-    // Кнопки биндов
+    document.querySelectorAll('.target-show').forEach(item => {
+      item.addEventListener('click', () => item.classList.toggle('checked'));
+    });
+
+    // ================= КЛАВИШИ =================
     const keyButtons = document.querySelectorAll('.key-btn');
     let listeningBtn = null;
 
@@ -2755,7 +3571,7 @@
       }
     });
 
-    // Misc кнопка бана/кика
+    // ================= MISC БАН/КИК =================
     const kickBtn = document.getElementById('btn-kick-ban');
     if (kickBtn) {
       kickBtn.addEventListener('click', () => {
@@ -2769,37 +3585,9 @@
       });
     }
 
-    // Config добавление
-    const configContainer = document.getElementById('config-container');
-    const configInput = document.getElementById('config-input-name');
-    const btnCreateConfig = document.getElementById('btn-create-config');
-
-    function attachConfigClick(el) {
-      el.addEventListener('click', () => {
-        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-      });
-    }
-
-    document.querySelectorAll('.config-item').forEach(attachConfigClick);
-
-    if (btnCreateConfig && configInput && configContainer) {
-      btnCreateConfig.addEventListener('click', () => {
-        const name = configInput.value.trim();
-        if (!name) return;
-        const newEl = document.createElement('div');
-        newEl.className = 'config-item selected';
-        newEl.textContent = name;
-        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
-        configContainer.appendChild(newEl);
-        attachConfigClick(newEl);
-        configInput.value = '';
-      });
-    }
-
-    // Target фильтр
+    // ================= ПОИСК TARGET ENTITY =================
     const targetSearch = document.getElementById('target-search-input');
-    const targetRows = document.querySelectorAll('.target-row');
+    const targetRows = document.querySelectorAll('#target-entity-list .target-row');
     if (targetSearch) {
       targetSearch.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
@@ -2810,13 +3598,20 @@
       });
     }
 
-    // Lua скрипты
-    document.querySelectorAll('.lua-item').forEach(item => {
-      item.addEventListener('click', () => {
-        item.classList.toggle('loaded');
+    // ================= ПОИСК TARGET NET =================
+    const netSearch = document.getElementById('net-search-input');
+    const netRows = document.querySelectorAll('#net-items-container .net-entry-row');
+    if (netSearch) {
+      netSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        netRows.forEach(row => {
+          const name = row.querySelector('.net-name').textContent.toLowerCase();
+          row.style.display = name.includes(query) ? 'flex' : 'none';
+        });
       });
-    });
+    }
 
+    // ================= ПОИСК LUA =================
     const luaSearch = document.getElementById('lua-search-input');
     if (luaSearch) {
       luaSearch.addEventListener('input', (e) => {
