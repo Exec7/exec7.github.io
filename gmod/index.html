@@ -20,20 +20,24 @@
         extend: {
           colors: {
             brand: {
-              bg: '#313742',
+              bg: '#1b1f26',
               card: '#22272e',
-              cardHover: '#2a3038',
-              surface: '#3b4252',
+              cardHover: '#282e37',
+              surface: '#2d3440',
               accent: '#5e81ac',
               accentHover: '#81a1c1',
               highlight: '#88c0d0',
               text: '#d8dee9',
               muted: '#e5e9f0',
-              subtext: '#8892b0',
+              subtext: '#9ba5b7',
               danger: '#bf616a',
               warning: '#ebcb8b',
               success: '#a3be8c'
             }
+          },
+          boxShadow: {
+            'glow': '0 0 25px -5px rgba(136, 192, 208, 0.25)',
+            'glow-accent': '0 0 30px -5px rgba(94, 129, 172, 0.35)'
           }
         }
       }
@@ -42,7 +46,7 @@
 
   <style>
     body {
-      background-color: #313742;
+      background-color: #1f242c;
       color: #d8dee9;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
@@ -53,10 +57,10 @@
       height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #22272e;
+      background: #1e2229;
     }
     ::-webkit-scrollbar-thumb {
-      background: #4c566a;
+      background: #434c5e;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
@@ -105,7 +109,6 @@
           </div>
         </div>
 
-
         <!-- Mobile Menu Toggle Button -->
         <div class="flex items-center md:hidden">
           <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="p-2 rounded-lg text-brand-subtext hover:text-white hover:bg-brand-surface transition-colors" aria-label="Toggle menu">
@@ -140,7 +143,7 @@
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28 flex flex-col justify-center min-h-[460px]">
       <div class="max-w-2xl space-y-5">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-surface/80 border border-gray-700/60 text-xs font-semibold text-brand-highlight">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-surface/80 border border-gray-700/60 text-xs font-semibold text-brand-highlight backdrop-blur-sm">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
           Undetected
         </div>
@@ -151,7 +154,7 @@
           Hundreds of functions such as Aimbot, ESP, and Collective Security.<br>Exechack is the best cheat available for Garry's Mod.
         </p>
         <div class="pt-2">
-          <a href="https://x.exechack.cc/forum/subscriptions" class="inline-flex items-center justify-center gap-2.5 bg-brand-accent hover:bg-brand-accentHover text-white font-bold text-sm tracking-wide px-7 py-3.5 rounded-xl shadow-lg shadow-brand-accent/25 hover:-translate-y-0.5 transition-all">
+          <a href="https://x.exechack.cc/forum/subscriptions" class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-brand-accent to-blue-600 hover:from-brand-accentHover hover:to-blue-500 text-white font-bold text-sm tracking-wide px-7 py-3.5 rounded-xl shadow-lg shadow-brand-accent/25 hover:-translate-y-0.5 transition-all">
             <i data-lucide="shopping-cart" class="w-4 h-4"></i>
             GET FROM 500₽ / 6$ / 5€ FOREVER
           </a>
@@ -166,69 +169,135 @@
     <!-- Interactive Menu Preview Section -->
     <section>
       <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="layers" class="text-brand-highlight w-6 h-6"></i>
-        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Menu Preview</h2>
+        <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+          <i data-lucide="layers" class="w-5 h-5"></i>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Menu</h2>
       </div>
 
-      <div class="flex justify-center perspective-[1000px]">
-        <div class="card relative max-w-4xl w-full rounded-2xl p-2 bg-brand-card border border-gray-700/50 shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer"
-             style="will-change: transform; transition: 2s cubic-bezier(0.18, 1.4, 0.53, 1); transform: rotateY(0deg) rotateX(0deg);">
-          <img src="gmod0.png" alt="Menu Preview" class="w-full h-auto rounded-xl object-contain mx-auto" href="https://exechack.cc/gmod/menu-preview" target="_blank">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <!-- 3D Card Preview -->
+        <div class="flex justify-center perspective-[1000px]">
+          <div class="card relative w-full rounded-2xl p-2.5 bg-brand-card/90 backdrop-blur border border-gray-700/70 shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer group hover:border-brand-highlight/40"
+               style="will-change: transform; transition: 2s cubic-bezier(0.18, 1.4, 0.53, 1); transform: rotateY(0deg) rotateX(0deg);">
+            <img src="gmod0.png" alt="Menu Preview" class="w-full h-auto rounded-xl object-contain mx-auto shadow-inner" href="https://exechack.cc/gmod/menu-preview" target="_blank">
+          </div>
         </div>
+
+        <!-- Full-Width Interactive Button -->
+        <a href="https://exechack.cc/gmod/menu-preview" target="_blank"
+           class="group w-full flex items-center justify-center gap-3 py-3.5 px-6 rounded-xl font-bold text-sm sm:text-base text-white bg-gradient-to-r from-brand-surface via-brand-cardHover to-brand-surface hover:from-brand-accent/20 hover:to-brand-surface border border-gray-700/80 hover:border-brand-highlight/60 shadow-lg hover:shadow-brand-highlight/10 transition-all duration-300 transform hover:-translate-y-0.5">
+          <i data-lucide="sparkles" class="w-5 h-5 text-brand-highlight group-hover:scale-110 transition-transform"></i>
+          <span>Try Interactive Website Menu Preview</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-brand-subtext group-hover:text-white group-hover:translate-x-1 transition-all"></i>
+        </a>
       </div>
-      <br><br><center><h2><a href="https://exechack.cc/gmod/menu-preview" target="_blank">try website menu preview</a></h2></center>
     </section>
 
     <!-- Advantages Section -->
     <section id="advantages">
       <div class="flex items-center gap-3 mb-8">
-        <i data-lucide="sparkles" class="text-brand-highlight w-6 h-6"></i>
-        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Advantages</h2>
+        <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Advantages</h2>
+          <p class="text-xs sm:text-sm text-brand-subtext">Engineered for absolute stability, security, and convenience</p>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Advantage Card 1 -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between">
+        <div class="relative group bg-gradient-to-b from-brand-card to-brand-card/80 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 shadow-xl hover:shadow-glow transition-all duration-300 flex flex-col justify-between">
           <div>
-            <div class="w-10 h-10 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-              <i data-lucide="cpu" class="w-5 h-5"></i>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-surface to-brand-card border border-gray-600/50 flex items-center justify-center text-brand-highlight mb-5 group-hover:scale-105 group-hover:border-brand-highlight/40 transition-all">
+              <i data-lucide="cpu" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Simplicity</h3>
-            <p class="text-sm text-brand-subtext leading-relaxed space-y-1">
-              Easy to launch and configure.<br>
-              60+ configs from our community.<br>
-              No required x64 or AVX2, only Windows 7-11.<br>
-              5 minutes from purchasing to playing.
-            </p>
+            <h3 class="text-xl font-extrabold text-white mb-3 flex items-center gap-2">
+              Simplicity
+            </h3>
+            <ul class="text-sm text-brand-subtext leading-relaxed space-y-2">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0"></i>
+                <span>Easy to launch &amp; instant configuration.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0"></i>
+                <span><strong>60+</strong> configs ready from our community.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0"></i>
+                <span>No AVX2 or x64 strictly required (Windows 7–11).</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-400 mt-0.5 shrink-0"></i>
+                <span>Only 5 minutes from purchase to game.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-700/40 flex items-center justify-between text-xs text-brand-subtext">
+            <span>Fast Setup</span>
+            <span class="text-emerald-400 font-semibold font-mono">100% Plug &amp; Play</span>
           </div>
         </div>
 
         <!-- Advantage Card 2 -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between">
+        <div class="relative group bg-gradient-to-b from-brand-card to-brand-card/80 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 shadow-xl hover:shadow-glow transition-all duration-300 flex flex-col justify-between">
           <div>
-            <div class="w-10 h-10 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-surface to-brand-card border border-gray-600/50 flex items-center justify-center text-brand-highlight mb-5 group-hover:scale-105 group-hover:border-brand-highlight/40 transition-all">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Security</h3>
-            <p class="text-sm text-brand-subtext leading-relaxed">
-              It is impossible to be detected by anticheat, only if you intentionally ignore warnings.<br>
-              We are based on collective security, analyze every kick and ban.
-            </p>
+            <h3 class="text-xl font-extrabold text-white mb-3 flex items-center gap-2">
+              Security
+            </h3>
+            <ul class="text-sm text-brand-subtext leading-relaxed space-y-2">
+              <li class="flex items-start gap-2">
+                <i data-lucide="shield" class="w-4 h-4 text-brand-highlight mt-0.5 shrink-0"></i>
+                <span>Designed to be undetected by common anticheats.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="shield" class="w-4 h-4 text-brand-highlight mt-0.5 shrink-0"></i>
+                <span>Collective Security system analyzes bans &amp; kicks in real-time.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="shield" class="w-4 h-4 text-brand-highlight mt-0.5 shrink-0"></i>
+                <span>Active server-side risk warnings &amp; safe mode options.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-700/40 flex items-center justify-between text-xs text-brand-subtext">
+            <span>Network Analysis</span>
+            <span class="text-brand-highlight font-semibold font-mono">Collective DB</span>
           </div>
         </div>
 
         <!-- Advantage Card 3 -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between">
+        <div class="relative group bg-gradient-to-b from-brand-card to-brand-card/80 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 shadow-xl hover:shadow-glow transition-all duration-300 flex flex-col justify-between">
           <div>
-            <div class="w-10 h-10 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-              <i data-lucide="headset" class="w-5 h-5"></i>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-surface to-brand-card border border-gray-600/50 flex items-center justify-center text-brand-highlight mb-5 group-hover:scale-105 group-hover:border-brand-highlight/40 transition-all">
+              <i data-lucide="headset" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-white mb-2">Support</h3>
-            <p class="text-sm text-brand-subtext leading-relaxed">
-              Long term support <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" class="text-brand-highlight hover:underline">since 2018</a>.<br>
-              We will support any user with their problem.<br>
-              We keep the price as low as possible for us, up to 20 times lower than others.
-            </p>
+            <h3 class="text-xl font-extrabold text-white mb-3 flex items-center gap-2">
+              Support &amp; Price
+            </h3>
+            <ul class="text-sm text-brand-subtext leading-relaxed space-y-2">
+              <li class="flex items-start gap-2">
+                <i data-lucide="clock" class="w-4 h-4 text-brand-accentHover mt-0.5 shrink-0"></i>
+                <span>Long-term continuous support <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" class="text-brand-highlight underline hover:text-white">since 2018</a>.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="clock" class="w-4 h-4 text-brand-accentHover mt-0.5 shrink-0"></i>
+                <span>Responsive ticket assistance for any issue.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="clock" class="w-4 h-4 text-brand-accentHover mt-0.5 shrink-0"></i>
+                <span>Affordable lifetime pricing — up to 20x cheaper than alternatives.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-700/40 flex items-center justify-between text-xs text-brand-subtext">
+            <span>Reputation</span>
+            <span class="text-brand-accentHover font-semibold font-mono">Since 2018</span>
           </div>
         </div>
       </div>
@@ -237,108 +306,136 @@
     <!-- Features Section -->
     <section id="features">
       <div class="flex items-center gap-3 mb-8">
-        <i data-lucide="check-circle" class="text-brand-highlight w-6 h-6"></i>
-        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Features</h2>
+        <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+          <i data-lucide="check-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Features</h2>
+          <p class="text-xs sm:text-sm text-brand-subtext">A massive toolkit tailored for DarkRP, Sandbox, TTT, and HvH</p>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Aimbot -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
-          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-            <i data-lucide="target" class="w-6 h-6"></i>
+        <div class="group bg-brand-card/95 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-brand-surface border border-gray-700/60 flex items-center justify-center text-brand-highlight group-hover:scale-105 transition-transform">
+                <i data-lucide="target" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-md bg-brand-surface/70 border border-gray-700/50 text-brand-highlight font-semibold">Combat</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-highlight transition-colors">Aimbot</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              Perfect aimbot with great weapon pack support.<br>
+              <strong>No Spread:</strong> <a href="https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=300653696" target="_blank" class="text-brand-highlight hover:underline">M9K</a>, HL2, <a href="https://steamcommunity.com/workshop/filedetails/?id=2840031720" target="_blank" class="text-brand-highlight hover:underline">TFA</a>*, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=356003051" target="_blank" class="text-brand-highlight hover:underline">CW2</a>, <a href="https://steamcommunity.com/workshop/filedetails/?id=1967187358" target="_blank" class="text-brand-highlight hover:underline">SWB</a>, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=258192021" target="_blank" class="text-brand-highlight hover:underline">FAS2</a>*.<br>
+              <strong>AutoWall:</strong> M9K, CW2, SWB, FAS2.<br>
+              <strong>Entity Aiming:</strong> select any game entity.<br>
+              <strong>Features:</strong> Return Fire, Cursor Aimbot (hidden from spectators/C-menu), Silent, HitScan, Ignore/Priority filters, Prediction, Target Lock, FOV Check, Triggerbot, Smooth Aim, Snapline, Legit mode.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white mb-2">Aimbot</h3>
-          <p class="text-sm text-brand-subtext leading-relaxed">
-            Perfect aimbot with great pack support.<br>
-            No Spread with support packs: <a href="https://steamcommunity.com/sharedfiles/filedetails/?l=russian&id=300653696" target="_blank" class="text-brand-highlight hover:underline">M9K</a>, HL2, <a href="https://steamcommunity.com/workshop/filedetails/?id=2840031720" target="_blank" class="text-brand-highlight hover:underline">TFA</a>*, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=356003051" target="_blank" class="text-brand-highlight hover:underline">CW2</a>, <a href="https://steamcommunity.com/workshop/filedetails/?id=1967187358" target="_blank" class="text-brand-highlight hover:underline">SWB</a>, <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=258192021" target="_blank" class="text-brand-highlight hover:underline">FAS2</a>*.<br>
-            AutoWall with support packs: M9K, CW2, SWB, FAS2.<br>
-            Entity Aimming - you can choose any entity to use with aimbot.<br>
-            Return Fire - automatically kills the aggressor.<br>
-            Cursor Aimbot - Aim is like from C-MENU even on observation the aimbot is not visible.<br>
-            Silent, HitScan, Ignore filter, Priority Filter, Predict Customization, Target Lock, Disable on Kill, Fov Check, Triggerbot, Smooth Aim, Snapline, Legit-mode under observation.
-          </p>
         </div>
 
         <!-- Visuals -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
-          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-            <i data-lucide="eye" class="w-6 h-6"></i>
+        <div class="group bg-brand-card/95 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-brand-surface border border-gray-700/60 flex items-center justify-center text-brand-highlight group-hover:scale-105 transition-transform">
+                <i data-lucide="eye" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-md bg-brand-surface/70 border border-gray-700/50 text-brand-highlight font-semibold">Render</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-highlight transition-colors">Visuals</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              Full ESP customization: custom fonts, arbitrary text alignment, color sets, and live in-menu preview.<br>
+              <strong>Chams:</strong> 5 distinct modes with OBS Bypass support.<br>
+              <strong>DarkRP:</strong> Money ESP shows pocket and stash balance.<br>
+              <strong>World:</strong> Full Entity ESP with map detail toggle.<br>
+              <strong>Camera:</strong> Debug Camera (noclip view without bans), FullBright, Aspect Ratio, Custom Radar, Spectator List, Skybox Changer, Screen Filter, Custom Crosshair.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white mb-2">Visuals</h3>
-          <p class="text-sm text-brand-subtext leading-relaxed">
-            Full esp with full customize, any text position and color, custom font.<br>
-            Full preview esp in menu.<br>
-            Chams with 5 types and support with obsbypass.<br>
-            Money Esp - shows player money on darkrp.<br>
-            Full Entity Esp - switch any entity and even map details, customize color and name for each entity.<br>
-            Debug Camera - visual noclip, view the entire map without restrictions.<br>
-            FullBright - removes shadows for dark play.<br>
-            Aspect Ratio, Customize Radar, Spectators List, Skybox Changer, Screen Filter, Custom CrossHair, Info Bar.
-          </p>
         </div>
 
         <!-- Miscellaneous -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
-          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-            <i data-lucide="sliders" class="w-6 h-6"></i>
+        <div class="group bg-brand-card/95 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-brand-surface border border-gray-700/60 flex items-center justify-center text-brand-highlight group-hover:scale-105 transition-transform">
+                <i data-lucide="sliders" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-md bg-brand-surface/70 border border-gray-700/50 text-brand-highlight font-semibold">Utility</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-highlight transition-colors">Miscellaneous</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              <strong>Movement:</strong> Auto Strafe (Legit, Rage, Multi-directional), Max Hops limiter for undetectable bhop.<br>
+              <strong>Keypad Logger:</strong> Steals entered codes from 2 keypad types.<br>
+              <strong>Spammer:</strong> 5 modes (Chat, PM, OOC, KillSay, Connect) with customizable templates.<br>
+              <strong>Logs:</strong> Built-in server killfeed and event logger identical to staff tools.<br>
+              <strong>Emergency:</strong> Instant Get Ban / Kick self-trigger.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white mb-2">Miscellaneous</h3>
-          <p class="text-sm text-brand-subtext leading-relaxed">
-            Auto Strafe with 3 types: legit, rage and multi-directional.<br>
-            Max Hops - the maximum number of jumps for 1 time for undetect game.<br>
-            Keypad Logger - steals entered passwords by players, support for 2 types of keypads.<br>
-            Spammer with 5 types: chat, pm, ooc, killsay, connect from several our texts.<br>
-            Logs - has the same logs as the admins on server, you can find out who killed whom.<br>
-            Get Ban/kick - block yourself on the current server.
-          </p>
         </div>
 
         <!-- Lua -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
-          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-            <i data-lucide="code" class="w-6 h-6"></i>
+        <div class="group bg-brand-card/95 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-brand-surface border border-gray-700/60 flex items-center justify-center text-brand-highlight group-hover:scale-105 transition-transform">
+                <i data-lucide="code" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-md bg-brand-surface/70 border border-gray-700/50 text-brand-highlight font-semibold">Execution</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-highlight transition-colors">Lua Scripting</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              <strong>Execution:</strong> Run code in autorun or client-side server environment with stealth methods.<br>
+              <strong><a href="https://x.exechack.cc/lua/" target="_blank" class="text-brand-highlight hover:underline">Lua List:</a></strong> 200+ free community scripts with one-click injection.<br>
+              <strong>Lua Stealer:</strong> Dumps ~70% of server code (client &amp; shared) with NetLogger.<br>
+              <strong>Editor:</strong> Integrated IDE with obfuscation, minification, formatting, and password encryption.<br>
+              <strong><a href="https://x.exechack.cc/lua/api" target="_blank" class="text-brand-highlight hover:underline">Lua API:</a></strong> Rich API to write custom visual and functional extensions.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white mb-2">Lua</h3>
-          <p class="text-sm text-brand-subtext leading-relaxed">
-            Lua Execution - run your lua script on server with autorun or in clientside server code with undetectable method.<br>
-            <a href="https://x.exechack.cc/lua/" target="_blank" class="text-brand-highlight hover:underline">Lua List</a> - list with 200+ free scripts with additional features.<br>
-            Lua Stealer - stealing 70% server code, namely clientside and shared, handy assistant with netlogger in writing server hacks and other exploits.<br>
-            Editor - convenient script writing with obfuscator, minifier, beautifier, netlogger, encryption of scripts to password. For running on menustate and clientside. Editing any running clientside server code.<br>
-            <a href="https://x.exechack.cc/lua/api" target="_blank" class="text-brand-highlight hover:underline">Lua API</a> - full compatibility with the cheat with the ability to add your own functions to the cheat using a convenient wiki.
-          </p>
         </div>
 
         <!-- Security -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
-          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-            <i data-lucide="lock" class="w-6 h-6"></i>
+        <div class="group bg-brand-card/95 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-brand-surface border border-gray-700/60 flex items-center justify-center text-brand-highlight group-hover:scale-105 transition-transform">
+                <i data-lucide="lock" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-md bg-brand-surface/70 border border-gray-700/50 text-emerald-400 font-semibold">Defense</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-highlight transition-colors">Security &amp; Stealth</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              <strong>Anticheat Bypass:</strong> Injection cloaking for popular server AC solutions.<br>
+              <strong><a href="gmod8.png" target="_blank" class="text-brand-highlight hover:underline">Anti Screengrab:</a></strong> Automatically clears visuals when admins request screen capture.<br>
+              <strong><a href="https://exechack.cc/serversdatabase-archived/" target="_blank" class="text-brand-highlight hover:underline">Collective Security:</a></strong> Global database warning you about high-risk servers, bans, and addons prior to connection.<br>
+              <strong><a href="gmod11.png" target="_blank" class="text-brand-highlight hover:underline">OBS Bypass:</a></strong> ESP and UI hidden on streams and recordings.<br>
+              <strong><a href="gmod17.png" target="_blank" class="text-brand-highlight hover:underline">Checker Cleaner:</a></strong> Memory scrubbers against manual staff inspections.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white mb-2">Security</h3>
-          <p class="text-sm text-brand-subtext leading-relaxed">
-            Anti Cheat Protection - bypass injection detection in many anticheats.<br>
-            <a href="gmod8.png" target="_blank" class="text-brand-highlight hover:underline">Anti Screengrab</a> - addon to stealing your screenshot by admins, esp and other windows will hided.<br>
-            Legit Features - functions for aimbot and bhop to prevent detection.<br>
-            <a href="https://exechack.cc/serversdatabase-archived/" target="_blank" class="text-brand-highlight hover:underline">Collective Security</a> - servers database with all gmod servers, exechack collects statistics, server code and admins to warn other users and create tips for safe play on this server. Even before connecting, you can find out all the bans of other users, each addon, all admins.<br>
-            <a href="gmod11.png" target="_blank" class="text-brand-highlight hover:underline">OBS Bypass</a> - esp and other windows will hided on your record.<br>
-            <a href="gmod17.png" target="_blank" class="text-brand-highlight hover:underline">Cheat Checkers Protection</a> - A dozen ways to hide an exechack from the admins checkers programs.
-          </p>
         </div>
 
         <!-- Main -->
-        <div class="bg-brand-card rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/70 hover:bg-brand-cardHover transition-all duration-300">
-          <div class="w-12 h-12 rounded-xl bg-brand-surface/70 border border-gray-700/60 flex items-center justify-center text-brand-highlight mb-4">
-            <i data-lucide="server" class="w-6 h-6"></i>
+        <div class="group bg-brand-card/95 rounded-2xl p-6 border border-gray-700/60 hover:border-brand-highlight/40 hover:bg-brand-cardHover transition-all duration-300 flex flex-col justify-between shadow-lg">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-brand-surface border border-gray-700/60 flex items-center justify-center text-brand-highlight group-hover:scale-105 transition-transform">
+                <i data-lucide="server" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-mono tracking-wider uppercase px-2.5 py-1 rounded-md bg-brand-surface/70 border border-gray-700/50 text-brand-accentHover font-semibold">Ecosystem</span>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-brand-highlight transition-colors">Ecosystem &amp; Services</h3>
+            <p class="text-sm text-brand-subtext leading-relaxed">
+              Oldest continuously supported cheat in Garry's Mod (<a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" class="text-brand-highlight hover:underline">since 2018</a>).<br>
+              <strong><a href="https://x.exechack.cc/forum/tickets" target="_blank" class="text-brand-highlight hover:underline">Support:</a></strong> Direct ticket support and prompt compatibility updates.<br>
+              <strong><a href="https://x.exechack.cc/forum/" target="_blank" class="text-brand-highlight hover:underline">Community Forum:</a></strong> Hundreds of CFGs, resources, and themes.<br>
+              <strong>Loader:</strong> Universal compatibility for x86 &amp; x64 Garry's Mod branches.<br>
+              <strong><a href="https://exechack.cc/docs/#premium" target="_blank" class="text-brand-highlight hover:underline">Share Subscription:</a></strong> Give daily passes to friends.<br>
+              <strong><a href="https://gamemonitoring.net/garrys-mod/servers/19112284" target="_blank" class="text-brand-highlight hover:underline">Dedicated HvH Server:</a></strong> 128 tickrate head-only server.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white mb-2">Main</h3>
-          <p class="text-sm text-brand-subtext leading-relaxed">
-            Oldest continuously supported cheat in Garry's Mod, supporting its users <a href="https://x.exechack.cc/lua/?s=exechack+build" target="_blank" class="text-brand-highlight hover:underline">since 2018</a>.<br>
-            <a href="https://x.exechack.cc/forum/tickets" target="_blank" class="text-brand-highlight hover:underline">Support</a> - fast help every subscriber and cheat stable work with new game updates.<br>
-            <a href="https://x.exechack.cc/forum/" target="_blank" class="text-brand-highlight hover:underline">Forum</a> - with friendly community, hundreds of cfg, useful materials, and etc.<br>
-            Loader - support x32 &amp; x64 gmod versions, and any others.<br>
-            <a href="https://exechack.cc/docs/#premium" target="_blank" class="text-brand-highlight hover:underline">Share Subscription</a> - Play with friend, give a friend access to play for the whole day.<br>
-            Own <a href="https://gamemonitoring.net/garrys-mod/servers/19112284" target="_blank" class="text-brand-highlight hover:underline">HvH Server</a> (Hack vs Hack) with 128 tickrate, only head, map vote.
-          </p>
         </div>
 
       </div>
@@ -346,28 +443,28 @@
 
     <!-- Stats Banner -->
     <section>
-      <div class="bg-brand-card rounded-2xl p-6 sm:p-8 border border-gray-700/50 shadow-xl backdrop-blur-md">
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-y lg:divide-y-0 lg:divide-x divide-gray-700/50">
+      <div class="relative overflow-hidden bg-gradient-to-r from-brand-card via-brand-surface/40 to-brand-card rounded-2xl p-6 sm:p-8 border border-gray-700/60 shadow-xl backdrop-blur-md">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-y lg:divide-y-0 lg:divide-x divide-gray-700/60">
           
           <div class="pt-4 lg:pt-0">
-            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">2018</h4>
-            <p class="text-xs sm:text-sm text-brand-subtext mt-1">Support &amp; Update<br>Since</p>
+            <h4 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-highlight to-brand-accent">2018</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-2 font-medium uppercase tracking-wider">Continuously Updated</p>
           </div>
 
           <div class="pt-4 lg:pt-0">
-            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">10,000+</h4>
-            <p class="text-xs sm:text-sm text-brand-subtext mt-1">Lifetime Users</p>
+            <h4 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-highlight to-brand-accent">10,000+</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-2 font-medium uppercase tracking-wider">Lifetime Users</p>
           </div>
 
           <div class="pt-4 lg:pt-0">
-            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">400+</h4>
-            <p class="text-xs sm:text-sm text-brand-subtext mt-1">Themes &amp; Lua</p>
+            <h4 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-highlight to-brand-accent">400+</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-2 font-medium uppercase tracking-wider">Threads &amp; Lua Scripts</p>
           </div>
 
           <div class="pt-4 lg:pt-0">
-            <h4 class="text-3xl sm:text-4xl font-extrabold text-white">1000+</h4>
-            <p class="text-xs sm:text-sm text-brand-subtext mt-1">
-              <a href="https://exechack.cc/serversdatabase-archived/safedatabase" target="_blank" class="hover:text-brand-highlight transition-colors underline">Safe Servers</a> in database<br>analyzed based on 30,000 sessions
+            <h4 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-highlight to-brand-accent">1,000+</h4>
+            <p class="text-xs sm:text-sm text-brand-subtext mt-2">
+              <a href="https://exechack.cc/serversdatabase-archived/safedatabase" target="_blank" class="hover:text-brand-highlight transition-colors underline font-medium">Safe Servers</a> Analyzed<br><span class="text-[11px] text-brand-subtext/80">Across 30,000+ sessions</span>
             </p>
           </div>
 
@@ -379,18 +476,20 @@
     <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
       <!-- Video Container -->
-      <div class="lg:col-span-7 bg-brand-card rounded-2xl p-6 border border-gray-700/50 shadow-xl space-y-4">
-        <div class="flex items-center justify-between">
+      <div class="lg:col-span-7 bg-brand-card/90 rounded-2xl p-6 border border-gray-700/60 shadow-xl space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-gray-700/40">
           <div class="flex items-center gap-2.5">
-            <i data-lucide="video" class="text-brand-highlight w-5 h-5"></i>
-            <h2 class="text-lg font-black uppercase tracking-wider text-white">User Video</h2>
+            <div class="p-1.5 rounded-lg bg-brand-surface text-brand-highlight">
+              <i data-lucide="video" class="w-4 h-4"></i>
+            </div>
+            <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-white">User Showcase</h2>
           </div>
-          <a href="https://www.youtube.com/playlist?list=PLIXvx8aAqAENzpSF7DIlxlXK0d0uthrj2" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1">
-            Full Playlist <i data-lucide="external-link" class="w-3 h-3"></i>
+          <a href="https://www.youtube.com/playlist?list=PLIXvx8aAqAENzpSF7DIlxlXK0d0uthrj2" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1 font-semibold">
+            Full Playlist <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           </a>
         </div>
 
-        <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-brand-surface shadow-inner border border-gray-700/40">
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-brand-surface shadow-inner border border-gray-700/60">
           <script>
             const myArrays = ['B1e-P8D9tlg', '-xSYH8XjO8U', 'fVD1gREdCkQ', 'PFOXUIkr8qY', '7wB1AacHJZE', 'MD64t7Tp8yM', 'ViFkRNQjx_U', 'B0jB8igHwOg', 'laugAUHl_qw', 'NPJ16PczMGM', 'GWA9jJNkTI0', 'pnYuwlzqiFU', 'bGcfONAY_8k', 'NOxH9xhA66k', 'msSHUxZiH88', 'CCZP3CO0x4s', 'PcRvbw3KEy0'];
             const randomElements = myArrays[Math.floor(Math.random() * myArrays.length)]; 
@@ -400,56 +499,58 @@
       </div>
 
       <!-- FAQ Container -->
-      <div class="lg:col-span-5 bg-brand-card rounded-2xl p-6 border border-gray-700/50 shadow-xl space-y-4">
-        <div class="flex items-center gap-2.5 mb-2">
-          <i data-lucide="help-circle" class="text-brand-highlight w-5 h-5"></i>
-          <h2 class="text-lg font-black uppercase tracking-wider text-white">FAQ</h2>
+      <div class="lg:col-span-5 bg-brand-card/90 rounded-2xl p-6 border border-gray-700/60 shadow-xl space-y-4">
+        <div class="flex items-center gap-2.5 pb-2 border-b border-gray-700/40">
+          <div class="p-1.5 rounded-lg bg-brand-surface text-brand-highlight">
+            <i data-lucide="help-circle" class="w-4 h-4"></i>
+          </div>
+          <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-white">Frequently Asked Questions</h2>
         </div>
 
         <div class="space-y-3">
           <!-- Item 1 -->
-          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
-            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+          <details class="group bg-brand-surface/40 hover:bg-brand-surface/60 rounded-xl border border-gray-700/50 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-3.5 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
               <span>Payment methods</span>
-              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+              <span class="toggle-icon text-brand-highlight font-bold transition-transform duration-200 text-lg">+</span>
             </summary>
-            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
-              We accept cryptocurrency, mir, paypal, visa, mastercard and other.
+            <div class="px-3.5 pb-3.5 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              We accept Cryptocurrency, Mir, PayPal, Visa, Mastercard, and other local payment processors.
             </div>
           </details>
 
           <!-- Item 2 -->
-          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
-            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+          <details class="group bg-brand-surface/40 hover:bg-brand-surface/60 rounded-xl border border-gray-700/50 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-3.5 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
               <span>Available servers</span>
-              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+              <span class="toggle-icon text-brand-highlight font-bold transition-transform duration-200 text-lg">+</span>
             </summary>
-            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+            <div class="px-3.5 pb-3.5 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
               Each server in Garry's Mod is like a separate game, so the cheat collects reports and user statistics into a database.<br>
               Before purchasing, check the servers you're interested in for issues.<br>
-              <a href="https://exechack.cc/serversdatabase-archived/" target="_blank" class="text-brand-highlight hover:underline font-medium inline-block mt-1">servers database (archived)</a>
+              <a href="https://exechack.cc/serversdatabase-archived/" target="_blank" class="text-brand-highlight hover:underline font-semibold inline-block mt-1">servers database (archived)</a>
             </div>
           </details>
 
           <!-- Item 3 -->
-          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
-            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+          <details class="group bg-brand-surface/40 hover:bg-brand-surface/60 rounded-xl border border-gray-700/50 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-3.5 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
               <span>Computer requirements</span>
-              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+              <span class="toggle-icon text-brand-highlight font-bold transition-transform duration-200 text-lg">+</span>
             </summary>
-            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
-              The only requirement is the Windows operating system, AVX2 or x64 and etc not required.
+            <div class="px-3.5 pb-3.5 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              The only requirement is the Windows operating system (Windows 7–11). AVX2 or strictly x64 instructions are not mandatory.
             </div>
           </details>
 
           <!-- Item 4 -->
-          <details class="group bg-brand-surface/40 rounded-xl border border-gray-700/40 overflow-hidden transition-all">
-            <summary class="flex justify-between items-center p-4 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
-              <span>Viruses</span>
-              <span class="toggle-icon text-brand-subtext font-bold transition-transform duration-200 text-lg">+</span>
+          <details class="group bg-brand-surface/40 hover:bg-brand-surface/60 rounded-xl border border-gray-700/50 overflow-hidden transition-all">
+            <summary class="flex justify-between items-center p-3.5 cursor-pointer text-sm font-semibold text-white hover:text-brand-highlight select-none">
+              <span>Antivirus false positives</span>
+              <span class="toggle-icon text-brand-highlight font-bold transition-transform duration-200 text-lg">+</span>
             </summary>
-            <div class="px-4 pb-4 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
-              <a href="https://exechack.cc/docs/#downloadloader" target="_blank" class="text-brand-highlight hover:underline font-medium">Loader</a> has protection, and the cheat itself contains a dubious code for the antivirus, which causes false triggering.
+            <div class="px-3.5 pb-3.5 text-xs sm:text-sm text-brand-subtext border-t border-gray-700/30 pt-3">
+              <a href="https://exechack.cc/docs/#downloadloader" target="_blank" class="text-brand-highlight hover:underline font-semibold">The loader</a> uses memory protection packers and game injection mechanisms that trigger false positive reactions from AV software.
             </div>
           </details>
         </div>
@@ -459,126 +560,147 @@
 
     <!-- Menu Screenshots Gallery -->
     <section>
-      <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="image" class="text-brand-highlight w-6 h-6"></i>
-        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Menu Screenshots</h2>
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+            <i data-lucide="image" class="w-5 h-5"></i>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Menu Screenshots</h2>
+        </div>
+        <span class="text-xs text-brand-subtext">Click to open full view</span>
       </div>
 
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <a href="menu1.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu1.png" alt="Menu Screenshot 1" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu1.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu1.png" alt="Menu Screenshot 1" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu2.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu2.png" alt="Menu Screenshot 2" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu2.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu2.png" alt="Menu Screenshot 2" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu3.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu3.png" alt="Menu Screenshot 3" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu3.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu3.png" alt="Menu Screenshot 3" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu4.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu4.png" alt="Menu Screenshot 4" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu4.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu4.png" alt="Menu Screenshot 4" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu5.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu5.png" alt="Menu Screenshot 5" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu5.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu5.png" alt="Menu Screenshot 5" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu6.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu6.png" alt="Menu Screenshot 6" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu6.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu6.png" alt="Menu Screenshot 6" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu7.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu7.png" alt="Menu Screenshot 7" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu7.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu7.png" alt="Menu Screenshot 7" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu8.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu8.png" alt="Menu Screenshot 8" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu8.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu8.png" alt="Menu Screenshot 8" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
-        <a href="menu9.png" target="_blank" class="group bg-brand-card rounded-xl p-2 border border-gray-700/50 hover:border-brand-highlight/50 transition-all overflow-hidden block">
-          <img src="menu9.png" alt="Menu Screenshot 9" class="w-full h-auto rounded-lg group-hover:scale-[1.02] transition-transform duration-300">
+        <a href="menu9.png" target="_blank" class="group relative bg-brand-card/80 rounded-xl p-2 border border-gray-700/60 hover:border-brand-highlight/60 transition-all overflow-hidden block shadow-md hover:shadow-glow">
+          <img src="menu9.png" alt="Menu Screenshot 9" class="w-full h-auto rounded-lg group-hover:scale-[1.03] transition-transform duration-300">
         </a>
       </div>
     </section>
 
     <!-- In-Game Screenshots Gallery -->
     <section>
-      <div class="flex items-center gap-3 mb-6">
-        <i data-lucide="monitor" class="text-brand-highlight w-6 h-6"></i>
-        <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">In-Game Screenshots</h2>
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+            <i data-lucide="monitor" class="w-5 h-5"></i>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">In-Game Screenshots</h2>
+        </div>
+        <span class="text-xs text-brand-subtext">Actual game captures</span>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod8.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod8.png" alt="Anti ScreenGrab" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod8.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod8.png" alt="Anti ScreenGrab" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Protection</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Screen Stealing Protection (Anti ScreenGrab)</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Screen Stealing Protection (Anti ScreenGrab)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod11.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod11.png" alt="OBS Bypass" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod11.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod11.png" alt="OBS Bypass" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Stream</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Demo Record Protection (OBS Bypass)</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Demo Record Protection (OBS Bypass)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod12.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod12.png" alt="Collective Security" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod12.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod12.png" alt="Collective Security" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Database</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Global Server Statistics (Collective Security)</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Global Server Statistics (Collective Security)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod17.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod17.png" alt="Cheat Checkers Protection" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod17.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod17.png" alt="Cheat Checkers Protection" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Cleaner</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Cheat Checkers Protection (Memery Cleaner)</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Cheat Checkers Protection (Memory Cleaner)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod4.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod4.png" alt="ESP" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod4.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod4.png" alt="ESP" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Visual</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">ESP</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">ESP (Wallhack &amp; Player Info)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod18.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod18.png" alt="TTT" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod18.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod18.png" alt="TTT" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Gamemode</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">TTT</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">TTT (Trouble in Terrorist Town Support)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod3.jpeg" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod3.jpeg" alt="Deathrun" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod3.jpeg" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod3.jpeg" alt="Deathrun" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Movement</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Deathrun</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Deathrun (Auto-Strafe &amp; Trap Bypass)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod13.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod13.png" alt="Skybox Changer" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod13.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod13.png" alt="Skybox Changer" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Custom</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Skybox Changer</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Skybox Changer &amp; Atmosphere</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod16.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod16.png" alt="Lua list" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod16.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod16.png" alt="Lua list" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Library</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Lua list</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Lua Hub &amp; Script Library</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod7.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod7.png" alt="Lua Api Menu Integration" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod7.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod7.png" alt="Lua Api Menu Integration" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">API</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Lua Api (Menu Integration)</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Lua API (Menu Integration)</span>
         </div>
 
-        <div class="bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all flex flex-col justify-between">
-          <a href="gmod20.png" target="_blank" class="overflow-hidden rounded-xl block mb-3">
-            <img src="gmod20.png" alt="Lua Api Custom Animated Background" class="w-full h-44 object-cover hover:scale-105 transition-transform duration-300">
+        <div class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all flex flex-col justify-between shadow-lg">
+          <a href="gmod20.png" target="_blank" class="overflow-hidden rounded-xl block mb-3 relative">
+            <img src="gmod20.png" alt="Lua Api Custom Animated Background" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[10px] text-white font-mono uppercase">Visuals</span>
           </a>
-          <span class="text-xs font-medium text-brand-subtext px-1">Lua Api (Custom Animated Background by AI)</span>
+          <span class="text-xs font-semibold text-brand-subtext group-hover:text-white transition-colors px-1">Lua API (Custom Animated Background by AI)</span>
         </div>
 
       </div>
@@ -588,36 +710,51 @@
     <section>
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-3">
-          <i data-lucide="newspaper" class="text-brand-highlight w-6 h-6"></i>
+          <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+            <i data-lucide="newspaper" class="w-5 h-5"></i>
+          </div>
           <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">Latest Updates</h2>
         </div>
-        <a href="https://x.exechack.cc/forum/categories/31/" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1">
-          All updates <i data-lucide="external-link" class="w-3 h-3"></i>
+        <a href="https://x.exechack.cc/forum/categories/31/" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1 font-semibold">
+          All updates <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <a href="https://x.exechack.cc/forum/threads/1190/" target="_blank" class="group bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg">
-          <img src="https://i.postimg.cc/MpgrwZcX/image.png" alt="Update Thread 1190" class="w-full h-44 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+        <a href="https://x.exechack.cc/forum/threads/1190/" target="_blank" class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg hover:shadow-glow">
+          <div class="overflow-hidden rounded-xl mb-2">
+            <img src="https://i.postimg.cc/MpgrwZcX/image.png" alt="Update Thread 1190" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
         </a>
-        <a href="https://x.exechack.cc/forum/threads/1170/" target="_blank" class="group bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg">
-          <img src="https://i.imgur.com/PGj4F4K.png" alt="Update Thread 1170" class="w-full h-44 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+
+        <a href="https://x.exechack.cc/forum/threads/1170/" target="_blank" class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg hover:shadow-glow">
+          <div class="overflow-hidden rounded-xl mb-2">
+            <img src="https://i.imgur.com/PGj4F4K.png" alt="Update Thread 1170" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
         </a>
-        <a href="https://x.exechack.cc/forum/threads/1153/" target="_blank" class="group bg-brand-card rounded-2xl p-3 border border-gray-700/50 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg">
-          <img src="https://i.imgur.com/7nCWbFv.png" alt="Update Thread 1153" class="w-full h-44 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300">
+
+        <a href="https://x.exechack.cc/forum/threads/1153/" target="_blank" class="group bg-brand-card/90 rounded-2xl p-3 border border-gray-700/60 hover:border-brand-highlight/50 transition-all block overflow-hidden shadow-lg hover:shadow-glow">
+          <div class="overflow-hidden rounded-xl mb-2">
+            <img src="https://i.imgur.com/7nCWbFv.png" alt="Update Thread 1153" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
         </a>
       </div>
     </section>
 
     <!-- Reviews Section -->
-    <section class="bg-brand-card rounded-2xl p-6 sm:p-8 border border-gray-700/50 shadow-xl space-y-6">
-      <div class="flex items-center justify-between">
+    <section class="bg-brand-card/90 rounded-2xl p-6 sm:p-8 border border-gray-700/60 shadow-xl space-y-6">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-700/40">
         <div class="flex items-center gap-3">
-          <i data-lucide="message-circle" class="text-brand-highlight w-6 h-6"></i>
-          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">User Reviews</h2>
+          <div class="p-2 rounded-lg bg-brand-surface text-brand-highlight border border-gray-700/60">
+            <i data-lucide="message-circle" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h2 class="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">User Reviews</h2>
+            <p class="text-xs text-brand-subtext">Direct feedback from authentic community members</p>
+          </div>
         </div>
-        <a href="https://github.com/Exec7/exechack/discussions/1" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1 font-medium">
-          Open on GitHub <i data-lucide="external-link" class="w-3 h-3"></i>
+        <a href="https://github.com/Exec7/exechack/discussions/1" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1 font-semibold">
+          Open on GitHub <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
         </a>
       </div>
 
@@ -642,7 +779,7 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-700/50 bg-brand-card/70 py-10 mt-16">
+  <footer class="border-t border-gray-700/60 bg-brand-card/90 py-12 mt-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-8">
         
@@ -652,6 +789,7 @@
           </h3>
           <p class="text-xs text-brand-subtext leading-relaxed">
             Created with love from Siberia.
+            <br>Premium Garry's Mod Cheat.
           </p>
         </div>
 
@@ -679,7 +817,7 @@
 
       <div class="pt-6 border-t border-gray-700/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-brand-subtext">
         <div>
-          exechack.cc
+          &copy; 2018–2026 exechack.cc. All rights reserved.
         </div>
       </div>
     </div>
@@ -701,9 +839,9 @@
           const x = (e.clientX - rect.left) / rect.width;
           const y = (e.clientY - rect.top) / rect.height;
 
-          const rx = -(0.5 - y) * (24);
-          const ry = -(x - 0.5) * (24);
-          card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02, 1.02, 1.02)`;
+          const rx = -(0.5 - y) * (20);
+          const ry = -(x - 0.5) * (20);
+          card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.01, 1.01, 1.01)`;
         });
         card.addEventListener("mouseleave", () => {
           card.style.transition = "all 1.5s cubic-bezier(0.18, 1.4, 0.53, 1)";
