@@ -256,6 +256,7 @@
       left: calc(50% - 400px);
       top: calc(50% - 249.5px);
       z-index: 10;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .editor-window, .lualist-window {
@@ -299,6 +300,7 @@
       flex-shrink: 0;
       border-bottom: 1px solid #141414;
       cursor: grab;
+      transition: background-color 0.2s, border-color 0.2s;
     }
 
     .titlebar:active {
@@ -397,6 +399,7 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
+      transition: background-color 0.2s;
     }
 
     .sidebar-item {
@@ -435,6 +438,7 @@
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
+      transition: filter 0.2s;
     }
 
     .sidebar-avatar {
@@ -446,6 +450,7 @@
       margin-right: 12px;
       background-color: #1f2937;
       border: 1px solid #374151;
+      transition: border-color 0.2s, background-color 0.2s;
     }
 
     .sidebar-avatar img {
@@ -465,6 +470,7 @@
       color: #ffffff;
       font-size: 15px;
       font-weight: 700;
+      transition: color 0.2s;
     }
 
     .sidebar-text .item-desc {
@@ -472,6 +478,7 @@
       font-size: 10.5px;
       font-weight: 600;
       margin-top: 2px;
+      transition: color 0.2s;
     }
 
     .main-content {
@@ -481,6 +488,7 @@
       background-color: #0e0e0e;
       position: relative;
       overflow: hidden;
+      transition: background-color 0.2s;
     }
 
     .tab-pane {
@@ -550,6 +558,7 @@
       background-color: #121212;
       width: 100%;
       z-index: 5;
+      transition: background-color 0.2s;
     }
 
     .subtab {
@@ -582,6 +591,7 @@
       right: 0;
       height: 2.5px;
       background-color: #2b2b2b;
+      transition: background-color 0.2s;
     }
 
     .content-area {
@@ -590,6 +600,7 @@
       padding: 10px 20px 20px 20px;
       background-color: #0e0e0e;
       overflow: hidden;
+      transition: background-color 0.2s;
     }
 
     .controls-col {
@@ -607,6 +618,7 @@
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 8px;
+      transition: color 0.2s;
     }
 
     .slider-row {
@@ -766,7 +778,7 @@
       color: #ffffff;
       cursor: pointer;
       padding: 0 14px;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
       white-space: nowrap;
     }
 
@@ -785,7 +797,7 @@
       outline: none;
       padding: 0 8px;
       height: 26px;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, background-color 0.15s, color 0.15s;
     }
 
     .dark-input:focus {
@@ -864,6 +876,7 @@
       color: #ffffff;
       font-size: 16px;
       font-weight: 800;
+      transition: color 0.2s;
     }
 
     .method-header-sub {
@@ -872,6 +885,7 @@
       font-weight: 600;
       margin-top: 2px;
       margin-bottom: 10px;
+      transition: color 0.2s;
     }
 
     .methods-list {
@@ -892,7 +906,7 @@
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.1s;
+      transition: background 0.1s, color 0.1s;
     }
 
     .method-item:hover {
@@ -901,6 +915,258 @@
 
     .method-item.selected {
       color: #ecff00;
+    }
+
+    /* ================= CUSTOM THEME PANEL (КАК НА ФОТО 1) ================= */
+    .custom-theme-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 10px;
+      margin-bottom: 14px;
+    }
+
+    .custom-theme-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+    }
+
+    .theme-color-badge {
+      width: 15px;
+      height: 15px;
+      border-radius: 4px;
+      display: inline-block;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .theme-color-input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      inset: 0;
+    }
+
+    .custom-theme-row .theme-label {
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      transition: color 0.2s;
+    }
+
+    .custom-title-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .custom-title-label {
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+
+    .custom-title-input {
+      width: 100%;
+      max-width: 280px;
+      height: 27px;
+      background-color: #111111;
+      border: 1px solid #222222;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 0 8px;
+      outline: none;
+      transition: border-color 0.15s, background-color 0.2s, color 0.2s;
+    }
+
+    .custom-title-input:focus {
+      border-color: #444;
+    }
+
+    /* ================= LIGHT THEME (КАК НА ФОТО 2) ================= */
+    .theme-light .menu-window {
+      background-color: #ffffff !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .theme-light .titlebar {
+      background-color: #f1f3f5 !important;
+      border-bottom: 1px solid #e2e5e8 !important;
+    }
+
+    .theme-light .titlebar .title {
+      color: #1c2226 !important;
+      font-weight: 800;
+    }
+
+    .theme-light .titlebar .close-btn svg line {
+      stroke: #8b9299 !important;
+    }
+
+    .theme-light .sidebar {
+      background-color: #f6f7f9 !important;
+      border-right: 1px solid #e7eaed;
+    }
+
+    .theme-light .sidebar-item:hover {
+      background-color: #e9ecef !important;
+    }
+
+    .theme-light .sidebar-item.cheat-item,
+    .theme-light .sidebar-item.cheat-item.active {
+      background-color: #166568 !important; /* глубокий темный тил/циан */
+    }
+
+    .theme-light .sidebar-item.cheat-item .sidebar-avatar {
+      border-color: rgba(255, 255, 255, 0.4);
+      background-color: #166568;
+    }
+
+    .theme-light .sidebar-item.cheat-item .sidebar-text .item-title {
+      color: #8b0000 !important; /* темно-красный цвет надписи Main */
+      font-weight: 800;
+    }
+
+    .theme-light .sidebar-item.cheat-item .sidebar-text .item-desc {
+      color: #8b0000 !important; /* темно-красный Loser */
+      font-weight: 700;
+    }
+
+    .theme-light .sidebar-item:not(.cheat-item).active {
+      background-color: #e9ecef !important;
+    }
+
+    .theme-light .sidebar-item:not(.cheat-item) .sidebar-text .item-title {
+      color: #212529 !important;
+    }
+
+    .theme-light .sidebar-item:not(.cheat-item) .sidebar-text .item-desc {
+      color: #6c757d !important;
+    }
+
+    .theme-light .sidebar-item:not(.cheat-item) .sidebar-icon img {
+      filter: invert(1) brightness(0.2) contrast(1.5) !important; /* делаем белые иконки черными */
+    }
+
+    .theme-light .main-content {
+      background-color: #ffffff !important;
+    }
+
+    .theme-light .subtabs-bar {
+      background-color: #ffffff !important;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .theme-light .subtab {
+      color: #8e9499 !important;
+      font-weight: 800;
+    }
+
+    .theme-light .subtab:hover {
+      color: #495057 !important;
+    }
+
+    .theme-light .subtab.active {
+      color: #1c2226 !important;
+    }
+
+    .theme-light .subtab.active::after {
+      background-color: #166568 !important; /* полоска цвета морской волны */
+      height: 3px;
+    }
+
+    .theme-light .content-area {
+      background-color: #ffffff !important;
+    }
+
+    .theme-light .general-left-col .item-title,
+    .theme-light .method-header-title,
+    .theme-light .slider-title,
+    .theme-light .custom-theme-row .theme-label,
+    .theme-light .custom-title-label,
+    .theme-light .chk-label {
+      color: #1f2428 !important;
+    }
+
+    .theme-light .method-header-sub {
+      color: #6a737d !important;
+    }
+
+    .theme-light .dots-btn {
+      background-color: #e9ecef !important;
+      color: #495057 !important;
+    }
+
+    .theme-light .dots-btn:hover {
+      background-color: #dee2e6 !important;
+    }
+
+    .theme-light .btn-action {
+      background-color: #f1f3f5 !important;
+      border: 1px solid #d0d7de !important;
+      color: #24292f !important;
+    }
+
+    .theme-light .btn-action:hover {
+      background-color: #e9ecef !important;
+      border-color: #bcc4cc !important;
+    }
+
+    .theme-light .method-item {
+      background-color: #f8f9fa !important;
+      border-color: #e2e5e8 !important;
+      color: #24292f !important;
+    }
+
+    .theme-light .method-item:hover {
+      background-color: #eef1f4 !important;
+    }
+
+    .theme-light .method-item.selected {
+      color: #0b7285 !important;
+      font-weight: 800;
+    }
+
+    .theme-light .custom-title-input {
+      background-color: #ffffff !important;
+      border: 1px solid #cfd4d9 !important;
+      color: #111111 !important;
+    }
+
+    .theme-light .chk-box {
+      background-color: #ffffff !important;
+      border-color: #c0c4c8 !important;
+    }
+
+    .theme-light .checkbox-row.checked .chk-box {
+      background-color: #166568 !important;
+      border-color: #166568 !important;
+    }
+
+    .theme-light .checkbox-row.checked .chk-box svg {
+      stroke: #ffffff !important;
+    }
+
+    .theme-light .custom-range {
+      background: linear-gradient(to right, #166568 var(--percent, 80%), #e2e5e8 var(--percent, 80%)) !important;
+    }
+
+    .theme-light .custom-range::-webkit-slider-thumb {
+      background: #166568 !important;
+    }
+
+    .theme-light .slider-value {
+      color: #1f2428 !important;
     }
 
     .key-group {
@@ -1872,7 +2138,7 @@
   <div class="menu-window" id="draggable-window">
     
     <div class="titlebar" id="window-titlebar">
-      <span class="title">exechack.cc: web menu preview</span>
+      <span class="title" id="main-menu-title">exechack.cc</span>
       <div class="close-btn" title="Close">
         <svg width="14" height="14" viewBox="0 0 14 14">
           <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"></line>
@@ -1891,7 +2157,7 @@
           </div>
           <div class="sidebar-text">
             <span class="item-title">Main</span>
-            <span class="item-desc">Exec</span>
+            <span class="item-desc">Loser</span>
           </div>
         </div>
 
@@ -1900,8 +2166,7 @@
           <div class="sidebar-text"><span class="item-title">Aimbot</span><span class="item-desc">nospread silent</span></div>
         </div>
 
-        <!-- ОТКРЫТО ПО УМОЛЧАНИЮ -->
-        <div class="sidebar-item active" data-tab="visuals">
+        <div class="sidebar-item" data-tab="visuals">
           <div class="sidebar-icon"><img src="https://x.exechack.cc/contents/visuals_white.png" alt="Visuals"></div>
           <div class="sidebar-text"><span class="item-title">Visuals</span><span class="item-desc">esp radar</span></div>
         </div>
@@ -1936,13 +2201,13 @@
       <div class="main-content">
         
         <!-- ================= 0. ВКЛАДКА MAIN ================= -->
-        <div class="tab-pane" id="pane-main">
+        <div class="tab-pane active" id="pane-main">
           <div class="subtabs-bar">
-            <span class="subtab active" data-subpane="main-welcome">WELCOME</span>
-            <span class="subtab" data-subpane="main-general">GENERAL</span>
+            <span class="subtab" data-subpane="main-welcome">WELCOME</span>
+            <span class="subtab active" data-subpane="main-general">GENERAL</span>
           </div>
           <div class="content-area">
-            <div class="main-subpane active" id="main-welcome">
+            <div class="main-subpane" id="main-welcome">
               <div class="welcome-grid">
                 <div class="welcome-card-wrapper"><div class="welcome-card"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4000/ss_3d320f333fb74413911cbc2bffae9bdda683e2ec.1920x1080.jpg" alt="image1" class="welcome-img"></div><div class="welcome-card-caption">new1</div></div>
                 <div class="welcome-card-wrapper"><div class="welcome-card"><img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4000/ss_3d320f333fb74413911cbc2bffae9bdda683e2ec.1920x1080.jpg" alt="image2" class="welcome-img"></div><div class="welcome-card-caption">new2</div></div>
@@ -1951,7 +2216,7 @@
               </div>
             </div>
 
-            <div class="main-subpane" id="main-general">
+            <div class="main-subpane active" id="main-general">
               <div class="general-content-layout">
                 <div class="general-left-col">
                   <div class="checkbox-row" style="height: 30px;"><span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;" id="run-method-label">Run Method (Standart method)</span><div class="dots-btn" data-panel="panel-run-method">..</div></div>
@@ -1977,7 +2242,69 @@
                   </div>
                 </div>
                 <div class="side-subpanel" id="panel-notification"><div class="method-header-title" style="margin-bottom: 10px;">Notification</div><div class="checkbox-list"><div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Kills &amp; Deaths</span></div></div></div></div>
-                <div class="side-subpanel" id="panel-theme"><div class="method-header-title" style="margin-bottom: 10px;">Theme</div><div class="methods-list"><div class="method-item">Custom</div><div class="method-item selected">Dark</div><div class="method-item">Light</div></div></div>
+                
+                <!-- ПАНЕЛЬ ВЫБОРА ТЕМЫ С ПЕРЕХОДОМ В CUSTOM И LIGHT/DARK -->
+                <div class="side-subpanel" id="panel-theme">
+                  <div class="method-header-title" style="margin-bottom: 10px;">Theme</div>
+                  <div class="methods-list" style="margin-bottom: 12px;">
+                    <div class="method-item" id="theme-btn-custom">Custom</div>
+                    <div class="method-item selected" id="theme-btn-dark">Dark</div>
+                    <div class="method-item" id="theme-btn-light">Light</div>
+                  </div>
+                  
+                  <!-- ПАНЕЛЬ CUSTOM THEME КАК НА ФОТО 1 -->
+                  <div id="custom-theme-subpanel" style="display: none; flex-direction: column;">
+                    <div class="method-header-title" style="font-size: 16px;">Custom Theme</div>
+                    <div class="custom-theme-list">
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #ffffff;"><input type="color" value="#ffffff" class="theme-color-input"></span>
+                        <span class="theme-label">Text</span>
+                      </div>
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #7b7f87;"><input type="color" value="#7b7f87" class="theme-color-input"></span>
+                        <span class="theme-label">Text2</span>
+                      </div>
+                      <div class="custom-theme-row" style="margin-left: 14px;">
+                        <span class="theme-color-badge" style="background-color: #1a1a1a;"><input type="color" value="#1a1a1a" class="theme-color-input"></span>
+                        <span class="theme-label">WindowBg</span>
+                      </div>
+                      <div class="custom-theme-row" style="margin-left: 14px;">
+                        <span class="theme-color-badge" style="background-color: #151515;"><input type="color" value="#151515" class="theme-color-input"></span>
+                        <span class="theme-label">WindowBg2</span>
+                      </div>
+                      <div class="custom-theme-row" style="margin-left: 14px;">
+                        <span class="theme-color-badge" style="background-color: #101010;"><input type="color" value="#101010" class="theme-color-input"></span>
+                        <span class="theme-label">WindowBg3</span>
+                      </div>
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #222222;"><input type="color" value="#222222" class="theme-color-input"></span>
+                        <span class="theme-label">Border</span>
+                      </div>
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #1a1a1a;"><input type="color" value="#1a1a1a" class="theme-color-input"></span>
+                        <span class="theme-label">Button</span>
+                      </div>
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #ffffff;"><input type="color" value="#ffffff" class="theme-color-input"></span>
+                        <span class="theme-label">Slider</span>
+                      </div>
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #1e1e1e;"><input type="color" value="#1e1e1e" class="theme-color-input"></span>
+                        <span class="theme-label">Main</span>
+                      </div>
+                      <div class="custom-theme-row">
+                        <span class="theme-color-badge" style="background-color: #ffffff;"><input type="color" value="#ffffff" class="theme-color-input"></span>
+                        <span class="theme-label">Icon</span>
+                      </div>
+                    </div>
+
+                    <div class="custom-title-section">
+                      <span class="custom-title-label">Custom Title</span>
+                      <input type="text" class="custom-title-input" id="custom-title-field" placeholder="exechack.cc" value="exechack.cc">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="side-subpanel" id="panel-anim-bg"><div class="method-header-title" style="margin-bottom: 10px;">Theme</div><div class="methods-list"><div class="method-item selected">None</div><div class="method-item">Lines</div><div class="method-item">Snow</div></div></div>
               </div>
             </div>
@@ -2165,8 +2492,8 @@
           </div>
         </div>
 
-        <!-- ================= 2. ВКЛАДКА VISUALS (ПО УМОЛЧАНИЮ) ================= -->
-        <div class="tab-pane active" id="pane-visuals">
+        <!-- ================= 2. ВКЛАДКА VISUALS ================= -->
+        <div class="tab-pane" id="pane-visuals">
           <div class="subtabs-bar">
             <span class="subtab active" data-subpane="vis-player">PLAYER</span>
             <span class="subtab" data-subpane="vis-entity">ENTITY</span>
@@ -2700,16 +3027,16 @@
                     <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Health</span></div>
                     <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Armor</span></div>
                     <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Velocity</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Server</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Server</span></div>
                     <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Online</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Map</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Entities</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Frames</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Map</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Entities</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Frames</span></div>
                     <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Ping</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Date</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Time</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Date</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Time</span></div>
                     <div class="checkbox-row checked" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Tickrate</span></div>
-                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label" style="color: #555;">Gamemode</span></div>
+                    <div class="checkbox-row" style="justify-content: flex-start; gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Gamemode</span></div>
                   </div>
                 </div>
               </div>
@@ -3557,7 +3884,6 @@
     initSlider('fontSizeSlider', 'fontSizeVal', 48);
     initSlider('radarDistSlider', 'radarDistVal', 100);
 
-    // Слайдеры Visuals > Other
     initSlider('fovDesiredSlider', 'fovDesiredVal', 150);
     initSlider('fovVmSlider', 'fovVmVal', 150);
     initSlider('camSpeedSlider', 'camSpeedVal', 10);
@@ -3570,7 +3896,6 @@
     initSlider('oovFovSlider', 'oovFovVal', 400);
     initSlider('oovRadiusSlider', 'oovRadiusVal', 20);
 
-    // Новые добавленные слайдеры боковых меню
     initSlider('nospreadCompSlider', 'nospreadCompVal', 100);
     initSlider('hitboxScaleSlider', 'hitboxScaleVal', 100);
     initSlider('skeletonThickSlider', 'skeletonThickVal', 5);
@@ -3736,7 +4061,64 @@
       });
     });
 
-    document.querySelectorAll('#panel-theme .method-item, #panel-anim-bg .method-item').forEach(btn => {
+    // ================= ТЕМЫ: CUSTOM, DARK, LIGHT =================
+    const themeBtnCustom = document.getElementById('theme-btn-custom');
+    const themeBtnDark = document.getElementById('theme-btn-dark');
+    const themeBtnLight = document.getElementById('theme-btn-light');
+    const customThemeSubpanel = document.getElementById('custom-theme-subpanel');
+    const mainMenuTitle = document.getElementById('main-menu-title');
+    const customTitleField = document.getElementById('custom-title-field');
+
+    function resetThemeButtons() {
+      [themeBtnCustom, themeBtnDark, themeBtnLight].forEach(b => b.classList.remove('selected'));
+    }
+
+    // Клик на Custom
+    if (themeBtnCustom) {
+      themeBtnCustom.addEventListener('click', () => {
+        resetThemeButtons();
+        themeBtnCustom.classList.add('selected');
+        document.body.classList.remove('theme-light');
+        if (customThemeSubpanel) customThemeSubpanel.style.display = 'flex';
+      });
+    }
+
+    // Клик на Dark
+    if (themeBtnDark) {
+      themeBtnDark.addEventListener('click', () => {
+        resetThemeButtons();
+        themeBtnDark.classList.add('selected');
+        document.body.classList.remove('theme-light');
+        if (customThemeSubpanel) customThemeSubpanel.style.display = 'none';
+      });
+    }
+
+    // Клик на Light (как на фото 2)
+    if (themeBtnLight) {
+      themeBtnLight.addEventListener('click', () => {
+        resetThemeButtons();
+        themeBtnLight.classList.add('selected');
+        document.body.classList.add('theme-light');
+        if (customThemeSubpanel) customThemeSubpanel.style.display = 'none';
+      });
+    }
+
+    // Custom Title динамическое изменение
+    if (customTitleField && mainMenuTitle) {
+      customTitleField.addEventListener('input', (e) => {
+        mainMenuTitle.textContent = e.target.value || 'exechack.cc';
+      });
+    }
+
+    // Интерактивные бейджи выбора цвета в Custom Theme
+    document.querySelectorAll('.theme-color-input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        const badge = e.target.closest('.theme-color-badge');
+        if (badge) badge.style.backgroundColor = e.target.value;
+      });
+    });
+
+    document.querySelectorAll('#panel-anim-bg .method-item').forEach(btn => {
       btn.addEventListener('click', () => {
         btn.parentElement.querySelectorAll('.method-item').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
@@ -3922,6 +4304,5 @@
       });
     }
   </script>
-
 
 </body></html>
