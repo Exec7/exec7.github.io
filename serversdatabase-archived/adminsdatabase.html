@@ -24,7 +24,7 @@
                             text: '#d8dee9',
                             muted: '#e5e9f0',
                             subtext: '#8892b0',
-                            danger: '#bf616a'
+                            danger: '#ef4444'
                         }
                     }
                 }
@@ -61,6 +61,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        /* Ярко-красное свечение для онлайн-админов */
+        .admin-online-glow {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.45);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col p-3 sm:p-6 md:p-8">
@@ -73,10 +78,10 @@
                 <div>
                     <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
                         <i data-lucide="shield-check" class="text-brand-highlight w-7 h-7 inline-block"></i>
-                        Server Admins Database (Archived)
+                        Server Admins Database
                     </h1>
                     <p class="text-xs sm:text-sm text-brand-subtext mt-1">
-                        Browse servers, administrator lists, ranks, nicknames, and connection logs.
+                       Browse servers, administrator lists, ranks, nicknames.
                     </p>
                 </div>
 
@@ -212,6 +217,8 @@
         const ADMINS_URL = 'https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/serversdatabase-archived/admins.txt';
         const NICKS_URL = 'https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/serversdatabase-archived/adminsnick.txt';
         const SERVERS_URL = 'https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/serversdatabase-archived/anet.txt';
+        const API_BASE = 'https://api.gamemonitoring.net';
+        const STEAM_APP_ID = 4000; // Garry's Mod App ID
 
         let rawServers = []; 
         let nicksData = {};  
@@ -220,6 +227,10 @@
         let expandedServerIp = null;
         let currentPage = 1;
         let itemsPerPage = 25;
+
+        // Кэш статуса онлайна для каждого сервера
+        // Structure: { [ip]: { loading: bool, error: str|null, totalOnline: int, players: [], onlineAdmins: [] } }
+        const serverOnlineState = {};
 
         // DOM Elements
         const stateLoading = document.getElementById('state-loading');
@@ -249,6 +260,14 @@
             if (window.lucide) {
                 lucide.createIcons();
             }
+        }
+
+        // Форматирование секунд во время (например: 1ч 24м)
+        function formatTime(seconds) {
+            if (!seconds || seconds <= 0) return '0м';
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            return h > 0 ? `${h}ч ${m}м` : `${m}м`;
         }
 
         // Conversion function SteamID64 to Classic SteamID
@@ -312,7 +331,7 @@
                     });
                 }
 
-                // Default sorting: by number of admins (descending: from largest to smallest)
+                // Default sorting: by number of admins (descending)
                 rawServers.sort((a, b) => b.admins.length - a.admins.length);
 
                 filteredServers = [...rawServers];
@@ -327,6 +346,114 @@
                 errorMessage.textContent = err.message || "An error occurred while fetching databases.";
                 showState('error');
             }
+        }
+
+        // Загрузка игроков с GameMonitoring API и сверка с базой админов сервера
+        async function loadOnlinePlayers(ip, force = false) {
+            if (!force && serverOnlineState[ip] && !serverOnlineState[ip].error && !serverOnlineState[ip].loading) {
+                return;
+            }
+
+            serverOnlineState[ip] = {
+                loading: true,
+                error: null,
+                totalOnline: 0,
+                players: [],
+                onlineAdmins: []
+            };
+
+            renderTable();
+
+            try {
+                // Шаг 1: POST /servers
+                const addRes = await fetch(`${API_BASE}/servers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        connect: ip,
+                        steam_app_id: STEAM_APP_ID
+                    })
+                });
+
+                if (!addRes.ok) {
+                    throw new Error(`server is missing in monitoring: ${addRes.statusText}`);
+                }
+
+                const addData = await addRes.json();
+                const serverId = addData?.response?.id;
+
+                if (!serverId) {
+                    throw new Error('Мониторинг не вернул ID сервера.');
+                }
+
+                // Шаг 2: GET /servers/:id/players
+                const playersRes = await fetch(`${API_BASE}/servers/${serverId}/players?limit=100`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!playersRes.ok) {
+                    throw new Error(`Ошибка загрузки игроков (${playersRes.status}): ${playersRes.statusText}`);
+                }
+
+                const playersData = await playersRes.json();
+                const rawItems = playersData?.response?.items || [];
+
+                // Поиск текущего сервера в базе
+                const serverObj = rawServers.find(s => s.ip === ip);
+                const adminsList = serverObj ? serverObj.admins : [];
+
+                // Создаем Map ников админов сервера (в нижнем регистре для точного и нечувствительного к регистру сравнения)
+                const adminMap = new Map();
+                adminsList.forEach(admin => {
+                    if (admin.nick && admin.nick.toLowerCase() !== 'unknown') {
+                        adminMap.set(admin.nick.trim().toLowerCase(), admin);
+                    }
+                });
+
+                const processedPlayers = [];
+                const detectedOnlineAdmins = [];
+
+                rawItems.forEach(p => {
+                    const playerName = (p.name || '').trim();
+                    const matchedAdmin = adminMap.get(playerName.toLowerCase());
+
+                    const playerInfo = {
+                        name: playerName || 'Unknown Player',
+                        time: p.last_session_time || 0,
+                        isAdmin: !!matchedAdmin,
+                        adminData: matchedAdmin || null
+                    };
+
+                    processedPlayers.push(playerInfo);
+                    if (matchedAdmin) {
+                        detectedOnlineAdmins.push(playerInfo);
+                    }
+                });
+
+                serverOnlineState[ip] = {
+                    loading: false,
+                    error: null,
+                    totalOnline: rawItems.length,
+                    players: processedPlayers,
+                    onlineAdmins: detectedOnlineAdmins
+                };
+
+            } catch (err) {
+                console.error(`Live monitoring error for ${ip}:`, err);
+                serverOnlineState[ip] = {
+                    loading: false,
+                    error: err.message || 'Не удалось получить данные с мониторинга.',
+                    totalOnline: 0,
+                    players: [],
+                    onlineAdmins: []
+                };
+            }
+
+            renderTable();
         }
 
         function showState(state) {
@@ -364,12 +491,164 @@
                     );
                     return ipMatch || nameMatch || adminMatch;
                 });
-                // Keep default sorting for filtered results as well
                 filteredServers.sort((a, b) => b.admins.length - a.admins.length);
             }
 
             currentPage = 1;
             renderTable();
+        }
+
+        // Рендер верхнего блока онлайн-мониторинга игроков
+        function renderOnlineSection(server) {
+            const state = serverOnlineState[server.ip];
+
+            // Если запрос еще не был инициирован
+            if (!state) {
+                return `
+                    <div class="bg-brand-card/90 rounded-xl p-4 border border-gray-700/60 flex items-center justify-between text-xs text-brand-subtext">
+                        <span class="flex items-center gap-2">
+                            <i data-lucide="radio" class="w-4 h-4 text-brand-highlight animate-pulse"></i>
+                            Loading
+                        </span>
+                    </div>
+                `;
+            }
+
+            // Загрузка
+            if (state.loading) {
+                return `
+                    <div class="bg-brand-card/90 rounded-xl p-6 border border-brand-accent/30 flex flex-col sm:flex-row items-center justify-center gap-3 text-center sm:text-left">
+                        <div class="w-6 h-6 border-2 border-brand-accent border-t-transparent rounded-full animate-spin"></div>
+                        <div class="text-xs sm:text-sm text-brand-text">
+                            <span class="font-semibold text-white">Loading</span>
+                            <span class="text-brand-subtext block sm:inline sm:ml-1">Fetching online admins</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Ошибка
+            if (state.error) {
+                return `
+                    <div class="bg-red-500/10 rounded-xl p-4 border border-red-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-2 text-red-400">
+                            <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0"></i>
+                            <span><strong>Error:</strong> ${escapeHtml(state.error)}</span>
+                        </div>
+                        <button 
+                            onclick="event.stopPropagation(); loadOnlinePlayers('${escapeHtml(server.ip)}', true)" 
+                            class="bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                        >
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Retry
+                        </button>
+                    </div>
+                `;
+            }
+
+            // Успешно получены игроки
+            const hasOnlineAdmins = state.onlineAdmins && state.onlineAdmins.length > 0;
+
+            return `
+                <div class="space-y-3">
+                    
+                    <!-- Панель статуса мониторинга -->
+                    <div class="bg-brand-card rounded-xl p-3 sm:p-4 border border-gray-700/60 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <div class="w-2.5 h-2.5 rounded-full ${state.totalOnline > 0 ? 'bg-emerald-400 animate-pulse' : 'bg-gray-500'}"></div>
+                            <span class="text-xs sm:text-sm font-semibold text-white">Monitoring</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-brand-surface text-brand-highlight font-mono">
+                                Online: ${state.totalOnline}
+                            </span>
+                            ${hasOnlineAdmins ? `
+                                <span class="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold border border-red-500/40 animate-pulse flex items-center gap-1">
+                                    <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> Admins: ${state.onlineAdmins.length}
+                                </span>
+                            ` : `
+                                <span class="text-xs text-brand-subtext hidden sm:inline">Admins: 0</span>
+                            `}
+                        </div>
+
+                        <button 
+                            onclick="event.stopPropagation(); loadOnlinePlayers('${escapeHtml(server.ip)}', true)" 
+                            title="Обновить список игроков онлайн"
+                            class="text-xs bg-brand-surface hover:bg-brand-accent/40 text-brand-text hover:text-white px-2.5 py-1 rounded-lg border border-gray-600/40 transition-colors flex items-center gap-1.5"
+                        >
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Refresh
+                        </button>
+                    </div>
+
+                    <!-- ЕСЛИ НАЙДЕНЫ АДМИНЫ ОНЛАЙН (ВЫДЕЛЕНИЕ ЯРКО-КРАСНЫМ) -->
+                    ${hasOnlineAdmins ? `
+                        <div class="bg-red-950/40 border-2 border-red-500 rounded-xl p-3 sm:p-4 admin-online-glow">
+                            <div class="flex items-center gap-2 text-red-400 font-bold text-sm mb-2.5">
+                                <i data-lucide="flame" class="w-5 h-5 text-red-500 animate-bounce"></i>
+                                <span>Found Online Admins (${state.onlineAdmins.length}):</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                                ${state.onlineAdmins.map(adminPlayer => `
+                                    <div class="bg-red-900/30 border border-red-500/60 rounded-lg p-2.5 flex items-center justify-between">
+                                        <div class="flex flex-col">
+                                            <span class="text-red-400 font-black text-sm select-all flex items-center gap-1.5">
+                                                <i data-lucide="shield-alert" class="w-4 h-4 text-red-400"></i>
+                                                ${escapeHtml(adminPlayer.name)}
+                                            </span>
+                                            <span class="text-[11px] text-red-300/80 font-mono">
+                                                Rank: <span class="text-white font-bold">${escapeHtml(adminPlayer.adminData?.rank || 'Unknown')}</span>
+                                            </span>
+                                        </div>
+                                        ${adminPlayer.adminData?.steamid64 ? `
+                                            <a 
+                                                href="https://steamcommunity.com/profiles/${escapeHtml(adminPlayer.adminData.steamid64)}" 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                class="bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white p-1.5 rounded transition-colors"
+                                                title="Steam Профиль"
+                                            >
+                                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                                            </a>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- ПОЛНЫЙ СПИСОК ИГРОКОВ ОНЛАЙН (АДМИНЫ ПОДМЕЧЕНЫ ЯРКО-КРАСНЫМ) -->
+                    <div class="bg-brand-card/70 border border-gray-700/50 rounded-xl p-3">
+                        <div class="text-xs font-semibold text-brand-subtext uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <span>Players (${state.players.length}):</span>
+                        </div>
+
+                        ${state.players.length === 0 ? `
+                            <p class="text-xs text-brand-subtext py-2 text-center">the server is not sending information about the players</p>
+                        ` : `
+                            <div class="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto pr-1">
+                                ${state.players.map(p => {
+                                    if (p.isAdmin) {
+                                        return `
+                                            <div class="inline-flex items-center gap-1.5 bg-red-600/20 border-2 border-red-500 text-red-300 font-bold px-2.5 py-1 rounded-md text-xs admin-online-glow">
+                                                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                                <span class="text-red-400 font-black">${escapeHtml(p.name)}</span>
+                                                <span class="bg-red-500 text-white text-[10px] uppercase px-1 py-0.2 rounded font-mono font-normal">
+                                                    ${escapeHtml(p.adminData?.rank || '')}
+                                                </span>
+                                            </div>
+                                        `;
+                                    } else {
+                                        return `
+                                            <div class="inline-flex items-center gap-1.5 bg-brand-bg/80 border border-gray-700/80 text-brand-text px-2 py-1 rounded-md text-xs">
+                                                <span>${escapeHtml(p.name)}</span>
+                                            </div>
+                                        `;
+                                    }
+                                }).join('')}
+                            </div>
+                        `}
+                    </div>
+
+                </div>
+            `;
         }
 
         function renderTable() {
@@ -395,6 +674,10 @@
 
             rowsContainer.innerHTML = currentSlice.map(server => {
                 const isExpanded = expandedServerIp === server.ip;
+                const onlineData = serverOnlineState[server.ip];
+                const onlineAdminsSet = new Set(
+                    (onlineData?.onlineAdmins || []).map(a => a.name.toLowerCase())
+                );
                 
                 return `
                     <div class="bg-brand-card border border-gray-700/60 rounded-lg overflow-hidden shadow-sm">
@@ -410,78 +693,105 @@
                             </div>
 
                             <!-- Count -->
-                            <div class="md:col-span-4 text-xs sm:text-sm text-brand-muted">
-                                Administrators: <span class="font-bold text-white bg-brand-surface px-2 py-0.5 rounded">${server.admins.length}</span>
+                            <div class="md:col-span-4 text-xs sm:text-sm text-brand-muted flex items-center gap-2 flex-wrap">
+                                <div>Administrators: <span class="font-bold text-white bg-brand-surface px-2 py-0.5 rounded">${server.admins.length}</span></div>
+                                ${onlineData && onlineData.onlineAdmins && onlineData.onlineAdmins.length > 0 ? `
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-red-400 bg-red-500/20 border border-red-500/50 px-2 py-0.5 rounded-full animate-pulse">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                        ${onlineData.onlineAdmins.length} Online
+                                    </span>
+                                ` : ''}
                             </div>
 
                             <!-- Expand Indicator -->
                             <div class="hidden md:flex md:col-span-3 justify-end items-center gap-2 text-xs text-brand-subtext">
-                                <span>${isExpanded ? 'Hide Admins' : 'Show Admins'}</span>
+                                <span>${isExpanded ? 'Hide' : 'Show'}</span>
                                 <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4"></i>
                             </div>
                         </div>
 
-                        <!-- Expanded Admins List -->
+                        <!-- Expanded Admins List & Live Monitor -->
                         ${isExpanded ? `
-                            <div class="bg-brand-surface/30 border-t border-gray-700/50 p-3 sm:p-4 space-y-3">
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left text-xs sm:text-sm">
-                                        <thead>
-                                            <tr class="text-brand-subtext uppercase font-semibold text-[11px] border-b border-gray-700/50">
-                                                <th class="pb-2">Nickname</th>
-                                                <th class="pb-2">Rank</th>
-                                                <th class="pb-2">SteamID64</th>
-                                                <th class="pb-2">SteamID</th>
-                                                <th class="pb-2 text-right">Monitoring</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-700/30">
-                                            ${server.admins.map(admin => `
-                                                <tr class="hover:bg-brand-surface/50 transition-colors">
-                                                    <!-- Nick -->
-                                                    <td class="py-2.5 font-medium text-white select-all">
-                                                        ${escapeHtml(admin.nick)}
-                                                    </td>
-                                                    <!-- Rank -->
-                                                    <td class="py-2.5">
-                                                        <span class="bg-brand-accent/20 text-brand-highlight px-2 py-0.5 rounded text-xs font-mono">
-                                                            ${escapeHtml(admin.rank)}
-                                                        </span>
-                                                    </td>
-                                                    <!-- SteamID64 (Link) -->
-                                                    <td class="py-2.5 font-mono">
-                                                        <a 
-                                                            href="https://steamcommunity.com/profiles/${escapeHtml(admin.steamid64)}" 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer"
-                                                            class="text-brand-accentHover hover:underline flex items-center gap-1 inline-flex"
-                                                            title="Open Steam Profile"
-                                                        >
-                                                            ${escapeHtml(admin.steamid64)}
-                                                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                                                        </a>
-                                                    </td>
-                                                    <!-- SteamID (Classic) -->
-                                                    <td class="py-2.5 font-mono text-brand-subtext select-all">
-                                                        ${escapeHtml(admin.steamid)}
-                                                    </td>
-                                                    <!-- Monitoring Search -->
-                                                    <td class="py-2.5 text-right">
-                                                        ${admin.nick !== 'Unknown' ? `
-                                                            <a 
-                                                                href="https://varq.net/ru/players/garrys-mod?match=${encodeURIComponent(admin.nick)}" 
-                                                                target="_blank" 
-                                                                rel="noopener noreferrer"
-                                                                class="bg-brand-surface hover:bg-brand-accent text-white px-2.5 py-1 rounded text-xs font-sans transition-colors inline-flex items-center gap-1"
-                                                            >
-                                                                <i data-lucide="search" class="w-3 h-3"></i> Search
-                                                            </a>
-                                                        ` : '<span class="text-brand-subtext text-xs">—</span>'}
-                                                    </td>
+                            <div class="bg-brand-surface/30 border-t border-gray-700/50 p-3 sm:p-4 space-y-4">
+                                
+                                <!-- 1. ВЕРХНИЙ БЛОК: ОНЛАЙН МОНИТОРИНГ ИГРОКОВ -->
+                                ${renderOnlineSection(server)}
+
+                                <!-- 2. НИЖНИЙ БЛОК: ТАБЛИЦА БАЗЫ ДАННЫХ АДМИНОВ СЕРВЕРА -->
+                                <div class="pt-2">
+                                    <div class="text-xs font-semibold text-brand-subtext uppercase tracking-wider mb-2 flex items-center justify-between">
+                                        <span>Admins (${server.admins.length}):</span>
+                                    </div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left text-xs sm:text-sm">
+                                            <thead>
+                                                <tr class="text-brand-subtext uppercase font-semibold text-[11px] border-b border-gray-700/50">
+                                                    <th class="pb-2">Nickname</th>
+                                                    <th class="pb-2">Rank</th>
+                                                    <th class="pb-2">SteamID64</th>
+                                                    <th class="pb-2">SteamID</th>
+                                                    <th class="pb-2 text-right">Monitoring</th>
                                                 </tr>
-                                            `).join('')}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-700/30">
+                                                ${server.admins.map(admin => {
+                                                    const isThisAdminOnline = onlineAdminsSet.has((admin.nick || '').toLowerCase());
+
+                                                    return `
+                                                        <tr class="hover:bg-brand-surface/50 transition-colors ${isThisAdminOnline ? 'bg-red-950/20 font-semibold' : ''}">
+                                                            <!-- Nick -->
+                                                            <td class="py-2.5 font-medium ${isThisAdminOnline ? 'text-red-400 font-bold' : 'text-white'} select-all">
+                                                                <div class="flex items-center gap-1.5 flex-wrap">
+                                                                    <span>${escapeHtml(admin.nick)}</span>
+                                                                    ${isThisAdminOnline ? `
+                                                                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white animate-pulse">
+                                                                            <span class="w-1.5 h-1.5 rounded-full bg-white"></span> Online
+                                                                        </span>
+                                                                    ` : ''}
+                                                                </div>
+                                                            </td>
+                                                            <!-- Rank -->
+                                                            <td class="py-2.5">
+                                                                <span class="bg-brand-accent/20 text-brand-highlight px-2 py-0.5 rounded text-xs font-mono">
+                                                                    ${escapeHtml(admin.rank)}
+                                                                </span>
+                                                            </td>
+                                                            <!-- SteamID64 (Link) -->
+                                                            <td class="py-2.5 font-mono">
+                                                                <a 
+                                                                    href="https://steamcommunity.com/profiles/${escapeHtml(admin.steamid64)}" 
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    class="text-brand-accentHover hover:underline flex items-center gap-1 inline-flex"
+                                                                    title="Open Steam Profile"
+                                                                >
+                                                                    ${escapeHtml(admin.steamid64)}
+                                                                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                                                                </a>
+                                                            </td>
+                                                            <!-- SteamID (Classic) -->
+                                                            <td class="py-2.5 font-mono text-brand-subtext select-all">
+                                                                ${escapeHtml(admin.steamid)}
+                                                            </td>
+                                                            <!-- Monitoring Search -->
+                                                            <td class="py-2.5 text-right">
+                                                                ${admin.nick !== 'Unknown' ? `
+                                                                    <a 
+                                                                        href="https://varq.net/ru/players/garrys-mod?match=${encodeURIComponent(admin.nick)}" 
+                                                                        target="_blank" 
+                                                                        rel="noopener noreferrer"
+                                                                        class="bg-brand-surface hover:bg-brand-accent text-white px-2.5 py-1 rounded text-xs font-sans transition-colors inline-flex items-center gap-1"
+                                                                    >
+                                                                        <i data-lucide="search" class="w-3 h-3"></i> Search
+                                                                    </a>
+                                                                ` : '<span class="text-brand-subtext text-xs">—</span>'}
+                                                            </td>
+                                                        </tr>
+                                                    `;
+                                                }).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         ` : ''}
@@ -493,11 +803,16 @@
             renderIcons();
         }
 
+        // Переключение аккордеона сервера + старт загрузки мониторинга
         function toggleServer(ip) {
             if (expandedServerIp === ip) {
                 expandedServerIp = null;
             } else {
                 expandedServerIp = ip;
+                // При клике на сервер сразу запускаем опрос игроков (если еще не загружено или была ошибка)
+                if (!serverOnlineState[ip] || serverOnlineState[ip].error) {
+                    loadOnlinePlayers(ip);
+                }
             }
             renderTable();
         }
@@ -543,6 +858,7 @@
         function escapeHtml(str) {
             if (!str) return '';
             return str
+                .toString()
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
