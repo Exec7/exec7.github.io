@@ -84,10 +84,10 @@
                 <div>
                     <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
                         <i data-lucide="shield-check" class="text-brand-highlight w-7 h-7 inline-block"></i>
-                        exechack.cc servers database
+                        exechack.cc servers database (archived)
                     </h1>
                     <p class="text-xs sm:text-sm text-brand-subtext mt-0.5">
-                        archived version
+                        public data used in collective security
                     </p>
                 </div>
 
@@ -136,11 +136,11 @@
         <!-- Master-Detail Work Area (Left: Server List | Right: Server Details & 3 Open Tables) -->
         <div id="state-data" class="hidden flex-grow flex flex-col lg:flex-row gap-4 min-h-0">
             
-            <!-- LEFT COLUMN: Server Directory & Page Selection -->
-            <aside class="w-full lg:w-[410px] xl:w-[460px] flex flex-col shrink-0 bg-brand-card rounded-xl border border-gray-700/50 shadow-md p-3.5 space-y-3">
+            <!-- LEFT COLUMN: Server Directory & Page Selection (Fixed height with scroll inside) -->
+            <aside class="w-full lg:w-[410px] xl:w-[460px] h-[550px] lg:h-[calc(100vh-140px)] flex flex-col shrink-0 bg-brand-card rounded-xl border border-gray-700/50 shadow-md p-3.5 space-y-3">
                 
                 <!-- Search Box -->
-                <div class="relative w-full">
+                <div class="relative w-full shrink-0">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-brand-subtext w-4 h-4"></i>
                     <input 
                         type="text" 
@@ -154,15 +154,14 @@
                 </div>
 
                 <!-- Risk Filter Chips & Total Found -->
-                <div class="flex flex-wrap items-center justify-between gap-1.5 text-xs">
-
+                <div class="flex flex-wrap items-center justify-between gap-1.5 text-xs shrink-0">
                     <div class="text-[11px] text-brand-subtext">
                         <span id="filtered-count" class="font-bold text-white">0</span> servers found
                     </div>
                 </div>
 
-                <!-- Scrollable Server List -->
-                <div id="server-list-container" class="flex-grow overflow-y-auto space-y-2 pr-1 max-h-[600px] lg:max-h-[calc(100vh-275px)]">
+                <!-- Scrollable Server List (Stays strictly inside container) -->
+                <div id="server-list-container" class="flex-1 overflow-y-auto min-h-0 space-y-2 pr-1">
                     <!-- Populated dynamically -->
                 </div>
 
@@ -200,7 +199,7 @@
             </aside>
 
             <!-- RIGHT COLUMN: Selected Server Details & 3 OPEN TABLES -->
-            <main class="flex-grow flex flex-col bg-brand-card rounded-xl border border-gray-700/50 shadow-md p-4 min-w-0 overflow-hidden">
+            <main class="flex-grow flex flex-col bg-brand-card rounded-xl border border-gray-700/50 shadow-md p-4 min-w-0 overflow-hidden lg:h-[calc(100vh-140px)]">
                 <div id="server-detail-content" class="flex-grow flex flex-col space-y-4 overflow-y-auto pr-1">
                     <!-- Populated dynamically -->
                 </div>
@@ -261,13 +260,32 @@
         const NICKS_URL = 'https://raw.githubusercontent.com/Exec7/exec7.github.io/refs/heads/main/serversdatabase-archived/adminsnick.txt';
 
         const API_BASE = 'https://api.gamemonitoring.net';
-        const STEAM_APP_ID = 4000; // Garry's Mod App ID
+        const STEAM_APP_ID = 4000;
+
+        // Category mapping and display labels
+        function getAddonCategoryInfo(color) {
+            switch(color) {
+                case 'red':
+                    return { label: 'dangerous', class: 'bg-red-500/20 text-red-300 border-red-500/40' };
+                case 'orange':
+                    return { label: 'attention', class: 'bg-orange-500/20 text-orange-300 border-orange-500/40' };
+                case 'green':
+                    return { label: 'exploit', class: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' };
+                case 'blue':
+                default:
+                    return { label: 'neutral', class: 'bg-brand-accent/20 text-brand-highlight border-brand-accent/40' };
+            }
+        }
+
+        const CATEGORY_PRIORITY = {
+            'red': 1,      // dangerous
+            'orange': 2,   // attention
+            'green': 3,    // exploit
+            'blue': 4      // neutral
+        };
 
         // Embedded Net Signature Database
         const ADDON_DATABASE = {
-            /* ========================================================
-               RED CATEGORY (Anti-Cheat, Backdoors, ScreenGrab, CExec)
-               ======================================================== */
             "AC_DLLDetected": { n: "Custom Client Anti-Cheat", l: "", c: "red" },
             "ac.detect": { n: "Custom Server AC Detection Hook", l: "", c: "red" },
             "AcS1_": { n: "Anti-Cheat Obfuscated Netstring", l: "", c: "red" },
@@ -345,9 +363,6 @@
             "z_hadez_CrashPlayer": { n: "Hadez Backdoor Remote Panel", l: "", c: "red" },
             "ZScreengrabRequest": { n: "ZScreenGrab Module", l: "", c: "red" },
 
-            /* ========================================================
-               ORANGE CATEGORY (Admin Tools, Logging, Warning, Moderation)
-               ======================================================== */
             "ACL_E2_Code": { n: "ACL System Server Core", l: "", c: "orange" },
             "AddAffectedPlayers": { n: "Area of Effect Admin Tool", l: "", c: "orange" },
             "AddForeverVip": { n: "VIP Donation System", l: "", c: "orange" },
@@ -478,7 +493,7 @@
             "superSprayAudit_data": { n: "Super Spray Audit (Spray Logging Tool)", l: "", c: "orange" },
             "sv_anticrash_GlobalCleanup": { n: "Anti-Crash", l: "https://www.gmodstore.com/market/view/anti-crash", c: "orange" },
             "synergy.arrested": { n: "Synergy Framework Logging", l: "", c: "orange" },
-            "ULogs_Request": { n: "ULogs System", l: "", c: "orange" },
+            "ULLogs_Request": { n: "ULLogs System", l: "", c: "orange" },
             "Valen_AntiPropSpam": { n: "Valen Anti-Prop Spam Protection", l: "", c: "orange" },
             "WardenAdmin": { n: "Warden Role Enforcement System", l: "", c: "orange" },
             "warns.add_warn": { n: "Advanced Warning System", l: "", c: "orange" },
@@ -491,9 +506,6 @@
             "ZSAdminMenu_LogV2": { n: "Zombie Survival Admin Suite", l: "", c: "orange" },
             "zz_telemetry": { n: "Server Client Telemetry", l: "", c: "orange" },
 
-            /* ========================================================
-               BLUE CATEGORY (Gameplay, Addons, Weapons, Roles, UI)
-               ======================================================== */
             "3DStreamRadio/StaticState": { n: "3D Stream Radio", l: "https://steamcommunity.com/sharedfiles/filedetails/?id=246756300", c: "blue" },
             "A2GState": { n: "A2G Missile Guidance System", l: "", c: "blue" },
             "A9IrisPhotoTarget": { n: "SCP MTF Alpha-9 SWEPs Pack", l: "", c: "blue" },
@@ -1242,7 +1254,6 @@
 
         const TOTAL_ADDONS_IN_DB = Object.keys(ADDON_DATABASE).length;
 
-        // Normalization helper: Replaces all underscores (_) with colons (:) so servers match properly
         function normalizeIp(ip) {
             if (!ip) return '';
             let clean = ip.replace(/\r/g, '').trim();
@@ -1258,7 +1269,6 @@
         let currentPage = 1;
         let itemsPerPage = 20;
 
-        // Monitoring API Cache
         const monitoringCache = {};
 
         // DOM Elements
@@ -1299,7 +1309,6 @@
             if (window.lucide) lucide.createIcons();
         }
 
-        // Classifier: "disconnect by user" is a safe/good disconnect
         function isGoodDisconnect(reason) {
             if (!reason) return false;
             const r = reason.toLowerCase();
@@ -1312,7 +1321,6 @@
                    r.includes('client left');
         }
 
-        // Convert SteamID64 to Classic SteamID
         function steamID64ToClassic(steamid64) {
             try {
                 const BigInt = window.BigInt;
@@ -1328,7 +1336,6 @@
             }
         }
 
-        // Fetch & Unify Databases (last.txt, anet.txt, admins.txt, adminsnick.txt)
         async function fetchAllDatabases() {
             showState('loading');
             try {
@@ -1350,7 +1357,6 @@
                     throw new Error("Unable to connect to GitHub data repository. Please check your network.");
                 }
 
-                // Normalize keys in netsJson and adminsJson (_ -> :)
                 const netsJson = {};
                 for (const [k, v] of Object.entries(rawNetsJson)) {
                     netsJson[normalizeIp(k)] = v;
@@ -1361,7 +1367,6 @@
                     adminsJson[normalizeIp(k)] = v;
                 }
 
-                // 1. Process all Disconnect records from last.txt
                 const disconnectsByIp = new Map();
                 const disconnectsByHost = new Map();
                 const disconnectsByName = new Map();
@@ -1379,7 +1384,6 @@
                     if (parts.length < 4) continue;
 
                     const date = parts[0].trim();
-                    // Auto-replace _ with : in IP
                     const ip = normalizeIp(parts[parts.length - 1].trim());
                     const middle = parts.slice(1, parts.length - 1);
 
@@ -1407,23 +1411,19 @@
 
                     totalDisconnectsCount++;
 
-                    // Index by Exact IP
                     if (!disconnectsByIp.has(ip)) disconnectsByIp.set(ip, []);
                     disconnectsByIp.get(ip).push(record);
 
-                    // Index by Host (without port)
                     const hostOnly = ip.split(':')[0];
                     if (!disconnectsByHost.has(hostOnly)) disconnectsByHost.set(hostOnly, []);
                     disconnectsByHost.get(hostOnly).push(record);
 
-                    // Index by Server Name
                     const normName = serverName.toLowerCase().trim();
                     if (normName) {
                         if (!disconnectsByName.has(normName)) disconnectsByName.set(normName, []);
                         disconnectsByName.get(normName).push(record);
                     }
 
-                    // Register this server so disconnect-only servers are never missing
                     if (!allDiscoveredServers.has(ip)) {
                         allDiscoveredServers.set(ip, {
                             ip: ip,
@@ -1438,7 +1438,6 @@
                     }
                 }
 
-                // 2. Register servers from Nets and Admins (all keys already normalized to :)
                 for (const ipPort of Object.keys(netsJson)) {
                     if (!allDiscoveredServers.has(ipPort)) {
                         allDiscoveredServers.set(ipPort, { ip: ipPort, source: 'nets' });
@@ -1450,7 +1449,6 @@
                     }
                 }
 
-                // 3. Assemble Unified Server Entities
                 let totalAdminsCount = 0;
                 unifiedServers = [];
                 let srvIndex = 0;
@@ -1470,7 +1468,6 @@
                         }
                     }
 
-                    // Addons matching
                     const matchedAddons = [];
                     let highestRisk = 'blue';
 
@@ -1490,7 +1487,13 @@
                         }
                     });
 
-                    // Admins matching
+                    // Sort addons: dangerous (red) -> attention (orange) -> exploit (green) -> neutral (blue)
+                    matchedAddons.sort((a, b) => {
+                        const pA = CATEGORY_PRIORITY[a.color] || 99;
+                        const pB = CATEGORY_PRIORITY[b.color] || 99;
+                        return pA - pB;
+                    });
+
                     const adminsObj = adminsJson[ipKey] || {};
                     const adminsList = [];
 
@@ -1505,7 +1508,6 @@
                         totalAdminsCount++;
                     }
 
-                    // Disconnects matching (both IP, host without port, and Server Name fallback)
                     const hostOnly = ipKey.split(':')[0];
                     const normName = serverName.toLowerCase().trim();
 
@@ -1515,7 +1517,6 @@
                         ...(disconnectsByName.get(normName) || [])
                     ];
 
-                    // Remove duplicates
                     const uniqueDiscs = [];
                     const seenDiscKeys = new Set();
                     for (let d of combinedDiscs) {
@@ -1541,15 +1542,15 @@
                     let badgeClass = 'bg-brand-surface text-brand-subtext border-gray-600/40';
 
                     if (percent !== null) {
-                        if (percent >= 85) {
+                        if (percent >= 70) {
                             grade = 'Safe';
                             gradeColor = 'text-emerald-400';
                             badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
-                        } else if (percent >= 65) {
+                        } else if (percent >= 50) {
                             grade = 'Normal';
                             gradeColor = 'text-blue-400';
                             badgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/40';
-                        } else if (percent >= 45) {
+                        } else if (percent >= 30) {
                             grade = 'Risk';
                             gradeColor = 'text-orange-400';
                             badgeClass = 'bg-orange-500/20 text-orange-300 border-orange-500/40';
@@ -1590,12 +1591,11 @@
                     });
                 }
 
-                // Default sorting: servers with highest activity first
-                unifiedServers.sort((a, b) => (b.admins.length + b.disconnectStats.total) - (a.admins.length + a.disconnectStats.total));
+                // Default sorting: strictly by disconnects count in last.txt (descending)
+                unifiedServers.sort((a, b) => b.disconnectStats.total - a.disconnectStats.total);
 
                 filteredServers = [...unifiedServers];
 
-                // Update summary badges
                 statServers.textContent = unifiedServers.length.toLocaleString();
                 statAdmins.textContent = totalAdminsCount.toLocaleString();
                 statDisconnects.textContent = totalDisconnectsCount.toLocaleString();
@@ -1603,7 +1603,6 @@
                 currentPage = 1;
                 applyFilter();
 
-                // Auto-select first server on initial load
                 if (filteredServers.length > 0) {
                     selectServer(filteredServers[0].id);
                 }
@@ -1616,7 +1615,6 @@
             }
         }
 
-        // Live Monitoring via GameMonitoring API
         async function fetchLiveMonitoring(ip, force = false) {
             if (!force && monitoringCache[ip] && !monitoringCache[ip].error && !monitoringCache[ip].loading) {
                 return;
@@ -1633,7 +1631,6 @@
             renderServerDetail();
 
             try {
-                // Step 1: POST /servers
                 const addRes = await fetch(`${API_BASE}/servers`, {
                     method: 'POST',
                     headers: {
@@ -1657,7 +1654,6 @@
                     throw new Error("Monitoring did not return server ID");
                 }
 
-                // Step 2 & 3: Concurrent GET /servers/:id and GET /servers/:id/players
                 const [detailsRes, playersRes] = await Promise.all([
                     fetch(`${API_BASE}/servers/${serverId}`, { headers: { 'Accept': 'application/json' } }),
                     fetch(`${API_BASE}/servers/${serverId}/players?limit=100`, { headers: { 'Accept': 'application/json' } })
@@ -1731,7 +1727,6 @@
             else if (state === 'data') stateData.classList.remove('hidden');
         }
 
-        // Search & Filter
         function applyFilter() {
             const query = searchInput.value.toLowerCase().trim();
 
@@ -1765,23 +1760,6 @@
             }
         }
 
-        function setRiskFilter(risk) {
-            activeRiskFilter = risk;
-            document.querySelectorAll('.risk-filter-btn').forEach(btn => {
-                btn.className = "risk-filter-btn px-2 py-1 rounded-md border border-gray-700 bg-brand-bg text-brand-subtext hover:border-brand-accent/50 text-[11px]";
-            });
-
-            const activeBtn = document.getElementById(`btn-risk-${risk}`);
-            if (activeBtn) {
-                if (risk === 'all') activeBtn.className = "risk-filter-btn px-2.5 py-1 rounded-md border border-brand-accent bg-brand-accent/30 text-white font-medium text-[11px]";
-                if (risk === 'red') activeBtn.className = "risk-filter-btn px-2 py-1 rounded-md border border-red-500 bg-red-500/20 text-red-300 font-medium text-[11px]";
-                if (risk === 'orange') activeBtn.className = "risk-filter-btn px-2 py-1 rounded-md border border-orange-500 bg-orange-500/20 text-orange-300 font-medium text-[11px]";
-            }
-
-            applyFilter();
-        }
-
-        // Render Left Column Server List
         function renderServerList() {
             if (filteredServers.length === 0) {
                 serverListContainer.innerHTML = `
@@ -1854,7 +1832,6 @@
             }
         }
 
-        // Render Right Column: ALL 3 TABLES OPEN SIMULTANEOUSLY
         function renderServerDetail() {
             if (!selectedServerId && selectedServerId !== 0) {
                 serverDetailContent.innerHTML = `
@@ -1877,7 +1854,7 @@
             const hasOnlineAdmins = mon?.onlineAdmins && mon.onlineAdmins.length > 0;
 
             serverDetailContent.innerHTML = `
-                <!-- 1. Header Toolbar with Addons Count in DB immediately on the right -->
+                <!-- 1. Header Toolbar -->
                 <div class="bg-brand-bg/80 rounded-xl p-4 border border-gray-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
                     <div>
                         <div class="flex items-center gap-2">
@@ -1888,8 +1865,6 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 shrink-0">
-
-
                         <button onclick="copyToClipboard(event, 'connect ${escapeHtml(server.ip)}', 'Connect command copied!')" class="px-3 py-1.5 bg-brand-accent hover:bg-brand-accentHover text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors">
                             <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Copy Connect
                         </button>
@@ -1909,7 +1884,7 @@
                             <i data-lucide="radio" class="w-4 h-4 text-brand-highlight"></i> Monitoring
                         </span>
                         <span class="font-mono text-[11px] ${isOnline ? 'text-emerald-400 font-bold' : 'text-gray-400'}">
-                            ${isOnline ? '● Online' : (mon?.loading ? 'Fetching...' : '○ Unreachable / Offline')}
+                            ${isOnline ? '● Online' : (mon?.loading ? 'Loading...' : 'Offline')}
                         </span>
                     </div>
 
@@ -1942,13 +1917,11 @@
                         </div>
                     </div>
 
-                    <!-- Online Admins Warning Alert: Limited to 6 visible cards, then scrollable -->
                     ${hasOnlineAdmins ? `
                         <div class="bg-red-950/40 border-2 border-red-500 rounded-xl p-3 admin-online-glow">
                             <div class="flex items-center justify-between text-red-400 font-bold text-xs mb-2">
                                 <span class="flex items-center gap-1.5">
-                                    <i data-lucide="flame" class="w-4 h-4 text-red-500 animate-bounce"></i>
-                                    High Alert: ${mon.onlineAdmins.length} Administrator(s) Currently Playing Online:
+                                    ${mon.onlineAdmins.length} Admin(s) currently playing:
                                 </span>
                                 ${mon.onlineAdmins.length > 6 ? `
                                     <span class="text-[10px] text-red-300 font-normal italic">
@@ -1977,13 +1950,12 @@
                         </div>
                     ` : ''}
 
-                    <!-- Live Players Chips -->
                     <div class="bg-brand-card rounded-lg p-2.5 border border-gray-700/50">
                         <div class="text-[11px] uppercase font-semibold text-brand-subtext mb-1.5">
-                            Connected Players (${mon?.players ? mon.players.length : 0}):
+                            Players (${mon?.players ? mon.players.length : 0}):
                         </div>
                         ${!mon?.players || mon.players.length === 0 ? `
-                            <p class="text-[11px] text-brand-subtext italic">No live players reporting or server empty.</p>
+                            <p class="text-[11px] text-brand-subtext italic">server is not sending information about the players</p>
                         ` : `
                             <div class="flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1">
                                 ${mon.players.map(p => {
@@ -2008,7 +1980,7 @@
 
                 <!-- 3. ALL 3 TABLES DISPLAYED SIMULTANEOUSLY -->
 
-                <!-- TABLE 1: DISCONNECTS & BAN RATING (Logged IP column removed) -->
+                <!-- TABLE 1: DISCONNECTS & BAN RATING (Classification removed, colored reason text) -->
                 <div class="space-y-2 pt-2">
                     <div class="flex items-center justify-between pb-1.5 border-b border-gray-700/50">
                         <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
@@ -2030,7 +2002,7 @@
                     ${renderAddonsTable(server)}
                 </div>
 
-                <!-- TABLE 3: STAFF DIRECTORY (with dedicated staff search) -->
+                <!-- TABLE 3: STAFF DIRECTORY -->
                 <div class="space-y-2 pt-4 border-t border-gray-700/50">
                     <div class="flex items-center justify-between pb-1.5 border-b border-gray-700/50">
                         <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
@@ -2045,7 +2017,7 @@
             renderIcons();
         }
 
-        // Section 1: Disconnects Table & Rating Banner (Logged IP removed)
+        // Section 1: Disconnects Table (Classification column removed, Disconnect Reason colored)
         function renderDisconnectsTable(server) {
             const disc = server.disconnectStats;
 
@@ -2063,20 +2035,20 @@
                 <div class="space-y-3">
                     <div class="bg-brand-bg/80 border border-gray-700/60 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
                         <div>
-                            <div class="text-[11px] uppercase font-bold text-brand-subtext tracking-wider">Disconnect Safety Rating</div>
+                            <div class="text-[11px] uppercase font-bold text-brand-subtext tracking-wider">Rating</div>
                             <div class="text-sm sm:text-base font-extrabold flex items-center gap-2 mt-0.5">
                                 <span class="${disc.gradeColor}">${disc.grade}</span>
                                 <span class="text-white font-mono text-xs">(${disc.percent}% safe quits)</span>
                             </div>
                             <p class="text-[11px] text-brand-subtext mt-0.5">
-                                Reason <code class="bg-brand-surface px-1 py-0.2 rounded text-brand-highlight">Disconnect by user</code> is evaluated as safe. All others are flagged as kicks, bans, or crashes.
+                                List of every disconnect with exechack for self-assessment of risk.
                             </p>
                         </div>
 
                         <div class="flex items-center gap-4 shrink-0 text-xs font-mono">
                             <div class="bg-brand-surface/80 p-2 rounded-lg border border-gray-600/40 text-right">
-                                <div class="text-emerald-400 font-bold">✓ ${disc.good} Safe Quits</div>
-                                <div class="text-red-400 font-bold">✕ ${disc.bad} Kicks / Bans</div>
+                                <div class="text-emerald-400 font-bold">${disc.good}</div>
+                                <div class="text-red-400 font-bold">${disc.bad}</div>
                             </div>
                         </div>
                     </div>
@@ -2086,26 +2058,14 @@
                             <thead class="bg-brand-surface uppercase font-semibold text-[10px] text-brand-subtext sticky top-0 border-b border-gray-700/60 z-10">
                                 <tr>
                                     <th class="p-2.5 w-48">Date</th>
-                                    <th class="p-2.5 w-36">Classification</th>
                                     <th class="p-2.5">Disconnect Reason</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-700/30 bg-brand-bg/40 font-mono">
                                 ${server.disconnects.map(d => `
                                     <tr class="hover:bg-brand-surface/40 transition-colors">
-                                        <td class="p-2.5 text-brand-highlight whitespace-nowrap">${escapeHtml(d.date)}</td>
-                                        <td class="p-2.5 whitespace-nowrap">
-                                            ${d.isGood ? `
-                                                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold text-[10px] border border-emerald-500/40">
-                                                    User Disconnect
-                                                </span>
-                                            ` : `
-                                                <span class="px-2 py-0.5 rounded bg-red-500/20 text-red-300 font-semibold text-[10px] border border-red-500/40">
-                                                    Kick / Ban
-                                                </span>
-                                            `}
-                                        </td>
-                                        <td class="p-2.5 text-white select-all break-words">${escapeHtml(d.banReason)}</td>
+                                        <td class="p-2.5 text-brand-highlight whitespace-nowrap align-top">${escapeHtml(d.date)}</td>
+                                        <td class="p-2.5 ${d.isGood ? 'text-emerald-400' : 'text-red-400'} font-semibold select-all break-words">${escapeHtml(d.banReason)}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -2115,7 +2075,7 @@
             `;
         }
 
-        // Section 2: Addons & Net Functions
+        // Section 2: Addons & Net Functions (Sorted by danger, with new renamed category tags)
         function renderAddonsTable(server) {
             return `
                 <div class="space-y-3">
@@ -2130,24 +2090,25 @@
                             </p>
                         ` : `
                             <div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
-                                ${server.addons.map(a => `
-                                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded-lg bg-brand-bg border border-gray-700/50 gap-2 text-xs">
-                                        <div class="flex items-center gap-2">
-                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
-                                                a.color === 'red' ? 'bg-red-500/20 text-red-300 border-red-500/40' :
-                                                a.color === 'orange' ? 'bg-orange-500/20 text-orange-300 border-orange-500/40' :
-                                                'bg-brand-accent/20 text-brand-highlight border-brand-accent/40'
-                                            }">${a.color}</span>
-                                            <span class="font-bold text-white">${escapeHtml(a.name)}</span>
-                                            <span class="font-mono text-brand-subtext text-[11px]">(${escapeHtml(a.net)})</span>
+                                ${server.addons.map(a => {
+                                    const catInfo = getAddonCategoryInfo(a.color);
+                                    return `
+                                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2 rounded-lg bg-brand-bg border border-gray-700/50 gap-2 text-xs">
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${catInfo.class}">
+                                                    ${catInfo.label}
+                                                </span>
+                                                <span class="font-bold text-white">${escapeHtml(a.name)}</span>
+                                                <span class="font-mono text-brand-subtext text-[11px]">(${escapeHtml(a.net)})</span>
+                                            </div>
+                                            ${a.link ? `
+                                                <a href="${escapeHtml(a.link)}" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1">
+                                                    <i data-lucide="external-link" class="w-3 h-3"></i> View Source
+                                                </a>
+                                            ` : '<span class="text-[11px] text-brand-subtext italic">No source URL</span>'}
                                         </div>
-                                        ${a.link ? `
-                                            <a href="${escapeHtml(a.link)}" target="_blank" class="text-xs text-brand-highlight hover:underline flex items-center gap-1">
-                                                <i data-lucide="external-link" class="w-3 h-3"></i> View Source
-                                            </a>
-                                        ` : '<span class="text-[11px] text-brand-subtext italic">No source URL</span>'}
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         `}
                     </div>
@@ -2187,7 +2148,6 @@
 
             return `
                 <div class="space-y-2.5">
-                    <!-- Staff Directory Search Box -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-brand-bg/70 p-2.5 rounded-lg border border-gray-700/50">
                         <div class="relative w-full sm:w-80">
                             <i data-lucide="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-brand-subtext w-3.5 h-3.5"></i>
@@ -2208,11 +2168,10 @@
                             </button>
                         </div>
                         <div class="text-xs text-brand-subtext shrink-0">
-                            Showing <span id="staff-visible-count" class="font-bold text-white">${server.admins.length}</span> of <span class="font-bold text-white">${server.admins.length}</span> staff
+                            <span class="font-bold text-white">${server.admins.length}</span> admins
                         </div>
                     </div>
 
-                    <!-- Staff Table -->
                     <div class="overflow-x-auto rounded-lg border border-gray-700/60 max-h-80 overflow-y-auto">
                         <table class="w-full text-left text-xs">
                             <thead class="bg-brand-surface uppercase font-semibold text-[10px] text-brand-subtext border-b border-gray-700/60 sticky top-0 z-10">
@@ -2273,7 +2232,6 @@
             `;
         }
 
-        // Live filtering function for Staff Directory table
         function filterStaffTable(query) {
             const q = (query || '').toLowerCase().trim();
             const clearBtn = document.getElementById('clear-staff-search');
@@ -2314,7 +2272,6 @@
             }
         }
 
-        // Pagination Controls with Dropdown Page Selection
         function renderPaginationControls(totalPages) {
             paginationInfo.textContent = `of ${totalPages}`;
 
@@ -2380,6 +2337,13 @@
                 color: info.c || 'blue'
             }));
 
+            // Sort by priority: dangerous -> attention -> exploit -> neutral
+            entries.sort((a, b) => {
+                const pA = CATEGORY_PRIORITY[a.color] || 99;
+                const pB = CATEGORY_PRIORITY[b.color] || 99;
+                return pA - pB;
+            });
+
             const matched = entries.filter(item => {
                 if (!cleanQuery) return true;
                 return item.name.toLowerCase().includes(cleanQuery) || item.net.toLowerCase().includes(cleanQuery);
@@ -2387,31 +2351,31 @@
 
             modalAddonCount.textContent = `${matched.length} of ${entries.length}`;
 
-            modalAddonList.innerHTML = matched.map(item => `
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-lg bg-brand-bg/70 border border-gray-700/60 gap-2 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
-                            item.color === 'red' ? 'bg-red-500/20 text-red-300 border-red-500/40' :
-                            item.color === 'orange' ? 'bg-orange-500/20 text-orange-300 border-orange-500/40' :
-                            'bg-brand-accent/20 text-brand-highlight border-brand-accent/40'
-                        }">${item.color}</span>
-                        <div>
-                            <div class="text-white font-bold">${escapeHtml(item.name)}</div>
-                            <div class="font-mono text-brand-highlight select-all text-[11px]">${escapeHtml(item.net)}</div>
+            modalAddonList.innerHTML = matched.map(item => {
+                const catInfo = getAddonCategoryInfo(item.color);
+                return `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-lg bg-brand-bg/70 border border-gray-700/60 gap-2 text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${catInfo.class}">
+                                ${catInfo.label}
+                            </span>
+                            <div>
+                                <div class="text-white font-bold">${escapeHtml(item.name)}</div>
+                                <div class="font-mono text-brand-highlight select-all text-[11px]">${escapeHtml(item.net)}</div>
+                            </div>
                         </div>
+                        ${item.link ? `
+                            <a href="${escapeHtml(item.link)}" target="_blank" class="text-brand-highlight hover:underline flex items-center gap-1">
+                                <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Visit Source
+                            </a>
+                        ` : '<span class="text-brand-subtext italic">No link available</span>'}
                     </div>
-                    ${item.link ? `
-                        <a href="${escapeHtml(item.link)}" target="_blank" class="text-brand-highlight hover:underline flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Visit Source
-                        </a>
-                    ` : '<span class="text-brand-subtext italic">No link available</span>'}
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             renderIcons();
         }
 
-        // Utility Helpers
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
