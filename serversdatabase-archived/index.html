@@ -133,7 +133,7 @@
             </button>
         </div>
 
-        <!-- Master-Detail Work Area (Left: Server List | Right: Server Details & 3 Open Tables) -->
+        <!-- Master-Detail Work Area -->
         <div id="state-data" class="hidden flex-grow flex flex-col lg:flex-row gap-4 min-h-0">
             
             <!-- LEFT COLUMN: Server Directory & Page Selection (Fixed height with scroll inside) -->
@@ -153,14 +153,14 @@
                     </button>
                 </div>
 
-                <!-- Risk Filter Chips & Total Found -->
+                <!-- Total Found -->
                 <div class="flex flex-wrap items-center justify-between gap-1.5 text-xs shrink-0">
                     <div class="text-[11px] text-brand-subtext">
                         <span id="filtered-count" class="font-bold text-white">0</span> servers found
                     </div>
                 </div>
 
-                <!-- Scrollable Server List (Stays strictly inside container) -->
+                <!-- Scrollable Server List -->
                 <div id="server-list-container" class="flex-1 overflow-y-auto min-h-0 space-y-2 pr-1">
                     <!-- Populated dynamically -->
                 </div>
@@ -224,8 +224,8 @@
                         <i data-lucide="database" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h2 class="text-base sm:text-lg font-bold text-white">Addon Signatures & Net Functions Dictionary</h2>
-                        <p class="text-xs text-brand-subtext">All registered anti-cheat, admin suite, and exploit detection hooks</p>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Addons Database</h2>
+                        <p class="text-xs text-brand-subtext">All addons with search by net functions</p>
                     </div>
                 </div>
                 <button id="close-addons-modal-btn" class="p-2 text-brand-subtext hover:text-white hover:bg-brand-surface rounded-lg transition-colors">
@@ -262,7 +262,6 @@
         const API_BASE = 'https://api.gamemonitoring.net';
         const STEAM_APP_ID = 4000;
 
-        // Category mapping and display labels
         function getAddonCategoryInfo(color) {
             switch(color) {
                 case 'red':
@@ -283,6 +282,35 @@
             'green': 3,    // exploit
             'blue': 4      // neutral
         };
+		
+// Парсинг времени после слова "Online" в секунды
+function parsePlayedTimeSeconds(reason) {
+    if (!reason) return 0;
+    const match = reason.match(/online\s+([0-9a-zA-Zа-яА-ЯёЁ\s]+)$/i);
+    if (!match) return 0;
+    const text = match[1].toLowerCase();
+    let seconds = 0;
+
+    const d = text.match(/(\d+)\s*(?:d|day|days|д|день|дня|дней)\b/);
+    if (d) seconds += parseInt(d[1], 10) * 86400;
+
+    const h = text.match(/(\d+)\s*(?:h|hour|hours|hr|hrs|ч|час|часа|часов)\b/);
+    if (h) seconds += parseInt(h[1], 10) * 3600;
+
+    const m = text.match(/(\d+)\s*(?:m|min|mins|minute|minutes|мин|минута|минуты|минут)\b/);
+    if (m) seconds += parseInt(m[1], 10) * 60;
+
+    const s = text.match(/(\d+)\s*(?:s|sec|secs|second|seconds|сек|секунда|секунды|секунд)\b/);
+    if (s) seconds += parseInt(s[1], 10);
+
+    return seconds;
+}
+
+function formatPlayedTime(totalSeconds) {
+    if (!totalSeconds || totalSeconds <= 0) return '0 hours';
+    const hours = (totalSeconds / 3600).toFixed(1);
+    return `${hours} hours`;
+}
 
         // Embedded Net Signature Database
         const ADDON_DATABASE = {
@@ -1368,7 +1396,6 @@
                 }
 
                 const disconnectsByIp = new Map();
-                const disconnectsByHost = new Map();
                 const disconnectsByName = new Map();
                 const allDiscoveredServers = new Map();
 
@@ -1384,20 +1411,33 @@
                     if (parts.length < 4) continue;
 
                     const date = parts[0].trim();
-                    const ip = normalizeIp(parts[parts.length - 1].trim());
-                    const middle = parts.slice(1, parts.length - 1);
+                    
+                    let rawIp = parts[parts.length - 1].trim();
+                    let middle = parts.slice(1, parts.length - 1);
+
+                    // If last token is just a port and previous is an IP, join them
+                    if (/^\d+$/.test(rawIp) && parts.length >= 5 && /^\d+\.\d+\.\d+\.\d+$/.test(parts[parts.length - 2].trim())) {
+                        rawIp = parts[parts.length - 2].trim() + ':' + rawIp;
+                        middle = parts.slice(1, parts.length - 2);
+                    }
+
+                    const ip = normalizeIp(rawIp);
+                    if (!ip || ip === 'N/A' || !ip.includes('.')) continue;
 
                     let serverName = "";
                     let banReason = "";
 
-                    if (middle.length === 2) {
+                    if (middle.length === 1) {
+                        serverName = middle[0].trim();
+                        banReason = 'N/A';
+                    } else if (middle.length === 2) {
                         serverName = middle[0].trim();
                         banReason = middle[1].trim();
                     } else if (middle.length > 2) {
                         serverName = middle[0].trim();
                         banReason = middle.slice(1).join(':').trim();
                     } else {
-                        serverName = middle.join(':').trim();
+                        serverName = 'Unknown Server';
                         banReason = 'N/A';
                     }
 
@@ -1405,21 +1445,19 @@
                         date: date || 'N/A',
                         serverName: serverName || 'Unknown Server',
                         banReason: banReason || 'No Reason Provided',
-                        ip: ip || 'N/A',
+                        ip: ip,
                         isGood: isGoodDisconnect(banReason)
                     };
 
                     totalDisconnectsCount++;
 
+                    // Index strictly by exact IP
                     if (!disconnectsByIp.has(ip)) disconnectsByIp.set(ip, []);
                     disconnectsByIp.get(ip).push(record);
 
-                    const hostOnly = ip.split(':')[0];
-                    if (!disconnectsByHost.has(hostOnly)) disconnectsByHost.set(hostOnly, []);
-                    disconnectsByHost.get(hostOnly).push(record);
-
+                    // Index strictly by Server Name for fallback ONLY
                     const normName = serverName.toLowerCase().trim();
-                    if (normName) {
+                    if (normName && normName !== 'unknown server' && normName !== 'unknown') {
                         if (!disconnectsByName.has(normName)) disconnectsByName.set(normName, []);
                         disconnectsByName.get(normName).push(record);
                     }
@@ -1487,7 +1525,7 @@
                         }
                     });
 
-                    // Sort addons: dangerous (red) -> attention (orange) -> exploit (green) -> neutral (blue)
+                    // Sort addons: dangerous -> attention -> exploit -> neutral
                     matchedAddons.sort((a, b) => {
                         const pA = CATEGORY_PRIORITY[a.color] || 99;
                         const pB = CATEGORY_PRIORITY[b.color] || 99;
@@ -1508,15 +1546,17 @@
                         totalAdminsCount++;
                     }
 
-                    const hostOnly = ipKey.split(':')[0];
-                    const normName = serverName.toLowerCase().trim();
+                    // STRICT MATCHING: First by IP. Only if none exist, fallback to Server Name.
+                    let combinedDiscs = disconnectsByIp.get(ipKey) || [];
 
-                    const combinedDiscs = [
-                        ...(disconnectsByIp.get(ipKey) || []),
-                        ...(disconnectsByHost.get(hostOnly) || []),
-                        ...(disconnectsByName.get(normName) || [])
-                    ];
+                    if (combinedDiscs.length === 0) {
+                        const normName = serverName.toLowerCase().trim();
+                        if (normName && normName !== 'unknown server' && normName !== 'unknown') {
+                            combinedDiscs = disconnectsByName.get(normName) || [];
+                        }
+                    }
 
+                    // Deduplicate
                     const uniqueDiscs = [];
                     const seenDiscKeys = new Set();
                     for (let d of combinedDiscs) {
@@ -1529,9 +1569,11 @@
 
                     let goodCount = 0;
                     let badCount = 0;
+					let totalPlayedSeconds = 0;
                     uniqueDiscs.forEach(d => {
                         if (d.isGood) goodCount++;
                         else badCount++;
+						totalPlayedSeconds += parsePlayedTimeSeconds(d.banReason);
                     });
 
                     const totalDisc = uniqueDiscs.length;
@@ -1585,7 +1627,9 @@
                             percent,
                             grade,
                             gradeColor,
-                            badgeClass
+                            badgeClass,
+							totalPlayedSeconds,                                          // <-- добавить
+							totalPlayedFormatted: formatPlayedTime(totalPlayedSeconds)   // <-- добавить
                         },
                         searchIndex
                     });
@@ -1921,7 +1965,8 @@
                         <div class="bg-red-950/40 border-2 border-red-500 rounded-xl p-3 admin-online-glow">
                             <div class="flex items-center justify-between text-red-400 font-bold text-xs mb-2">
                                 <span class="flex items-center gap-1.5">
-                                    ${mon.onlineAdmins.length} Admin(s) currently playing:
+                                    <i data-lucide="flame" class="w-4 h-4 text-red-500 animate-bounce"></i>
+                                    ${mon.onlineAdmins.length} admins(s) currently online:
                                 </span>
                                 ${mon.onlineAdmins.length > 6 ? `
                                     <span class="text-[10px] text-red-300 font-normal italic">
@@ -1980,7 +2025,7 @@
 
                 <!-- 3. ALL 3 TABLES DISPLAYED SIMULTANEOUSLY -->
 
-                <!-- TABLE 1: DISCONNECTS & BAN RATING (Classification removed, colored reason text) -->
+                <!-- TABLE 1: DISCONNECTS & BAN RATING -->
                 <div class="space-y-2 pt-2">
                     <div class="flex items-center justify-between pb-1.5 border-b border-gray-700/50">
                         <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
@@ -2017,7 +2062,6 @@
             renderIcons();
         }
 
-        // Section 1: Disconnects Table (Classification column removed, Disconnect Reason colored)
         function renderDisconnectsTable(server) {
             const disc = server.disconnectStats;
 
@@ -2038,12 +2082,17 @@
                             <div class="text-[11px] uppercase font-bold text-brand-subtext tracking-wider">Rating</div>
                             <div class="text-sm sm:text-base font-extrabold flex items-center gap-2 mt-0.5">
                                 <span class="${disc.gradeColor}">${disc.grade}</span>
-                                <span class="text-white font-mono text-xs">(${disc.percent}% safe quits)</span>
                             </div>
                             <p class="text-[11px] text-brand-subtext mt-0.5">
-                                List of every disconnect with exechack for self-assessment of risk.
+                                List of all disconnects/kicks/bans with exechack for self-assessment of risk.
                             </p>
                         </div>
+
+						<!-- ДОБАВИТЬ ЭТОТ БЛОК: -->
+						<div class="text-xs text-brand-highlight flex items-center gap-1.5 mt-1 font-mono">
+							<i data-lucide="clock" class="w-3.5 h-3.5 text-brand-highlight"></i>
+							<span>Total Played: <strong class="text-white">~${disc.totalPlayedFormatted}</strong></span>
+						</div>
 
                         <div class="flex items-center gap-4 shrink-0 text-xs font-mono">
                             <div class="bg-brand-surface/80 p-2 rounded-lg border border-gray-600/40 text-right">
@@ -2075,7 +2124,6 @@
             `;
         }
 
-        // Section 2: Addons & Net Functions (Sorted by danger, with new renamed category tags)
         function renderAddonsTable(server) {
             return `
                 <div class="space-y-3">
@@ -2131,7 +2179,6 @@
             `;
         }
 
-        // Section 3: Staff Directory with In-Table Search
         function renderAdminsTable(server) {
             if (server.admins.length === 0) {
                 return `
@@ -2168,7 +2215,7 @@
                             </button>
                         </div>
                         <div class="text-xs text-brand-subtext shrink-0">
-                            <span class="font-bold text-white">${server.admins.length}</span> admins
+                            Showing <span id="staff-visible-count" class="font-bold text-white">${server.admins.length}</span> of <span class="font-bold text-white">${server.admins.length}</span>
                         </div>
                     </div>
 
@@ -2314,7 +2361,6 @@
             renderServerList();
         }
 
-        // Addons Modal Dictionary
         function openAddonsModal() {
             addonsModal.classList.remove('hidden');
             modalAddonSearch.value = '';
@@ -2337,7 +2383,6 @@
                 color: info.c || 'blue'
             }));
 
-            // Sort by priority: dangerous -> attention -> exploit -> neutral
             entries.sort((a, b) => {
                 const pA = CATEGORY_PRIORITY[a.color] || 99;
                 const pB = CATEGORY_PRIORITY[b.color] || 99;
