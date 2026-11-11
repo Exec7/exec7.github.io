@@ -1,3 +1,6 @@
+Derma_Query("update loader.\nsoon, this version of the cheat will become obsolete (due to an gmod update currently in beta) and will be disabled.","exechack.cc","download",function() gui.OpenURL("https://exechack.cc/docs/")end,"cancel",function()end)
+
+
 /*
 ╔╗╔╗───╔════╗╔═══╗╔═══╗╔═══╗───╔╗──╔╗╔══╗╔════╗╔╗──────╔══╗─╔══╗─╔══╗╔══╗╔══╗─╔══╗╔══╗
 ║║║║───╚═╗╔═╝║╔══╝║╔══╝║╔═╗║───║║──║║║╔╗║╚═╗╔═╝║║──────║╔═╝─║╔╗║─║╔╗║╚═╗║║╔═╝─║╔╗║║╔╗║
