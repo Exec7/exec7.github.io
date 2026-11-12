@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>raspadskaya</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+    body {
+      overflow: hidden;
+      background-color: #020407;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #fff;
+    }
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Лаконичная плашка взаимодействия */
+    #interact-prompt {
+      display: none;
+      position: absolute;
+      bottom: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 16, 26, 0.85);
+      border: 1px solid #7ab8ff;
+      padding: 10px 22px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffd05c;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 15;
+      pointer-events: none;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+
+    /* Мобильное управление */
+    #mobile-controls {
+      display: none;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .touch-btn {
+      position: absolute;
+      pointer-events: auto;
+      background: rgba(18, 25, 38, 0.78);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      font-weight: bold;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+    .touch-btn:active {
+      background: rgba(70, 130, 230, 0.75);
+      border-color: #8bc2ff;
+    }
+    #dpad {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      width: 140px;
+      height: 140px;
+      pointer-events: auto;
+    }
+    #btn-up { top: 0; left: 47px; width: 46px; height: 46px; }
+    #btn-down { bottom: 0; left: 47px; width: 46px; height: 46px; }
+    #btn-left { top: 47px; left: 0; width: 46px; height: 46px; }
+    #btn-right { top: 47px; right: 0; width: 46px; height: 46px; }
+
+    #btn-jump { bottom: 30px; right: 28px; width: 68px; height: 68px; font-size: 11px; }
+    #btn-sprint { bottom: 110px; right: 36px; width: 52px; height: 52px; font-size: 10px; }
+    #btn-vehicle-mobile {
+      display: none;
+      bottom: 180px;
+      right: 30px;
+      width: 64px;
+      height: 64px;
+      background: #195bb3;
+      border-color: #72b3ff;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    #crosshair {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="crosshair"></div>
+  <div id="interact-prompt">[ E ] Сесть в БелАЗ</div>
+
+  <div id="mobile-controls">
+    <div id="dpad">
+      <div id="btn-up" class="touch-btn">▲</div>
+      <div id="btn-down" class="touch-btn">▼</div>
+      <div id="btn-left" class="touch-btn">◀</div>
+      <div id="btn-right" class="touch-btn">▶</div>
+    </div>
+    <div id="btn-vehicle-mobile" class="touch-btn">🚛 БелАЗ</div>
+    <div id="btn-sprint" class="touch-btn">БЕГ</div>
+    <div id="btn-jump" class="touch-btn">ПРЫЖОК</div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+    // Включение мобильного управления
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    if (isTouch) {
+      document.getElementById('mobile-controls').style.display = 'block';
+    }
+
+    // --- 1. СЦЕНА, МОРОЗНЫЙ ТУМАН И РЕНДЕР ---
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020408);
+    scene.fog = new THREE.FogExp2(0x040810, 0.007);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+    container.appendChild(renderer.domElement);
+
+    const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1600);
+
+    const ambientLight = new THREE.AmbientLight(0x101a26, 0.45);
+    scene.add(ambientLight);
+
+    // --- 2. ТЕКСТУРА СНЕГА И УГЛЯ ---
+    function createCoalSnowTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f0f5fb';
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      for (let i = 0; i < 45; i++) {
+        const y = Math.random() * 1024;
+        const h = Math.random() * 25 + 10;
+        ctx.fillStyle = Math.random() > 0.4 ? 'rgba(20, 23, 28, 0.88)' : 'rgba(38, 45, 54, 0.6)';
+        ctx.fillRect(0, y, 1024, h);
+      }
+      for (let i = 0; i < 9000; i++) {
+        const x = Math.random() * 1024;
+        const y = Math.random() * 1024;
+        const r = Math.random() * 2.5 + 0.5;
+        ctx.fillStyle = Math.random() > 0.35 ? '#111317' : '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(40, 40);
+      return texture;
+    }
+
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      map: createCoalSnowTexture(),
+      roughness: 0.88,
+      metalness: 0.08
+    });
+
+    // --- 3. ГЛУБОКИЙ КАРЬЕР (-65М) И СПИРАЛЬНЫЙ СЕРПАНТИН ---
+    const PIT_SURFACE_Y = 0.0;
+    const PIT_BOTTOM_Y = -65.0;
+    const PIT_BOTTOM_R = 45.0;
+    const PIT_SURFACE_R = 300.0;
+    const ROAD_WIDTH = 20.0;
+    const SPIRAL_TURNS = 2.4;
+
+    function getTerrainHeight(x, z) {
+      const r = Math.hypot(x, z);
+      if (r >= PIT_SURFACE_R) return PIT_SURFACE_Y;
+      if (r <= PIT_BOTTOM_R) {
+        return PIT_BOTTOM_Y + Math.sin(x * 0.08) * Math.cos(z * 0.08) * 0.3;
+      }
+
+      const progress = (r - PIT_BOTTOM_R) / (PIT_SURFACE_R - PIT_BOTTOM_R);
+      const tiers = 6;
+      const t = progress * tiers;
+      const tIndex = Math.floor(t);
+      const tFrac = t - tIndex;
+
+      let baseH = PIT_BOTTOM_Y + (tIndex / tiers) * (PIT_SURFACE_Y - PIT_BOTTOM_Y);
+      if (tFrac < 0.45) {
+        baseH += (tFrac / 0.45) * (1 / tiers) * (PIT_SURFACE_Y - PIT_BOTTOM_Y);
+      } else {
+        baseH += (1 / tiers) * (PIT_SURFACE_Y - PIT_BOTTOM_Y);
+      }
+
+      let angle = Math.atan2(z, x);
+      if (angle < 0) angle += Math.PI * 2;
+
+      let minRoadDist = 9999;
+      let targetRoadH = baseH;
+
+      for (let turn = 0; turn < SPIRAL_TURNS; turn++) {
+        const totalAngle = angle + turn * Math.PI * 2;
+        const totalAngleMax = SPIRAL_TURNS * Math.PI * 2;
+        const roadProg = totalAngle / totalAngleMax;
+
+        if (roadProg >= 0 && roadProg <= 1.0) {
+          const roadRadius = PIT_BOTTOM_R + roadProg * (PIT_SURFACE_R - PIT_BOTTOM_R);
+          const distToRoadCenter = Math.abs(r - roadRadius);
+          if (distToRoadCenter < minRoadDist) {
+            minRoadDist = distToRoadCenter;
+            targetRoadH = PIT_BOTTOM_Y + roadProg * (PIT_SURFACE_Y - PIT_BOTTOM_Y);
+          }
+        }
+      }
+
+      if (minRoadDist < ROAD_WIDTH * 0.5) {
+        const factor = minRoadDist / (ROAD_WIDTH * 0.5);
+        const smooth = factor * factor * (3 - 2 * factor);
+        return THREE.MathUtils.lerp(targetRoadH, baseH, smooth * 0.35);
+      }
+      return baseH;
+    }
+
+    const terrainGeo = new THREE.PlaneGeometry(800, 800, 200, 200);
+    terrainGeo.rotateX(-Math.PI / 2);
+    const pPos = terrainGeo.attributes.position;
+    for (let i = 0; i < pPos.count; i++) {
+      const vx = pPos.getX(i);
+      const vz = pPos.getZ(i);
+      pPos.setY(i, getTerrainHeight(vx, vz));
+    }
+    terrainGeo.computeVertexNormals();
+    const terrain = new THREE.Mesh(terrainGeo, groundMaterial);
+    terrain.receiveShadow = true;
+    scene.add(terrain);
+
+    // Угольные насыпи на дне
+    for (let i = 0; i < 15; i++) {
+      const ang = (i / 15) * Math.PI * 2 + Math.random() * 0.3;
+      const cr = 24 + Math.random() * 16;
+      const pile = new THREE.Mesh(
+        new THREE.ConeGeometry(4 + Math.random() * 3, 4 + Math.random() * 2, 8),
+        new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.95 })
+      );
+      pile.position.set(Math.cos(ang) * cr, PIT_BOTTOM_Y + 2.0, Math.sin(ang) * cr);
+      pile.castShadow = true;
+      pile.receiveShadow = true;
+      scene.add(pile);
+    }
+
+    // --- 4. ДЕТАЛИ РЕАЛИЗМА: ВАЛЫ БЕЗОПАСНОСТИ И ОПОРЫ ЛЭП ВДОЛЬ СЕРПАНТИНА ---
+    const bermMat = new THREE.MeshStandardMaterial({ color: 0x22262e, roughness: 0.9 });
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0x2d3238, roughness: 0.7 });
+
+    const totalSteps = 120;
+    for (let i = 0; i < totalSteps; i++) {
+      const prog = i / totalSteps;
+      const angle = prog * SPIRAL_TURNS * Math.PI * 2;
+      const r = PIT_BOTTOM_R + prog * (PIT_SURFACE_R - PIT_BOTTOM_R);
+
+      // Вал безопасности с внешней стороны обрыва дороги
+      const bermR = r - (ROAD_WIDTH * 0.5 - 1.2);
+      const bx = Math.cos(angle) * bermR;
+      const bz = Math.sin(angle) * bermR;
+      const by = getTerrainHeight(bx, bz);
+
+      const bermStone = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.2, 1.8), bermMat);
+      bermStone.position.set(bx, by + 0.6, bz);
+      bermStone.rotation.y = angle + Math.PI / 2;
+      bermStone.castShadow = true;
+      scene.add(bermStone);
+
+      // Деревянно-металлические опоры карьерной ЛЭП через каждые 8 сегментов
+      if (i % 8 === 0 && i > 3) {
+        const poleR = r + (ROAD_WIDTH * 0.5 + 2.0);
+        const px = Math.cos(angle) * poleR;
+        const pz = Math.sin(angle) * poleR;
+        const py = getTerrainHeight(px, pz);
+
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.28, 9, 6), poleMat);
+        pole.position.set(px, py + 4.5, pz);
+        pole.castShadow = true;
+        scene.add(pole);
+
+        // Траверса с изоляторами
+        const cross = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.2, 0.2), poleMat);
+        cross.position.set(px, py + 8.5, pz);
+        cross.rotation.y = angle;
+        scene.add(cross);
+      }
+    }
+
+    // --- 5. ДОСКА С ФОТОГРАФИЕЙ ВОЗЛЕ СПАВНА ---
+    // URL фотографии для доски (можно вставить любую свою ссылку)
+    const BOARD_PHOTO_URL = 'https://i.postimg.cc/GhFMsFQf/image.png';
+
+    function createPhotoBoard(x, z) {
+      const boardGroup = new THREE.Group();
+      const y = getTerrainHeight(x, z);
+
+      // Две массивные стойки из швеллеров
+      const legMat = new THREE.MeshStandardMaterial({ color: 0x1f242b, metalness: 0.6, roughness: 0.4 });
+      for (let s of [-2.0, 2.0]) {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.25, 4.5, 0.25), legMat);
+        leg.position.set(s, 2.25, 0);
+        leg.castShadow = true;
+        boardGroup.add(leg);
+      }
+
+      // Рамка щита
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(4.4, 2.8, 0.15), legMat);
+      frame.position.set(0, 3.2, 0);
+      frame.castShadow = true;
+      boardGroup.add(frame);
+
+      // Загрузка фото на лицевую сторону
+      const texLoader = new THREE.TextureLoader();
+      texLoader.crossOrigin = 'anonymous';
+      const photoMat = new THREE.MeshStandardMaterial({ roughness: 0.4 });
+
+      texLoader.load(
+        BOARD_PHOTO_URL,
+        (tex) => {
+          tex.colorSpace = THREE.SRGBColorSpace;
+          photoMat.map = tex;
+          photoMat.needsUpdate = true;
+        },
+        undefined,
+        () => {
+          // Запасной визуал при ошибке сети
+          const canvas = document.createElement('canvas');
+          canvas.width = 512; canvas.height = 320;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#0f243a'; ctx.fillRect(0, 0, 512, 320);
+          ctx.fillStyle = '#ffd05c'; ctx.font = 'bold 28px sans-serif';
+          ctx.textAlign = 'center'; ctx.fillText('РАЗРЕЗ «РАСПАДСКИЙ»', 256, 160);
+          photoMat.map = new THREE.CanvasTexture(canvas);
+          photoMat.needsUpdate = true;
+        }
+      );
+
+      const photoPlane = new THREE.Mesh(new THREE.PlaneGeometry(4.1, 2.5), photoMat);
+      photoPlane.position.set(0, 3.2, 0.09);
+      boardGroup.add(photoPlane);
+
+      // Лампа подсветки щита сверху
+      const lampHolder = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.1, 0.8), legMat);
+      lampHolder.position.set(0, 4.6, 0.4);
+      boardGroup.add(lampHolder);
+
+      const lamp = new THREE.SpotLight(0xffeedd, 35, 12, Math.PI / 4, 0.4, 1.2);
+      lamp.position.set(0, 4.55, 0.7);
+      lamp.target.position.set(0, 3.0, 0.1);
+      boardGroup.add(lamp);
+      boardGroup.add(lamp.target);
+
+      boardGroup.position.set(x, y, z);
+      boardGroup.rotation.y = 0.4;
+      scene.add(boardGroup);
+    }
+    createPhotoBoard(-6, 9);
+
+    // --- 6. ТЕКСТУРЫ ТЕХНИКИ ---
+    // Козырек БелАЗа: «Распадская Коксовая 67»
+    function createVisorTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024; canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f3f6fa';
+      ctx.fillRect(0, 0, 1024, 256);
+      ctx.fillStyle = '#0b4da2';
+      ctx.fillRect(0, 0, 1024, 20);
+      ctx.fillRect(0, 236, 1024, 20);
+      ctx.font = '900 52px "Arial Black", sans-serif';
+      ctx.fillStyle = '#0b4da2';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Распадская Коксовая 67', 512, 128);
+      const t = new THREE.CanvasTexture(canvas);
+      t.needsUpdate = true;
+      return t;
+    }
+    const visorTexture = createVisorTexture();
+
+    // Экскаватор: «КУЗБАСС — ГЕРОЙ ШАХТЕРСКОГО ТРУДА»
+    function createKuzbassBannerTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024; canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#b71c1c';
+      ctx.fillRect(0, 0, 1024, 256);
+      ctx.lineWidth = 14;
+      ctx.strokeStyle = '#ffd700';
+      ctx.strokeRect(10, 10, 1004, 236);
+      ctx.font = '900 46px "Arial Black", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('КУЗБАСС — ГЕРОЙ ШАХТЕРСКОГО ТРУДА', 512, 128);
+      const t = new THREE.CanvasTexture(canvas);
+      t.needsUpdate = true;
+      return t;
+    }
+    const kuzbassBannerTexture = createKuzbassBannerTexture();
+
+    // --- 7. БЕЛАЗЫ С ВОЗМОЖНОСТЬЮ ПОКАТАТЬСЯ ---
+    const allBelazes = [];
+
+    function buildBelaz() {
+      const belaz = new THREE.Group();
+      const yellowMat = new THREE.MeshStandardMaterial({ color: 0xefa328, roughness: 0.55 });
+      const darkMetalMat = new THREE.MeshStandardMaterial({ color: 0x22252a, roughness: 0.7 });
+      const tireMat = new THREE.MeshStandardMaterial({ color: 0x16181a, roughness: 0.9 });
+      const cabMat = new THREE.MeshStandardMaterial({ color: 0xf5f7fa, roughness: 0.4 });
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0x142230, roughness: 0.1 });
+
+      const frame = new THREE.Mesh(new THREE.BoxGeometry(3.6, 1.3, 8.6), darkMetalMat);
+      frame.position.y = 1.6;
+      belaz.add(frame);
+
+      // Колеса
+      const wheelGeo = new THREE.CylinderGeometry(1.35, 1.35, 0.95, 14);
+      wheelGeo.rotateZ(Math.PI / 2);
+
+      // Передние управляемые колеса
+      const frontWheelsGroup = new THREE.Group();
+      frontWheelsGroup.position.set(0, 1.35, 2.7);
+      belaz.add(frontWheelsGroup);
+
+      const fLeft = new THREE.Mesh(wheelGeo, tireMat);
+      fLeft.position.x = -2.0; fLeft.castShadow = true; frontWheelsGroup.add(fLeft);
+      const fRight = new THREE.Mesh(wheelGeo, tireMat);
+      fRight.position.x = 2.0; fRight.castShadow = true; frontWheelsGroup.add(fRight);
+
+      // Задние спарки
+      const rearPos = [[-2.3, 1.35, -2.4], [-1.3, 1.35, -2.4], [1.3, 1.35, -2.4], [2.3, 1.35, -2.4]];
+      rearPos.forEach(p => {
+        const w = new THREE.Mesh(wheelGeo, tireMat);
+        w.position.set(...p);
+        w.castShadow = true;
+        belaz.add(w);
+      });
+
+      // Радиатор и трап
+      const radiator = new THREE.Mesh(new THREE.BoxGeometry(2.4, 2.3, 0.6), darkMetalMat);
+      radiator.position.set(0, 2.65, 4.3);
+      belaz.add(radiator);
+
+      const stair = new THREE.Mesh(new THREE.BoxGeometry(0.35, 2.5, 0.15), yellowMat);
+      stair.rotation.z = 0.55;
+      stair.position.set(-0.4, 2.6, 4.65);
+      belaz.add(stair);
+
+      // Палуба и кабина
+      const deck = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.3, 4.2), yellowMat);
+      deck.position.set(0, 3.2, 2.2);
+      belaz.add(deck);
+
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1.5, 1.6), cabMat);
+      cab.position.set(-1.2, 4.1, 2.2);
+      belaz.add(cab);
+
+      const glass = new THREE.Mesh(new THREE.BoxGeometry(1.32, 0.7, 0.1), glassMat);
+      glass.position.set(-1.2, 4.3, 3.01);
+      belaz.add(glass);
+
+      // Оранжевый проблесковый маячок на кабине
+      const beacon = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.12, 0.14, 0.2, 8),
+        new THREE.MeshBasicMaterial({ color: 0xff8800 })
+      );
+      beacon.position.set(-1.2, 4.95, 2.2);
+      belaz.add(beacon);
+
+      // Кузов и белый козырек с синей надписью
+      const dumpBody = new THREE.Group();
+      const bodyBase = new THREE.Mesh(new THREE.BoxGeometry(4.6, 1.6, 6.4), yellowMat);
+      bodyBase.position.set(0, 3.8, -1.0);
+      bodyBase.rotation.x = -0.06;
+      dumpBody.add(bodyBase);
+
+      const leftWall = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.5, 6.4), yellowMat);
+      leftWall.position.set(-2.2, 4.8, -1.0);
+      leftWall.rotation.x = -0.06;
+      dumpBody.add(leftWall);
+
+      const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1.5, 6.4), yellowMat);
+      rightWall.position.set(2.2, 4.8, -1.0);
+      rightWall.rotation.x = -0.06;
+      dumpBody.add(rightWall);
+
+      const visorGeo = new THREE.BoxGeometry(4.5, 0.85, 2.9);
+      const visorWhiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+      const visorFrontMat = new THREE.MeshStandardMaterial({ map: visorTexture, roughness: 0.4 });
+      const visorMaterials = [
+        visorWhiteMat, visorWhiteMat, visorWhiteMat, visorWhiteMat,
+        visorFrontMat, visorWhiteMat
+      ];
+      const visor = new THREE.Mesh(visorGeo, visorMaterials);
+      visor.position.set(0, 5.05, 3.0);
+      visor.rotation.x = -0.04;
+      dumpBody.add(visor);
+      belaz.add(dumpBody);
+
+      // Выхлопные трубы
+      const pipeGeo = new THREE.CylinderGeometry(0.1, 0.1, 2.2, 6);
+      for (let s of [-1.8, 1.8]) {
+        const pipe = new THREE.Mesh(pipeGeo, darkMetalMat);
+        pipe.position.set(s, 4.4, 0.2);
+        belaz.add(pipe);
+      }
+
+      // Фары
+      for (let side of [-1, 1]) {
+        const lightMesh = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 8), new THREE.MeshBasicMaterial({ color: 0xfff0d0 }));
+        lightMesh.position.set(side * 1.4, 2.05, 4.65);
+        belaz.add(lightMesh);
+
+        const headLight = new THREE.SpotLight(0xffeedd, 40, 50, Math.PI / 5, 0.5, 1.4);
+        headLight.position.set(side * 1.4, 2.05, 4.65);
+        headLight.target.position.set(side * 1.4, 0, 25);
+        belaz.add(headLight);
+        belaz.add(headLight.target);
+      }
+
+      belaz.traverse(c => {
+        if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; }
+      });
+
+      // Переменные движения машины
+      belaz.userData = {
+        speed: 0,
+        steerAngle: 0,
+        frontWheels: frontWheelsGroup,
+        beacon: beacon
+      };
+
+      allBelazes.push(belaz);
+      return belaz;
+    }
+
+    // БелАЗ #1 у спавна
+    const mainBelaz = buildBelaz();
+    mainBelaz.position.set(10, getTerrainHeight(10, -6), -6);
+    mainBelaz.rotation.y = -Math.PI / 3.8;
+    scene.add(mainBelaz);
+
+    // БелАЗы на подъеме по серпантину
+    const roadBelazes = [
+      { x: -16, z: 26, rot: 0.9 },
+      { x: 75,  z: 50, rot: 1.6 },
+      { x: -130, z: 80, rot: -0.7 },
+      { x: 190, z: -140, rot: -2.4 }
+    ];
+    roadBelazes.forEach(cfg => {
+      const b = buildBelaz();
+      b.position.set(cfg.x, getTerrainHeight(cfg.x, cfg.z), cfg.z);
+      b.rotation.y = cfg.rot;
+      scene.add(b);
+    });
+
+    // --- 8. ЭКСКАВАТОР С НАДПИСЬЮ КУЗБАСС ---
+    function buildMiningExcavator() {
+      const exc = new THREE.Group();
+      const darkMat = new THREE.MeshStandardMaterial({ color: 0x1d2024, roughness: 0.8 });
+      const blueBodyMat = new THREE.MeshStandardMaterial({ color: 0x225588, roughness: 0.6 });
+      const boomMat = new THREE.MeshStandardMaterial({ color: 0xdd8822, roughness: 0.5 });
+      const metalMat = new THREE.MeshStandardMaterial({ color: 0x444b54, metalness: 0.7, roughness: 0.3 });
+
+      for (let s of [-1.8, 1.8]) {
+        const track = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.6, 9.0), darkMat);
+        track.position.set(s, 0.8, 0);
+        exc.add(track);
+      }
+      const trackBase = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.8, 4.5), darkMat);
+      trackBase.position.set(0, 1.2, 0);
+      exc.add(trackBase);
+
+      const house = new THREE.Mesh(new THREE.BoxGeometry(5.2, 4.0, 7.5), blueBodyMat);
+      house.position.set(0, 3.6, -0.6);
+      exc.add(house);
+
+      // Баннер «КУЗБАСС — ГЕРОЙ ШАХТЕРСКОГО ТРУДА»
+      const bannerGeo = new THREE.PlaneGeometry(6.6, 1.6);
+      const bannerMat = new THREE.MeshStandardMaterial({ map: kuzbassBannerTexture, roughness: 0.4, side: THREE.DoubleSide });
+
+      const bannerRight = new THREE.Mesh(bannerGeo, bannerMat);
+      bannerRight.position.set(2.63, 4.2, -0.6);
+      bannerRight.rotation.y = Math.PI / 2;
+      exc.add(bannerRight);
+
+      const bannerLeft = new THREE.Mesh(bannerGeo, bannerMat);
+      bannerLeft.position.set(-2.63, 4.2, -0.6);
+      bannerLeft.rotation.y = -Math.PI / 2;
+      exc.add(bannerLeft);
+
+      const cab = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.8, 2.0), new THREE.MeshStandardMaterial({ color: 0xf5f7fa }));
+      cab.position.set(1.9, 5.0, 2.2);
+      exc.add(cab);
+
+      const glass = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.8, 0.1), new THREE.MeshBasicMaterial({ color: 0x102030 }));
+      glass.position.set(1.9, 5.2, 3.22);
+      exc.add(glass);
+
+      const gantry = new THREE.Mesh(new THREE.BoxGeometry(0.3, 4.5, 0.3), metalMat);
+      gantry.position.set(0, 6.8, 0); gantry.rotation.x = -0.3;
+      exc.add(gantry);
+
+      const boom = new THREE.Mesh(new THREE.BoxGeometry(1.4, 11.0, 1.4), boomMat);
+      boom.position.set(0, 6.2, 4.8); boom.rotation.x = 0.65;
+      exc.add(boom);
+
+      const stick = new THREE.Mesh(new THREE.BoxGeometry(0.8, 6.5, 0.8), metalMat);
+      stick.position.set(0, 5.0, 7.8); stick.rotation.x = -0.55;
+      exc.add(stick);
+
+      const bucket = new THREE.Mesh(new THREE.BoxGeometry(2.6, 2.2, 2.4), darkMat);
+      bucket.position.set(0, 2.2, 9.2);
+      exc.add(bucket);
+
+      for (let i = -1.0; i <= 1.0; i += 0.5) {
+        const tooth = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.6, 4), metalMat);
+        tooth.position.set(i, 1.2, 10.4); tooth.rotation.x = Math.PI / 2;
+        exc.add(tooth);
+      }
+
+      const workLight = new THREE.SpotLight(0xffeedd, 90, 60, Math.PI / 3.8, 0.5, 1.2);
+      workLight.position.set(0, 8.5, 4.0);
+      workLight.target.position.set(0, 0, 20);
+      exc.add(workLight); exc.add(workLight.target);
+
+      exc.traverse(c => {
+        if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; }
+      });
+      return exc;
+    }
+
+    const excavator = buildMiningExcavator();
+    const excX = -26, excZ = 20;
+    excavator.position.set(excX, getTerrainHeight(excX, excZ), excZ);
+    excavator.rotation.y = 0.85;
+    scene.add(excavator);
+
+    // --- 9. ПРОЖЕКТОРА С ПОВЕРХНОСТИ (0 УРОВЕНЬ) ---
+    function createSurfaceSpotlight(x, z) {
+      const tower = new THREE.Group();
+      const mastHeight = 28;
+
+      const mast = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.5, 0.9, mastHeight, 6),
+        new THREE.MeshStandardMaterial({ color: 0x303640, metalness: 0.8, roughness: 0.3 })
+      );
+      mast.position.y = mastHeight / 2;
+      tower.add(mast);
+
+      const block = new THREE.Mesh(new THREE.BoxGeometry(4.5, 1.2, 2.0), new THREE.MeshStandardMaterial({ color: 0x1d2128 }));
+      block.position.y = mastHeight;
+      tower.add(block);
+
+      const bulb = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.9, 0.2), new THREE.MeshBasicMaterial({ color: 0xf5faff }));
+      bulb.position.set(0, mastHeight, 1.0);
+      tower.add(bulb);
+
+      const spot = new THREE.SpotLight(0xdef0ff, 320, 520, Math.PI / 3.2, 0.65, 1.05);
+      spot.position.set(0, mastHeight, 0);
+      spot.target.position.set(-x * 0.9, PIT_BOTTOM_Y + 10, -z * 0.9);
+      spot.castShadow = true;
+      spot.shadow.mapSize.width = 1024;
+      spot.shadow.mapSize.height = 1024;
+      tower.add(spot); tower.add(spot.target);
+
+      const beamGeo = new THREE.ConeGeometry(55, 150, 16, 1, true);
+      beamGeo.translate(0, -75, 0); beamGeo.rotateX(0.7);
+      const beamMesh = new THREE.Mesh(beamGeo, new THREE.MeshBasicMaterial({
+        color: 0xcbe3fb, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false
+      }));
+      beamMesh.position.y = mastHeight;
+      beamMesh.lookAt(spot.target.position.x, PIT_BOTTOM_Y, spot.target.position.z);
+      tower.add(beamMesh);
+
+      tower.position.set(x, PIT_SURFACE_Y, z);
+      scene.add(tower);
+    }
+
+    for (let i = 0; i < 8; i++) {
+      const ang = (i / 8) * Math.PI * 2;
+      createSurfaceSpotlight(Math.cos(ang) * (PIT_SURFACE_R + 6), Math.sin(ang) * (PIT_SURFACE_R + 6));
+    }
+
+    // --- 10. ПАДАЮЩИЙ СНЕГ ---
+    const snowCount = 3500;
+    const snowGeo = new THREE.BufferGeometry();
+    const snowPositions = new Float32Array(snowCount * 3);
+    for (let i = 0; i < snowCount * 3; i += 3) {
+      snowPositions[i] = (Math.random() - 0.5) * 110;
+      snowPositions[i + 1] = Math.random() * 40;
+      snowPositions[i + 2] = (Math.random() - 0.5) * 110;
+    }
+    snowGeo.setAttribute('position', new THREE.BufferAttribute(snowPositions, 3));
+    const snowSystem = new THREE.Points(snowGeo, new THREE.PointsMaterial({
+      color: 0xffffff, size: 0.16, transparent: true, opacity: 0.85
+    }));
+    scene.add(snowSystem);
+
+    // --- 11. ОРАНЖЕВАЯ КАСКА ДЛЯ ПЕРСОНАЖА ---
+    function createOrangeHardHat() {
+      const hatGroup = new THREE.Group();
+      hatGroup.name = "orangeHardHat";
+
+      // Купол каски (сочный оранжевый)
+      const domeMat = new THREE.MeshStandardMaterial({ color: 0xff5500, roughness: 0.35 });
+      const domeGeo = new THREE.SphereGeometry(0.105, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+      domeGeo.scale(1.0, 0.8, 1.15);
+      const dome = new THREE.Mesh(domeGeo, domeMat);
+      dome.castShadow = true;
+      hatGroup.add(dome);
+
+      // Козырек и поля каски
+      const brimGeo = new THREE.CylinderGeometry(0.145, 0.155, 0.02, 16);
+      brimGeo.scale(1.0, 1.0, 1.18);
+      const brim = new THREE.Mesh(brimGeo, domeMat);
+      brim.position.y = 0.01;
+      hatGroup.add(brim);
+
+      // Ребро жесткости по центру
+      const rib = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.045, 0.22), domeMat);
+      rib.position.set(0, 0.08, 0);
+      hatGroup.add(rib);
+
+
+      return hatGroup;
+    }
+
+    // --- 12. ПЕРСОНАЖ (1.0 МЕТР) И ЗАГРУЗКА С https://exechack.cc/b/rusk.fbx ---
+    const playerGroup = new THREE.Group();
+    playerGroup.position.set(0, PIT_BOTTOM_Y, 0);
+    scene.add(playerGroup);
+
+    // Временная модель (если сеть недоступна)
+    function createFallbackMiner() {
+      const m = new THREE.Group();
+      const boots = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.25, 0.35), new THREE.MeshStandardMaterial({ color: 0x181a20 }));
+      boots.position.y = 0.125; m.add(boots);
+
+      const coat = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.45, 0.26), new THREE.MeshStandardMaterial({ color: 0x263238, roughness: 0.6 }));
+      coat.position.y = 0.52; m.add(coat);
+
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.39, 0.05, 0.27), new THREE.MeshBasicMaterial({ color: 0xf0f7ff }));
+      stripe.position.y = 0.52; m.add(stripe);
+
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.11, 8, 8), new THREE.MeshStandardMaterial({ color: 0xe0ab8b }));
+      head.position.y = 0.82; m.add(head);
+
+      return m;
+    }
+
+    let characterModel = createFallbackMiner();
+    playerGroup.add(characterModel);
+
+    // Надеваем оранжевую каску
+    const playerHelmet = createOrangeHardHat();
+    playerHelmet.position.set(0, 0.86, 0.01);
+    playerGroup.add(playerHelmet);
+
+    // Загрузка модели по ссылке
+    const fbxLoader = new FBXLoader();
+    fbxLoader.setCrossOrigin('anonymous');
+
+    fbxLoader.load(
+      'https://exechack.cc/b/rusk.fbx',
+      (fbx) => {
+        playerGroup.remove(characterModel);
+
+        // Масштабируем строго до 1.0 метра в высоту
+        const bbox = new THREE.Box3().setFromObject(fbx);
+        const sz = new THREE.Vector3();
+        bbox.getSize(sz);
+
+        const curH = sz.y > 0.001 ? sz.y : 1.0;
+        const scale = 1.0 / curH;
+        fbx.scale.setScalar(scale);
+
+        const updatedBox = new THREE.Box3().setFromObject(fbx);
+        fbx.position.y = -updatedBox.min.y;
+
+        fbx.traverse(node => {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+          }
+        });
+
+        playerGroup.add(fbx);
+        characterModel = fbx;
+
+        // Позиционируем каску на макушке (1 метр)
+        playerHelmet.position.set(0, 0.94, 0.02);
+      },
+      undefined,
+      (err) => {
+        console.warn('Не удалось загрузить https://exechack.cc/b/rusk.fbx (CORS / сеть). Активна резервная модель.', err);
+      }
+    );
+
+    // --- 13. УПРАВЛЕНИЕ И СИСТЕМА ЕЗДЫ НА БЕЛАЗЕ ---
+    let activeVehicle = null; // null = пешком, иначе ссылка на БелАЗ
+
+    const keys = { w: false, a: false, s: false, d: false, sprint: false, jump: false };
+
+    window.addEventListener('keydown', (e) => {
+      const c = e.code;
+      if (c === 'KeyW' || c === 'ArrowUp') keys.w = true;
+      if (c === 'KeyS' || c === 'ArrowDown') keys.s = true;
+      if (c === 'KeyA' || c === 'ArrowLeft') keys.a = true;
+      if (c === 'KeyD' || c === 'ArrowRight') keys.d = true;
+      if (c === 'ShiftLeft' || c === 'ShiftRight') keys.sprint = true;
+      if (c === 'Space') keys.jump = true;
+      if (c === 'KeyE') toggleVehicleRide();
+    });
+
+    window.addEventListener('keyup', (e) => {
+      const c = e.code;
+      if (c === 'KeyW' || c === 'ArrowUp') keys.w = false;
+      if (c === 'KeyS' || c === 'ArrowDown') keys.s = false;
+      if (c === 'KeyA' || c === 'ArrowLeft') keys.a = false;
+      if (c === 'KeyD' || c === 'ArrowRight') keys.d = false;
+      if (c === 'ShiftLeft' || c === 'ShiftRight') keys.sprint = false;
+      if (c === 'Space') keys.jump = false;
+    });
+
+    // Мобильные кнопки
+    const bindTouch = (id, keyName) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[keyName] = true; });
+      el.addEventListener('touchend', (e) => { e.preventDefault(); keys[keyName] = false; });
+    };
+    bindTouch('btn-up', 'w');
+    bindTouch('btn-down', 's');
+    bindTouch('btn-left', 'a');
+    bindTouch('btn-right', 'd');
+    bindTouch('btn-jump', 'jump');
+
+    const btnSprint = document.getElementById('btn-sprint');
+    if (btnSprint) {
+      btnSprint.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keys.sprint = !keys.sprint;
+        btnSprint.style.borderColor = keys.sprint ? '#ffd05c' : 'rgba(255,255,255,0.25)';
+      });
+    }
+
+    const btnVehicleMobile = document.getElementById('btn-vehicle-mobile');
+    if (btnVehicleMobile) {
+      btnVehicleMobile.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        toggleVehicleRide();
+      });
+    }
+
+    // Посадка / высадка из БелАЗа
+    const promptEl = document.getElementById('interact-prompt');
+
+    function toggleVehicleRide() {
+      if (activeVehicle) {
+        // Выходим из машины
+        const exitOffset = new THREE.Vector3(-4.0, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), activeVehicle.rotation.y);
+        playerGroup.position.copy(activeVehicle.position).add(exitOffset);
+        playerGroup.position.y = getTerrainHeight(playerGroup.position.x, playerGroup.position.z);
+        playerGroup.visible = true;
+        activeVehicle = null;
+        if (btnVehicleMobile) btnVehicleMobile.innerText = "🚛 БелАЗ";
+      } else {
+        // Садимся в ближайший БелАЗ
+        let nearest = null;
+        let minDist = 7.5;
+        for (let b of allBelazes) {
+          const d = b.position.distanceTo(playerGroup.position);
+          if (d < minDist) {
+            minDist = d;
+            nearest = b;
+          }
+        }
+        if (nearest) {
+          activeVehicle = nearest;
+          playerGroup.visible = false;
+          if (btnVehicleMobile) btnVehicleMobile.innerText = "🚶 Выйти";
+        }
+      }
+    }
+
+    // Камера и обзор
+    let cameraYaw = 0;
+    let cameraPitch = 0.22;
+    let isMouseDragging = false;
+
+    window.addEventListener('mousedown', (e) => {
+      if (e.button === 0 || e.button === 2) isMouseDragging = true;
+    });
+    window.addEventListener('mouseup', () => { isMouseDragging = false; });
+    window.addEventListener('contextmenu', e => e.preventDefault());
+
+    window.addEventListener('mousemove', (e) => {
+      if (isMouseDragging) {
+        cameraYaw -= e.movementX * 0.0035;
+        cameraPitch -= e.movementY * 0.0035;
+        cameraPitch = Math.max(-0.25, Math.min(1.2, cameraPitch));
+      }
+    });
+
+    let touchStartX = 0, touchStartY = 0;
+    window.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      if (touch.clientX > window.innerWidth * 0.35) {
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      }
+    }, { passive: false });
+
+    window.addEventListener('touchmove', (e) => {
+      for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        if (touch.clientX > window.innerWidth * 0.35) {
+          const dx = touch.clientX - touchStartX;
+          const dy = touch.clientY - touchStartY;
+          cameraYaw -= dx * 0.0045;
+          cameraPitch -= dy * 0.0045;
+          cameraPitch = Math.max(-0.25, Math.min(1.2, cameraPitch));
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          break;
+        }
+      }
+    }, { passive: false });
+
+    // Физика персонажа
+    let verticalVelocity = 0;
+    let isGrounded = true;
+
+    // --- 14. ОСНОВНОЙ ИГРОВОЙ ЦИКЛ ---
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.1);
+
+      // Проблесковые маячки на машинах
+      const beaconTime = clock.getElapsedTime() * 8.0;
+      allBelazes.forEach(b => {
+        b.userData.beacon.visible = Math.sin(beaconTime) > 0;
+      });
+
+      // Режим 1: УПРАВЛЕНИЕ БЕЛАЗОМ
+      if (activeVehicle) {
+        promptEl.style.display = 'block';
+        promptEl.innerText = "[ E ] Выйти из БелАЗа";
+        if (btnVehicleMobile) btnVehicleMobile.style.display = 'flex';
+
+        const uData = activeVehicle.userData;
+        const accel = 6.5;
+        const maxSpeed = 16.0;
+        const brake = 10.0;
+        const steerSpeed = 1.2;
+
+        // Газ / тормоз
+        if (keys.w) {
+          uData.speed = Math.min(uData.speed + accel * delta, maxSpeed);
+        } else if (keys.s) {
+          uData.speed = Math.max(uData.speed - accel * delta, -maxSpeed * 0.4);
+        } else {
+          // Инерция
+          if (uData.speed > 0) uData.speed = Math.max(0, uData.speed - brake * delta);
+          else if (uData.speed < 0) uData.speed = Math.min(0, uData.speed + brake * delta);
+        }
+
+        // Поворот руля
+        let targetSteer = 0;
+        if (keys.a) targetSteer += 0.45;
+        if (keys.d) targetSteer -= 0.45;
+        uData.steerAngle = THREE.MathUtils.lerp(uData.steerAngle, targetSteer, delta * 4.0);
+        uData.frontWheels.rotation.y = uData.steerAngle;
+
+        // Поворот корпуса при движении
+        if (Math.abs(uData.speed) > 0.05) {
+          activeVehicle.rotation.y += uData.steerAngle * (uData.speed / maxSpeed) * steerSpeed * delta;
+        }
+
+        // Перемещение вперед по вектору машины
+        const moveVec = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), activeVehicle.rotation.y);
+        activeVehicle.position.addScaledVector(moveVec, uData.speed * delta);
+
+        // Расчет наклона корпуса по рельефу дороги
+        const posX = activeVehicle.position.x;
+        const posZ = activeVehicle.position.z;
+        const groundCenterY = getTerrainHeight(posX, posZ);
+        activeVehicle.position.y = groundCenterY;
+
+        const frontH = getTerrainHeight(posX + moveVec.x * 3.5, posZ + moveVec.z * 3.5);
+        const backH = getTerrainHeight(posX - moveVec.x * 3.5, posZ - moveVec.z * 3.5);
+        const pitchAngle = Math.atan2(frontH - backH, 7.0);
+        activeVehicle.rotation.x = -pitchAngle;
+
+        // Камера следует за БелАЗом
+        const truckLook = activeVehicle.position.clone().add(new THREE.Vector3(0, 4.5, 0));
+        const truckCamDist = 17.0;
+        const camX = truckLook.x + Math.sin(cameraYaw) * Math.cos(cameraPitch) * truckCamDist;
+        const camY = truckLook.y + Math.sin(cameraPitch) * truckCamDist + 3.0;
+        const camZ = truckLook.z + Math.cos(cameraYaw) * Math.cos(cameraPitch) * truckCamDist;
+
+        camera.position.set(camX, Math.max(camY, groundCenterY + 1.5), camZ);
+        camera.lookAt(truckLook);
+
+      } else {
+        // Режим 2: ПЕРСОНАЖ ПЕШКОМ
+        // Проверка близости к любому БелАЗу
+        let nearBelaz = false;
+        for (let b of allBelazes) {
+          if (b.position.distanceTo(playerGroup.position) < 7.5) {
+            nearBelaz = true;
+            break;
+          }
+        }
+        if (nearBelaz) {
+          promptEl.style.display = 'block';
+          promptEl.innerText = "[ E ] Сесть в БелАЗ";
+          if (btnVehicleMobile) btnVehicleMobile.style.display = 'flex';
+        } else {
+          promptEl.style.display = 'none';
+          if (btnVehicleMobile) btnVehicleMobile.style.display = 'none';
+        }
+
+        // Движение персонажа строго туда, куда смотрит камера
+        const forwardX = -Math.sin(cameraYaw);
+        const forwardZ = -Math.cos(cameraYaw);
+        const rightX = -forwardZ;
+        const rightZ = forwardX;
+
+        let inF = 0, inS = 0;
+        if (keys.w) inF += 1;
+        if (keys.s) inF -= 1;
+        if (keys.a) inS -= 1;
+        if (keys.d) inS += 1;
+
+        const len = Math.hypot(inF, inS);
+        if (len > 0.001) {
+          const speed = keys.sprint ? 8.0 : 3.8;
+          const normF = inF / len;
+          const normS = inS / len;
+
+          const moveDirX = (forwardX * normF + rightX * normS);
+          const moveDirZ = (forwardZ * normF + rightZ * normS);
+
+          playerGroup.position.x += moveDirX * speed * delta;
+          playerGroup.position.z += moveDirZ * speed * delta;
+          playerGroup.rotation.y = Math.atan2(moveDirX, moveDirZ);
+        }
+
+        if (keys.jump && isGrounded) {
+          verticalVelocity = 6.8;
+          isGrounded = false;
+        }
+
+        verticalVelocity += -20.0 * delta;
+        playerGroup.position.y += verticalVelocity * delta;
+
+        const groundY = getTerrainHeight(playerGroup.position.x, playerGroup.position.z);
+        if (playerGroup.position.y <= groundY) {
+          playerGroup.position.y = groundY;
+          verticalVelocity = 0;
+          isGrounded = true;
+        }
+
+        // Камера третьего лица (дистанция под рост 1.0м)
+        const lookTarget = new THREE.Vector3(
+          playerGroup.position.x,
+          playerGroup.position.y + 0.9,
+          playerGroup.position.z
+        );
+
+        const charDist = 4.2;
+        const camX = lookTarget.x + Math.sin(cameraYaw) * Math.cos(cameraPitch) * charDist;
+        const camY = lookTarget.y + Math.sin(cameraPitch) * charDist;
+        const camZ = lookTarget.z + Math.cos(cameraYaw) * Math.cos(cameraPitch) * charDist;
+
+        camera.position.set(camX, Math.max(camY, groundY + 0.5), camZ);
+        camera.lookAt(lookTarget);
+      }
+
+      // Падающий снег вокруг фокуса
+      const focusPos = activeVehicle ? activeVehicle.position : playerGroup.position;
+      const sPos = snowGeo.attributes.position.array;
+      for (let i = 0; i < snowCount * 3; i += 3) {
+        sPos[i + 1] -= delta * 3.8;
+        sPos[i] += delta * 0.45;
+
+        if (sPos[i + 1] < focusPos.y - 2.0) {
+          sPos[i] = focusPos.x + (Math.random() - 0.5) * 110;
+          sPos[i + 1] = focusPos.y + 26 + Math.random() * 10;
+          sPos[i + 2] = focusPos.z + (Math.random() - 0.5) * 110;
+        }
+      }
+      snowGeo.attributes.position.needsUpdate = true;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
