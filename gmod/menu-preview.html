@@ -3,6 +3,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <title>exechack.cc - menu preview</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -240,6 +241,213 @@
       gap: 4px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
       cursor: pointer;
+    }
+
+    /* ================= МИНИ-ИГРА GM_FLATGRASS & HL2 HUD ================= */
+    #gmod-game-container {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      background: #88c8ea;
+      overflow: hidden;
+    }
+
+    #game-webgl-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #game-esp-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    #hl2-hud {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 7;
+      font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+    }
+
+    .hl2-hud-bottom-left {
+      position: absolute;
+      left: 26px;
+      bottom: 24px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+    }
+
+    .hl2-hud-bottom-right {
+      position: absolute;
+      right: 26px;
+      bottom: 24px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+    }
+
+    .hl2-box {
+      background: rgba(0, 0, 0, 0.42);
+      border-radius: 8px;
+      padding: 6px 18px 4px 14px;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      min-width: 142px;
+      backdrop-filter: blur(2px);
+    }
+
+    .hl2-box.dimmed {
+      opacity: 0.65;
+    }
+
+    .hl2-label {
+      color: #ffb400;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.7px;
+      text-shadow: 0 0 6px rgba(255, 180, 0, 0.35);
+    }
+
+    .hl2-value {
+      color: #ffcb1f;
+      font-size: 44px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1px;
+      text-shadow: 0 0 10px rgba(255, 195, 0, 0.45);
+    }
+
+    .hl2-sub-value {
+      color: #ffcb1f;
+      font-size: 20px;
+      font-weight: 700;
+      opacity: 0.9;
+      margin-left: -6px;
+    }
+
+    .hl2-killfeed {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+    }
+
+    .hl2-kill-row {
+      background: rgba(0, 0, 0, 0.58);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: killSlideIn 0.2s ease-out;
+    }
+
+    @keyframes killSlideIn {
+      0% { transform: translateX(20px); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    .game-controls-hint {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.55);
+      color: #ececec;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      pointer-events: none;
+      line-height: 1.45;
+    }
+
+    .game-controls-hint b {
+      color: #ffcc00;
+    }
+
+    #game-pause-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 8;
+    }
+
+    .pause-card {
+      background: rgba(14, 14, 14, 0.92);
+      border: 1px solid #2b2b2b;
+      border-radius: 8px;
+      padding: 22px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75);
+      min-width: 280px;
+    }
+
+    .pause-title {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .pause-sub {
+      color: #aaaaaa;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.45;
+    }
+
+    .pause-btn {
+      width: 100%;
+      height: 34px;
+      background: #1b1b1b;
+      border: 1px solid #333333;
+      border-radius: 4px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .pause-btn:hover {
+      background: #272727;
+      border-color: #4f4f4f;
+    }
+
+    .pause-btn.primary {
+      background: #1d6eb5;
+      border-color: #2f88d6;
+    }
+
+    .pause-btn.primary:hover {
+      background: #2581d1;
     }
 
     /* ================= ОКНА ================= */
@@ -917,7 +1125,7 @@
       color: #ecff00;
     }
 
-    /* ================= CUSTOM THEME PANEL (КАК НА ФОТО 1) ================= */
+    /* ================= CUSTOM THEME PANEL ================= */
     .custom-theme-list {
       display: flex;
       flex-direction: column;
@@ -993,7 +1201,7 @@
       border-color: #444;
     }
 
-    /* ================= LIGHT THEME (КАК НА ФОТО 2) ================= */
+    /* ================= LIGHT THEME ================= */
     .theme-light .menu-window {
       background-color: #ffffff !important;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35) !important;
@@ -1024,7 +1232,7 @@
 
     .theme-light .sidebar-item.cheat-item,
     .theme-light .sidebar-item.cheat-item.active {
-      background-color: #166568 !important; /* глубокий темный тил/циан */
+      background-color: #166568 !important;
     }
 
     .theme-light .sidebar-item.cheat-item .sidebar-avatar {
@@ -1033,12 +1241,12 @@
     }
 
     .theme-light .sidebar-item.cheat-item .sidebar-text .item-title {
-      color: #8b0000 !important; /* темно-красный цвет надписи Main */
+      color: #8b0000 !important;
       font-weight: 800;
     }
 
     .theme-light .sidebar-item.cheat-item .sidebar-text .item-desc {
-      color: #8b0000 !important; /* темно-красный Loser */
+      color: #8b0000 !important;
       font-weight: 700;
     }
 
@@ -1055,7 +1263,7 @@
     }
 
     .theme-light .sidebar-item:not(.cheat-item) .sidebar-icon img {
-      filter: invert(1) brightness(0.2) contrast(1.5) !important; /* делаем белые иконки черными */
+      filter: invert(1) brightness(0.2) contrast(1.5) !important;
     }
 
     .theme-light .main-content {
@@ -1081,7 +1289,7 @@
     }
 
     .theme-light .subtab.active::after {
-      background-color: #166568 !important; /* полоска цвета морской волны */
+      background-color: #166568 !important;
       height: 3px;
     }
 
@@ -1347,7 +1555,6 @@
       pointer-events: none;
     }
 
-    /* Подвкладки */
     .aim-subpane, .main-subpane, .visuals-subpane, .misc-subpane, .lua-subpane, .target-subpane, .config-subpane, .hvh-subpane {
       display: none;
       width: 100%;
@@ -1482,7 +1689,6 @@
       flex-shrink: 0;
     }
 
-    /* Tips карточки */
     .tips-container {
       width: 100%;
       max-height: 100%;
@@ -1658,7 +1864,6 @@
       background-color: #222222;
     }
 
-    /* 3D Money Printer */
     .printer-preview-box {
       width: 220px;
       height: 160px;
@@ -1699,7 +1904,6 @@
       box-shadow: none !important;
     }
 
-    /* CHAMS ДЛЯ MONEY PRINTER - чисто белый ESP вид */
     .printer-3d.chams-active {
       background: #ffffff !important;
       border-color: #ffffff !important;
@@ -1773,7 +1977,6 @@
       border-radius: 1px;
     }
 
-    /* Font List */
     .font-list-scroll {
       width: 220px;
       height: 380px;
@@ -1915,7 +2118,6 @@
       white-space: nowrap;
     }
 
-    /* Таблицы Target */
     .target-content-box {
       width: 100%;
       height: 330px;
@@ -1973,7 +2175,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Меню Lua параметров скрипта */
     .lua-actions-panel {
       flex: 1;
       padding-left: 20px;
@@ -2013,7 +2214,6 @@
       background-color: #191919;
     }
 
-    /* Addon Disabler / File список */
     .disabler-list {
       display: flex;
       flex-direction: column;
@@ -2044,7 +2244,6 @@
       background-color: #181818;
     }
 
-    /* Встроенный редактор в Edit Addons */
     .addon-editor-container {
       width: 100%;
       height: 100%;
@@ -2086,20 +2285,20 @@
 <body>
 
   <!-- ================= GMOD MAIN MENU ФОН ================= -->
-  <div class="gmod-bg-container">
+  <div class="gmod-bg-container" id="gmod-bg-container">
     <div class="gmod-wallpaper active" id="bg-layer-1" style="background-image: url(&quot;https://wallpapercat.com/w/full/1/b/a/1179327-1920x1080-desktop-full-hd-garrys-mod-wallpaper-photo.jpg&quot;);"></div>
     <div class="gmod-wallpaper" id="bg-layer-2" style="background-image: url(&quot;https://images.alphacoders.com/557/557555.jpg&quot;);"></div>
   </div>
 
-  <div class="gmod-top-notice">You are on the x86-64 branch. Click here to find out more. ( 2067.11.9 )</div>
+  <div class="gmod-top-notice" id="gmod-top-notice">You are on the x86-64 branch. Click here to find out more. ( 2067.11.9 )</div>
 
-  <div class="gmod-header-logo">
+  <div class="gmod-header-logo" id="gmod-header-logo">
     <div class="gmod-logo-box"><span class="gmod-logo-g">g</span></div>
     <div class="gmod-logo-text">garry's mod</div>
   </div>
 
-  <div class="gmod-main-nav">
-    <div class="gmod-nav-item">Start New Game</div>
+  <div class="gmod-main-nav" id="gmod-main-nav">
+    <div class="gmod-nav-item" id="btn-start-new-game">Start New Game</div>
     <div class="gmod-nav-item">Find Multiplayer Game</div>
     <div class="gmod-nav-spacer"></div>
     <div class="gmod-nav-item">Addons</div>
@@ -2112,7 +2311,7 @@
     <div class="gmod-nav-item">Quit</div>
   </div>
 
-  <div class="gmod-news-card">
+  <div class="gmod-news-card" id="gmod-news-card">
     <img src="https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/4000/ss_3d320f333fb74413911cbc2bffae9bdda683e2ec.1920x1080.jpg?t=1776868682" alt="September 2026 Update" class="gmod-news-img" id="gmod-news-img">
     <div class="gmod-news-overlay">
       <div class="gmod-news-title">SixSeven 2067 Gmod Update</div>
@@ -2126,7 +2325,7 @@
     </div>
   </div>
 
-  <div class="gmod-bottom-toolbar">
+  <div class="gmod-bottom-toolbar" id="gmod-bottom-toolbar">
     <div class="gmod-tool-badge">2</div>
     <div class="gmod-tool-btn">⚠️ Problems</div>
     <div class="gmod-tool-btn">🎮 Games</div>
@@ -2134,12 +2333,53 @@
     <div class="gmod-tool-btn">🔨 Sandbox</div>
   </div>
 
+  <!-- ================= КОНТЕЙНЕР МИНИ-ИГРЫ GM_FLATGRASS ================= -->
+  <div id="gmod-game-container">
+    <canvas id="game-webgl-canvas"></canvas>
+    <canvas id="game-esp-canvas"></canvas>
+
+    <!-- HL2 HUD -->
+    <div id="hl2-hud">
+
+      <div class="hl2-killfeed" id="hl2-killfeed"></div>
+
+      <div class="hl2-hud-bottom-left">
+        <div class="hl2-box">
+          <span class="hl2-label">HEALTH</span>
+          <span class="hl2-value" id="hud-health-val">100</span>
+        </div>
+        <div class="hl2-box dimmed">
+          <span class="hl2-label">SUIT</span>
+          <span class="hl2-value" id="hud-suit-val">0</span>
+        </div>
+      </div>
+
+      <div class="hl2-hud-bottom-right">
+        <div class="hl2-box">
+          <span class="hl2-label">AMMO</span>
+          <span class="hl2-value" id="hud-ammo-clip">30</span>
+          <span class="hl2-sub-value" id="hud-ammo-res">90</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Пауза / Возврат в игру -->
+    <div id="game-pause-overlay">
+      <div class="pause-card">
+        <div class="pause-title">gm_flatgrass</div>
+        <button class="pause-btn primary" id="btn-resume-game">Continue</button>
+        <button class="pause-btn" id="btn-toggle-cheat-menu">Open Exechack (key DELETE)</button>
+        <button class="pause-btn" id="btn-disconnect-game">Disconnect</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= ГЛАВНОЕ ОКНО ЧИТА ================= -->
   <div class="menu-window" id="draggable-window">
     
     <div class="titlebar" id="window-titlebar">
       <span class="title" id="main-menu-title">exechack.cc</span>
-      <div class="close-btn" title="Close">
+      <div class="close-btn" id="main-menu-close-btn" title="Close">
         <svg width="14" height="14" viewBox="0 0 14 14">
           <line x1="1" y1="1" x2="13" y2="13" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"></line>
           <line x1="1" y1="13" x2="13" y2="1" stroke="#e0e0e0" stroke-width="1.8" stroke-linecap="round"></line>
@@ -2243,7 +2483,6 @@
                 </div>
                 <div class="side-subpanel" id="panel-notification"><div class="method-header-title" style="margin-bottom: 10px;">Notification</div><div class="checkbox-list"><div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Kills &amp; Deaths</span></div></div></div></div>
                 
-                <!-- ПАНЕЛЬ ВЫБОРА ТЕМЫ С ПЕРЕХОДОМ В CUSTOM И LIGHT/DARK -->
                 <div class="side-subpanel" id="panel-theme">
                   <div class="method-header-title" style="margin-bottom: 10px;">Theme</div>
                   <div class="methods-list" style="margin-bottom: 12px;">
@@ -2252,7 +2491,6 @@
                     <div class="method-item" id="theme-btn-light">Light</div>
                   </div>
                   
-                  <!-- ПАНЕЛЬ CUSTOM THEME КАК НА ФОТО 1 -->
                   <div id="custom-theme-subpanel" style="display: none; flex-direction: column;">
                     <div class="method-header-title" style="font-size: 16px;">Custom Theme</div>
                     <div class="custom-theme-list">
@@ -2324,8 +2562,8 @@
             <div class="aim-subpane active" id="aim-main">
               <div class="controls-col">
                 <div class="checkbox-list">
-                  <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Enabled</span></div></div>
-                  <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Silent</span></div></div>
+                  <div class="checkbox-row checked" id="chk-aim-enabled"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Enabled</span></div></div>
+                  <div class="checkbox-row checked" id="chk-aim-silent"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Silent</span></div></div>
                   <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Cursor Aimming</span></div></div>
                   <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Auto Fire</span></div></div>
                   <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Auto Reload</span></div></div>
@@ -2340,7 +2578,7 @@
             <div class="aim-subpane" id="aim-target">
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 270px;">
-                  <div class="slider-group"><div class="slider-title">Fov</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="180" value="90" step="1" class="custom-range" id="fovSlider" style="--percent: 50%;"></div><div class="slider-value" id="fovValue">90</div></div></div>
+                  <div class="slider-group"><div class="slider-title">Fov</div><div class="slider-row"><div class="slider-container"><input type="range" min="0" max="180" value="30" step="1" class="custom-range" id="fovSlider" style="--percent: 16.6667%;"></div><div class="slider-value" id="fovValue">30</div></div></div>
                   <div class="checkbox-list">
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Auto Wall</span></div><div class="dots-btn" data-panel="panel-autowall">..</div></div>
                     <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Disable On Kill</span></div></div>
@@ -2357,7 +2595,7 @@
               </div>
             </div>
 
-            <!-- AIMBOT ACCURACY С БОКОВЫМИ ПАНЕЛЯМИ -->
+            <!-- AIMBOT ACCURACY -->
             <div class="aim-subpane" id="aim-accuracy">
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 270px;">
@@ -2390,7 +2628,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: No Spread -->
                 <div class="side-subpanel" id="panel-aim-nospread" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 8px;">No Spread</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Method</div>
@@ -2415,7 +2652,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Hitbox Scan -->
                 <div class="side-subpanel" id="panel-aim-hitbox" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 8px;">Hitbox Scan</div>
                   <div class="checkbox-list" style="margin-bottom: 8px;">
@@ -2472,13 +2708,13 @@
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 270px;">
                   <div class="checkbox-list">
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Fov Circle</span></div><div class="dots-btn" data-panel="panel-vis-fov">..</div></div>
-                    <div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Target Snapline</span></div><div class="dots-btn" data-panel="panel-vis-snapline">..</div></div>
+                    <div class="checkbox-row checked" id="chk-vis-fov"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Fov Circle</span></div><div class="dots-btn" data-panel="panel-vis-fov">..</div></div>
+                    <div class="checkbox-row" id="chk-vis-snapline"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Target Snapline</span></div><div class="dots-btn" data-panel="panel-vis-snapline">..</div></div>
                   </div>
                 </div>
                 <div class="side-subpanel" id="panel-vis-fov">
                   <div class="method-header-title" style="margin-bottom: 8px;">Fov Circle</div>
-                  <div class="checkbox-list" style="margin-bottom: 8px;"><div class="checkbox-row"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Fill</span></div></div></div>
+                  <div class="checkbox-list" style="margin-bottom: 8px;"><div class="checkbox-row" id="chk-vis-fov-fill"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Fill</span></div></div></div>
                   <div class="color-picker-box"><div class="cp-gradient-area"></div><div class="cp-alpha-bar"></div><div class="cp-hue-bar"></div></div>
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly="">
                 </div>
@@ -2517,10 +2753,10 @@
                     <div class="checkbox-row" data-feature="dormant"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Dormant</span></div></div>
                     <div class="checkbox-row checked" data-feature="name"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Name</span></div><div class="dots-btn" data-panel="panel-vis-player-name">..</div></div>
                     <div class="checkbox-row checked" data-feature="rank"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Rank</span></div><div class="dots-btn" data-panel="panel-vis-player-rank">..</div></div>
-                    <div class="checkbox-row checked" data-feature="team"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Team</span></div><div class="dots-btn" data-panel="panel-vis-player-team">..</div></div>
+                    <div class="checkbox-row" data-feature="team"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Team</span></div><div class="dots-btn" data-panel="panel-vis-player-team">..</div></div>
                     <div class="checkbox-row" data-feature="money"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Money</span></div><div class="dots-btn" data-panel="panel-vis-player-money">..</div></div>
-                    <div class="checkbox-row checked" data-feature="weapon"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Weapon</span></div><div class="dots-btn" data-panel="panel-vis-player-weapon">..</div></div>
-                    <div class="checkbox-row checked" data-feature="health"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Health</span></div><div class="dots-btn" data-panel="panel-vis-player-health">..</div></div>
+                    <div class="checkbox-row" data-feature="weapon"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Weapon</span></div><div class="dots-btn" data-panel="panel-vis-player-weapon">..</div></div>
+                    <div class="checkbox-row" data-feature="health"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Health</span></div><div class="dots-btn" data-panel="panel-vis-player-health">..</div></div>
                     <div class="checkbox-row" data-feature="armor"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Armor</span></div><div class="dots-btn" data-panel="panel-vis-player-armor">..</div></div>
                     <div class="checkbox-row checked" data-feature="box"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Box</span></div><div class="dots-btn" data-panel="panel-vis-player-box">..</div></div>
                     <div class="checkbox-row" data-feature="chams"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Chams</span></div><div class="dots-btn" data-panel="panel-vis-player-chams">..</div></div>
@@ -2531,11 +2767,11 @@
                 <!-- Превью персонажа -->
                 <div class="preview-col" id="player-preview-col">
                   <div class="esp-text-group">
-                    <span class="esp-item-name" id="preview-name">Name</span><span class="esp-item-rank" id="preview-rank">Rank</span><span class="esp-item-team" id="preview-team">Team</span><span class="esp-item-weapon" id="preview-weapon">Weapon</span><span class="esp-item-money" id="preview-money">$100.000</span><span class="esp-item-armor" id="preview-armor">100</span>
+                    <span class="esp-item-name" id="preview-name">Name</span><span class="esp-item-rank" id="preview-rank">Rank</span><span class="esp-item-team" id="preview-team">Team</span><span class="esp-item-weapon" id="preview-weapon" style="display:none;">Weapon</span><span class="esp-item-money" id="preview-money">$100.000</span><span class="esp-item-armor" id="preview-armor">100</span>
                   </div>
                   <div class="character-wrapper">
                     <img src="https://x.exechack.cc/contents/prew.png" alt="ESP Preview Target" class="character-img" id="preview-character">
-                    <div class="esp-health-bar" id="preview-health"></div>
+                    <div class="esp-health-bar" id="preview-health" style="display:none;"></div>
                     <div class="esp-corner-box" id="preview-box"><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div></div>
                     <svg id="preview-skeleton" class="esp-skeleton" viewBox="0 0 100 200" preserveAspectRatio="none">
                       <circle cx="50" cy="22" r="5" stroke="#ffffff" stroke-width="1.8" fill="none"></circle>
@@ -2580,7 +2816,6 @@
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Rank -->
                 <div class="side-subpanel" id="panel-vis-player-rank" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Rank ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Position</div>
@@ -2594,7 +2829,6 @@
                   <input type="text" class="cp-input-rgba" value="0 34 255 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Team -->
                 <div class="side-subpanel" id="panel-vis-player-team" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Team ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Position</div>
@@ -2608,7 +2842,6 @@
                   <input type="text" class="cp-input-rgba" value="236 255 0 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Money -->
                 <div class="side-subpanel" id="panel-vis-player-money" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Money ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Position</div>
@@ -2623,7 +2856,6 @@
                   <input type="text" class="cp-input-rgba" value="0 253 0 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Weapon -->
                 <div class="side-subpanel" id="panel-vis-player-weapon" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Weapon ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Position</div>
@@ -2638,7 +2870,6 @@
                   <input type="text" class="cp-input-rgba" value="236 255 0 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Health -->
                 <div class="side-subpanel" id="panel-vis-player-health" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Health ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Display Mode</div>
@@ -2652,7 +2883,6 @@
                   <input type="text" class="cp-input-rgba" value="41 245 0 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Armor -->
                 <div class="side-subpanel" id="panel-vis-player-armor" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Armor ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Display Mode</div>
@@ -2666,12 +2896,11 @@
                   <input type="text" class="cp-input-rgba" value="7 7 209 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Box -->
                 <div class="side-subpanel" id="panel-vis-player-box" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Box ESP</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Type</div>
                   <div class="dark-select-wrapper" style="width: 175px;">
-                    <select class="dark-select"><option selected="">Corner Box</option><option>Full 2D Box</option><option>3D Bounding Box</option></select>
+                    <select class="dark-select" id="esp-box-type-select"><option selected="">Full 2D Box</option><option>Corner Box</option></select>
                   </div>
                   <div class="checkbox-list" style="margin-bottom: 8px;">
                     <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Black Outline</span></div></div>
@@ -2681,7 +2910,6 @@
                   <input type="text" class="cp-input-rgba" value="237 255 0 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Chams -->
                 <div class="side-subpanel" id="panel-vis-player-chams" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Player Chams</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Material</div>
@@ -2696,7 +2924,6 @@
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Player -> Skeleton -->
                 <div class="side-subpanel" id="panel-vis-player-skeleton" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Skeleton ESP</div>
                   <div class="slider-group">
@@ -2743,7 +2970,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Entity Name -->
                 <div class="side-subpanel" id="panel-vis-ent-name" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Entity Name</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Position</div>
@@ -2758,7 +2984,6 @@
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Entity Box -->
                 <div class="side-subpanel" id="panel-vis-ent-box" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Entity Box</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Type</div>
@@ -2772,7 +2997,6 @@
                   <input type="text" class="cp-input-rgba" value="255 255 255 255" readonly="">
                 </div>
 
-                <!-- Боковая панель: Entity Chams -->
                 <div class="side-subpanel" id="panel-vis-ent-chams" style="display: none;">
                   <div class="method-header-title" style="margin-bottom: 12px;">Entity Chams</div>
                   <div class="slider-title" style="margin-bottom: 6px;">Material</div>
@@ -2810,7 +3034,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Radar -->
                 <div class="side-subpanel" id="panel-vis-radar">
                   <div class="method-header-title" style="margin-bottom: 12px;">Radar</div>
                   <div class="slider-group">
@@ -2834,7 +3057,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Skybox Changer -->
                 <div class="side-subpanel" id="panel-vis-skybox">
                   <div class="method-header-title" style="font-size: 16px; margin-bottom: 4px;">Skybox Changer</div>
                   <div style="color: #ffffff; font-size: 11.5px; font-weight: 700; margin-bottom: 8px;">folder: garrysmod/materials/skybox/</div>
@@ -2854,7 +3076,6 @@
                   <button class="btn-action" style="width: 110px;">auto change</button>
                 </div>
 
-                <!-- Боковая панель: Field of View -->
                 <div class="side-subpanel" id="panel-vis-fov-settings">
                   <div class="method-header-title" style="margin-bottom: 12px;">Field of View</div>
                   <div class="slider-group">
@@ -2873,7 +3094,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Debug Camera -->
                 <div class="side-subpanel" id="panel-vis-debugcam">
                   <div class="method-header-title" style="margin-bottom: 12px;">Debug Camera</div>
                   <div class="key-group" style="margin-top: 0; margin-bottom: 12px;">
@@ -2893,7 +3113,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: ThirdPerson -->
                 <div class="side-subpanel" id="panel-vis-thirdperson">
                   <div class="method-header-title" style="margin-bottom: 12px;">ThirdPerson</div>
                   <div class="key-group" style="margin-top: 0; margin-bottom: 12px;">
@@ -2909,7 +3128,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Filter -->
                 <div class="side-subpanel" id="panel-vis-filter">
                   <div class="method-header-title" style="margin-bottom: 12px;">Filter</div>
                   <div class="slider-group">
@@ -2935,7 +3153,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Spectators list -->
                 <div class="side-subpanel" id="panel-vis-spectators">
                   <div class="method-header-title" style="margin-bottom: 10px;">Spectators list</div>
                   <div class="checkbox-list" style="margin-bottom: 12px;">
@@ -2970,7 +3187,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Aspect ratio -->
                 <div class="side-subpanel" id="panel-vis-aspect">
                   <div class="method-header-title" style="margin-bottom: 12px;">Aspect ratio</div>
                   <div class="slider-group">
@@ -2983,7 +3199,6 @@
                   <button class="btn-action" style="width: 90px;">Change</button>
                 </div>
 
-                <!-- Боковая панель: CrossHair -->
                 <div class="side-subpanel" id="panel-vis-crosshair">
                   <div class="method-header-title" style="margin-bottom: 10px;">CrossHair</div>
                   <div class="checkbox-list" style="margin-bottom: 10px;">
@@ -3001,7 +3216,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Out of View -->
                 <div class="side-subpanel" id="panel-vis-outofview">
                   <div class="method-header-title" style="margin-bottom: 12px;">Out of View</div>
                   <div class="slider-group">
@@ -3020,7 +3234,6 @@
                   </div>
                 </div>
 
-                <!-- Боковая панель: Info -->
                 <div class="side-subpanel" id="panel-vis-info">
                   <div class="method-header-title" style="margin-bottom: 10px;">Info</div>
                   <div class="checkbox-list styled-scroll" style="max-height: 330px; overflow-y: auto; padding-right: 4px; gap: 4px;">
@@ -3207,7 +3420,7 @@
                   <button class="btn-action" style="padding: 0 12px;">Disconnect</button>
                 </div>
                 <input type="text" class="dark-input" placeholder="" style="width: 100%; margin-bottom: 8px;">
-                <div class="logs-output-window styled-scroll">
+                <div class="logs-output-window styled-scroll" id="misc-logs-output">
                   <div class="log-line">[23:56:48] Exec killed Bot02 with #HL2_357Handgun</div>
                 </div>
               </div>
@@ -3236,7 +3449,7 @@
               <div class="general-content-layout">
                 <div class="controls-col" style="width: 260px;">
                   <div class="checkbox-list">
-                    <div class="checkbox-row checked"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Hit Sound</span></div><div class="dots-btn" data-panel="panel-hitsound">..</div></div>
+                    <div class="checkbox-row checked" id="chk-hvh-hitsound"><div class="checkbox-left"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Hit Sound</span></div><div class="dots-btn" data-panel="panel-hitsound">..</div></div>
                   </div>
                 </div>
 
@@ -3330,7 +3543,7 @@
                 </div>
                 <div class="key-group" style="margin-top: 0;">
                   <span class="key-label">Menu Key</span>
-                  <div class="key-btn" style="width: 210px;" data-key="]">]</div>
+                  <div class="key-btn" id="bind-menu-key" style="width: 210px;" data-key="]">]</div>
                 </div>
                 <div class="key-group" style="margin-top: 0;">
                   <span class="key-label">Add Friend/Entity Key</span>
@@ -3386,7 +3599,8 @@
                 <div class="target-content-box styled-scroll">
                   <div class="player-entry-row">
                     <span class="item-title" style="font-size: 13px; font-weight: 700; color: #fff;">Exec</span>
-                    <div class="checkbox-row" style="gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Friend</span></div>
+                    <div class="checkbox-row" style="gap: 8px;"><div>
+<div class="checkbox-row" style="gap: 8px;"><div class="chk-box"><svg viewBox="0 0 12 12"><path d="M2.5 6.5L5 9L9.5 3.5"></path></svg></div><span class="chk-label">Friend</span></div>
                   </div>
                 </div>
               </div>
@@ -3605,12 +3819,11 @@
 
     const layer1 = document.getElementById('bg-layer-1');
     const layer2 = document.getElementById('bg-layer-2');
-
     layer1.style.backgroundImage = `url('${BG_IMAGE_1}')`;
     layer2.style.backgroundImage = `url('${BG_IMAGE_2}')`;
 
     let activeBgIndex = 1;
-    function cycleBackgrounds() {
+    setInterval(() => {
       if (activeBgIndex === 1) {
         layer1.classList.remove('active');
         void layer2.offsetWidth;
@@ -3622,8 +3835,7 @@
         layer1.classList.add('active');
         activeBgIndex = 1;
       }
-    }
-    setInterval(cycleBackgrounds, 30000);
+    }, 30000);
 
     // ================= DRAG & DROP =================
     const menuWindow = document.getElementById('draggable-window');
@@ -3631,47 +3843,32 @@
     const lualistWindow = document.getElementById('lualist-window');
 
     let highestZ = 30;
-    function bringToFront(el) {
-      highestZ++;
-      el.style.zIndex = highestZ;
-    }
+    function bringToFront(el) { highestZ++; el.style.zIndex = highestZ; }
 
     function setupDraggable(windowEl, handleEl) {
-      let isDragging = false;
-      let dragStartX = 0, dragStartY = 0;
-      let initialLeft = 0, initialTop = 0;
-
+      let isDragging = false, dragStartX = 0, dragStartY = 0, initialLeft = 0, initialTop = 0;
       handleEl.addEventListener('mousedown', (e) => {
         if (e.target.closest('.close-btn')) return;
         bringToFront(windowEl);
-
         isDragging = true;
         dragStartX = e.clientX;
         dragStartY = e.clientY;
-
         const rect = windowEl.getBoundingClientRect();
         initialLeft = rect.left;
         initialTop = rect.top;
-
         document.querySelectorAll('iframe').forEach(f => f.style.pointerEvents = 'none');
       });
-
       window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const deltaX = e.clientX - dragStartX;
-        const deltaY = e.clientY - dragStartY;
-
-        windowEl.style.left = (initialLeft + deltaX) + 'px';
-        windowEl.style.top = (initialTop + deltaY) + 'px';
+        windowEl.style.left = (initialLeft + e.clientX - dragStartX) + 'px';
+        windowEl.style.top = (initialTop + e.clientY - dragStartY) + 'px';
       });
-
       window.addEventListener('mouseup', () => {
         if (isDragging) {
           isDragging = false;
           document.querySelectorAll('iframe').forEach(f => f.style.pointerEvents = 'auto');
         }
       });
-
       windowEl.addEventListener('mousedown', () => bringToFront(windowEl));
     }
 
@@ -3683,58 +3880,41 @@
     const btnOpenEditor = document.getElementById('btn-open-editor');
     const btnLuaEdit = document.getElementById('btn-lua-edit');
     const editorCloseBtn = document.getElementById('editor-close-btn');
-
-    function openEditorModal() {
-      editorWindow.style.display = 'flex';
-      bringToFront(editorWindow);
-    }
-
+    function openEditorModal() { editorWindow.style.display = 'flex'; bringToFront(editorWindow); }
     if (btnOpenEditor) btnOpenEditor.addEventListener('click', openEditorModal);
     if (btnLuaEdit) btnLuaEdit.addEventListener('click', openEditorModal);
     if (editorCloseBtn) editorCloseBtn.addEventListener('click', () => editorWindow.style.display = 'none');
 
     const btnOpenLuaList = document.getElementById('btn-open-lualist');
     const lualistCloseBtn = document.getElementById('lualist-close-btn');
-
     if (btnOpenLuaList) btnOpenLuaList.addEventListener('click', () => { lualistWindow.style.display = 'flex'; bringToFront(lualistWindow); });
     if (lualistCloseBtn) lualistCloseBtn.addEventListener('click', () => lualistWindow.style.display = 'none');
 
-    // ================= LUA -> MAIN =================
+    // ================= LUA -> MAIN & EDIT ADDONS =================
     const luaItems = document.querySelectorAll('#lua-items-wrapper .lua-item');
     const panelLuaActions = document.getElementById('panel-lua-actions');
     const luaSelectedTitle = document.getElementById('lua-selected-title');
-
     luaItems.forEach(item => {
       item.addEventListener('click', () => {
         luaItems.forEach(i => i.classList.remove('selected'));
         item.classList.add('selected');
-
-        const scriptName = item.dataset.luaname || item.textContent;
-        if (luaSelectedTitle) luaSelectedTitle.textContent = scriptName;
-
-        if (panelLuaActions) {
-          panelLuaActions.style.display = 'flex';
-          panelLuaActions.classList.add('open');
-        }
+        if (luaSelectedTitle) luaSelectedTitle.textContent = item.dataset.luaname || item.textContent;
+        if (panelLuaActions) { panelLuaActions.style.display = 'flex'; panelLuaActions.classList.add('open'); }
       });
     });
 
-    // ================= LUA -> EDIT ADDONS =================
     const addonsFilesList = document.querySelectorAll('#addons-files-list .disabler-item');
     const editaddonsListView = document.getElementById('editaddons-list-view');
     const editaddonsEditorView = document.getElementById('editaddons-editor-view');
     const addonEditorCurrentFile = document.getElementById('addon-editor-current-file');
     const btnBackToAddons = document.getElementById('btn-back-to-addons');
-
     addonsFilesList.forEach(item => {
       item.addEventListener('click', () => {
-        const filePath = item.dataset.path || item.textContent;
-        if (addonEditorCurrentFile) addonEditorCurrentFile.textContent = filePath;
+        if (addonEditorCurrentFile) addonEditorCurrentFile.textContent = item.dataset.path || item.textContent;
         if (editaddonsListView) editaddonsListView.style.display = 'none';
         if (editaddonsEditorView) editaddonsEditorView.style.display = 'flex';
       });
     });
-
     if (btnBackToAddons) {
       btnBackToAddons.addEventListener('click', () => {
         if (editaddonsEditorView) editaddonsEditorView.style.display = 'none';
@@ -3754,20 +3934,12 @@
       target: document.getElementById('pane-target'),
       lua: document.getElementById('pane-lua')
     };
-
     sidebarItems.forEach(item => {
       item.addEventListener('click', () => {
         sidebarItems.forEach(i => i.classList.remove('active'));
         item.classList.add('active');
-
-        const tabKey = item.dataset.tab;
-        Object.values(panes).forEach(pane => {
-          if (pane) pane.classList.remove('active');
-        });
-
-        if (panes[tabKey]) {
-          panes[tabKey].classList.add('active');
-        }
+        Object.values(panes).forEach(p => { if (p) p.classList.remove('active'); });
+        if (panes[item.dataset.tab]) panes[item.dataset.tab].classList.add('active');
       });
     });
 
@@ -3777,7 +3949,6 @@
         tab.addEventListener('click', () => {
           subtabs.forEach(t => t.classList.remove('active'));
           tab.classList.add('active');
-
           const subpaneId = tab.dataset.subpane;
           if (subpaneId) {
             const parentPane = tab.closest('.tab-pane');
@@ -3790,115 +3961,64 @@
     });
 
     // ================= БОКОВЫЕ МЕНЮ ".." =================
-    const allDotsBtns = document.querySelectorAll('.dots-btn[data-panel]');
-    allDotsBtns.forEach(btn => {
+    document.querySelectorAll('.dots-btn[data-panel]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const panelId = btn.dataset.panel;
         const targetPanel = document.getElementById(panelId);
         if (!targetPanel) return;
-
         const isCurrentlyOpen = targetPanel.classList.contains('open') || targetPanel.style.display === 'flex';
-
-        // Специальная логика для Visuals -> Player: скрываем/показываем модель персонажа
         const playerPreviewCol = document.getElementById('player-preview-col');
         const isPlayerVisPanel = panelId.startsWith('panel-vis-player-');
-
-        // Специальная логика для Visuals -> Entity: скрываем/показываем превью принтера
         const entityPreviewCol = document.getElementById('entity-preview-col');
         const isEntityVisPanel = panelId.startsWith('panel-vis-ent-');
 
         const parentLayout = btn.closest('.general-content-layout');
         if (parentLayout) {
-          parentLayout.querySelectorAll('.side-subpanel').forEach(p => {
-            p.classList.remove('open');
-            p.style.display = 'none';
-          });
+          parentLayout.querySelectorAll('.side-subpanel').forEach(p => { p.classList.remove('open'); p.style.display = 'none'; });
           parentLayout.querySelectorAll('.dots-btn').forEach(b => b.classList.remove('active'));
         }
 
         if (isPlayerVisPanel && playerPreviewCol) {
-          if (isCurrentlyOpen) {
-            targetPanel.classList.remove('open');
-            targetPanel.style.display = 'none';
-            btn.classList.remove('active');
-            playerPreviewCol.style.display = 'flex';
-          } else {
-            playerPreviewCol.style.display = 'none';
-            targetPanel.classList.add('open');
-            targetPanel.style.display = 'flex';
-            btn.classList.add('active');
-          }
+          if (isCurrentlyOpen) { targetPanel.classList.remove('open'); targetPanel.style.display = 'none'; btn.classList.remove('active'); playerPreviewCol.style.display = 'flex'; }
+          else { playerPreviewCol.style.display = 'none'; targetPanel.classList.add('open'); targetPanel.style.display = 'flex'; btn.classList.add('active'); }
           return;
         }
-
         if (isEntityVisPanel && entityPreviewCol) {
-          if (isCurrentlyOpen) {
-            targetPanel.classList.remove('open');
-            targetPanel.style.display = 'none';
-            btn.classList.remove('active');
-            entityPreviewCol.style.display = 'flex';
-          } else {
-            entityPreviewCol.style.display = 'none';
-            targetPanel.classList.add('open');
-            targetPanel.style.display = 'flex';
-            btn.classList.add('active');
-          }
+          if (isCurrentlyOpen) { targetPanel.classList.remove('open'); targetPanel.style.display = 'none'; btn.classList.remove('active'); entityPreviewCol.style.display = 'flex'; }
+          else { entityPreviewCol.style.display = 'none'; targetPanel.classList.add('open'); targetPanel.style.display = 'flex'; btn.classList.add('active'); }
           return;
         }
-
-        if (!isCurrentlyOpen) {
-          targetPanel.classList.add('open');
-          targetPanel.style.display = 'flex';
-          btn.classList.add('active');
-        }
+        if (!isCurrentlyOpen) { targetPanel.classList.add('open'); targetPanel.style.display = 'flex'; btn.classList.add('active'); }
       });
     });
 
     // ================= СЛАЙДЕРЫ =================
     function initSlider(sliderId, valueId, maxVal = 100) {
-      const slider = document.getElementById(sliderId);
-      const valText = document.getElementById(valueId);
+      const slider = document.getElementById(sliderId), valText = document.getElementById(valueId);
       if (!slider || !valText) return;
-
       function update() {
-        const min = Number(slider.min) || 0;
-        const max = Number(slider.max) || maxVal;
-        const val = Number(slider.value);
-        const percentage = ((val - min) / (max - min)) * 100;
-        slider.style.setProperty('--percent', percentage + '%');
+        const min = Number(slider.min) || 0, max = Number(slider.max) || maxVal, val = Number(slider.value);
+        slider.style.setProperty('--percent', (((val - min) / (max - min)) * 100) + '%');
         valText.textContent = val;
       }
       slider.addEventListener('input', update);
       update();
     }
-
-    // Инициализация всех слайдеров
-    initSlider('distanceSlider', 'distanceValue', 25000);
-    initSlider('entityDistSlider', 'entityDistVal', 25000);
-    initSlider('emotionX', 'emotionXVal', 100);
-    initSlider('emotionY', 'emotionYVal', 100);
-    initSlider('fovSlider', 'fovValue', 180);
-    initSlider('smoothingSlider', 'smoothingValue', 100);
-    initSlider('maxHopsSlider', 'maxHopsVal', 50);
-    initSlider('fontSizeSlider', 'fontSizeVal', 48);
-    initSlider('radarDistSlider', 'radarDistVal', 100);
-
-    initSlider('fovDesiredSlider', 'fovDesiredVal', 150);
-    initSlider('fovVmSlider', 'fovVmVal', 150);
-    initSlider('camSpeedSlider', 'camSpeedVal', 10);
-    initSlider('tpDistSlider', 'tpDistVal', 300);
-    initSlider('filterBrightSlider', 'filterBrightVal', 1);
-    initSlider('filterContrastSlider', 'filterContrastVal', 5);
-    initSlider('filterSatSlider', 'filterSatVal', 5);
-    initSlider('aspectValSlider', 'aspectValVal', 20);
-    initSlider('crosshairSizeSlider', 'crosshairSizeVal', 50);
-    initSlider('oovFovSlider', 'oovFovVal', 400);
-    initSlider('oovRadiusSlider', 'oovRadiusVal', 20);
-
-    initSlider('nospreadCompSlider', 'nospreadCompVal', 100);
-    initSlider('hitboxScaleSlider', 'hitboxScaleVal', 100);
-    initSlider('skeletonThickSlider', 'skeletonThickVal', 5);
+    [
+      ['distanceSlider', 'distanceValue', 25000], ['entityDistSlider', 'entityDistVal', 25000],
+      ['emotionX', 'emotionXVal', 100], ['emotionY', 'emotionYVal', 100],
+      ['fovSlider', 'fovValue', 180], ['smoothingSlider', 'smoothingValue', 100],
+      ['maxHopsSlider', 'maxHopsVal', 50], ['fontSizeSlider', 'fontSizeVal', 48],
+      ['radarDistSlider', 'radarDistVal', 100], ['fovDesiredSlider', 'fovDesiredVal', 150],
+      ['fovVmSlider', 'fovVmVal', 150], ['camSpeedSlider', 'camSpeedVal', 10],
+      ['tpDistSlider', 'tpDistVal', 300], ['filterBrightSlider', 'filterBrightVal', 1],
+      ['filterContrastSlider', 'filterContrastVal', 5], ['filterSatSlider', 'filterSatVal', 5],
+      ['aspectValSlider', 'aspectValVal', 20], ['crosshairSizeSlider', 'crosshairSizeVal', 50],
+      ['oovFovSlider', 'oovFovVal', 400], ['oovRadiusSlider', 'oovRadiusVal', 20],
+      ['nospreadCompSlider', 'nospreadCompVal', 100], ['hitboxScaleSlider', 'hitboxScaleVal', 100],
+      ['skeletonThickSlider', 'skeletonThickVal', 5]
+    ].forEach(s => initSlider(s[0], s[1], s[2]));
 
     // ================= ШРИФТЫ =================
     const fontItems = document.querySelectorAll('#font-items-list .font-item-row');
@@ -3907,38 +4027,26 @@
     const fontPreviewText = document.getElementById('font-preview-text');
     const fontSizeSlider = document.getElementById('fontSizeSlider');
     const fontSizeVal = document.getElementById('fontSizeVal');
-
     fontItems.forEach(item => {
       item.addEventListener('click', () => {
         fontItems.forEach(f => f.classList.remove('selected'));
         item.classList.add('selected');
-
         const fontName = item.dataset.font;
         if (fontActiveTitle) fontActiveTitle.textContent = fontName;
         if (fontPreviewText) fontPreviewText.style.fontFamily = `"${fontName}", sans-serif`;
-
         if (panelFontSettings) {
           panelFontSettings.style.display = 'flex';
           panelFontSettings.classList.add('open');
-
           if (fontSizeSlider && fontSizeVal) {
-            const min = Number(fontSizeSlider.min) || 8;
-            const max = Number(fontSizeSlider.max) || 48;
             const val = Number(fontSizeSlider.value);
-            const percentage = ((val - min) / (max - min)) * 100;
-            fontSizeSlider.style.setProperty('--percent', percentage + '%');
+            fontSizeSlider.style.setProperty('--percent', (((val - 8) / 40) * 100) + '%');
             fontSizeVal.textContent = val;
             fontPreviewText.style.fontSize = val + 'px';
           }
         }
       });
     });
-
-    if (fontSizeSlider && fontPreviewText) {
-      fontSizeSlider.addEventListener('input', (e) => {
-        fontPreviewText.style.fontSize = e.target.value + 'px';
-      });
-    }
+    if (fontSizeSlider && fontPreviewText) fontSizeSlider.addEventListener('input', e => fontPreviewText.style.fontSize = e.target.value + 'px');
 
     // ================= CONFIG -> MAIN =================
     const panelConfigParams = document.getElementById('panel-config-params');
@@ -3946,363 +4054,1569 @@
     const panelConfigCloud = document.getElementById('panel-config-cloud');
     const cfgActiveTitle = document.getElementById('cfg-active-title');
     const configContainer = document.getElementById('config-container');
-    const btnShowCreateCfg = document.getElementById('btn-show-create-cfg');
-    const btnShowCloudCfg = document.getElementById('btn-show-cloud-cfg');
-    const btnSubmitCreateCfg = document.getElementById('btn-submit-create-cfg');
-    const cfgCreateInput = document.getElementById('cfg-create-input');
-
     function hideAllConfigSidePanels() {
-      if (panelConfigParams) { panelConfigParams.style.display = 'none'; panelConfigParams.classList.remove('open'); }
-      if (panelConfigCreate) { panelConfigCreate.style.display = 'none'; panelConfigCreate.classList.remove('open'); }
-      if (panelConfigCloud) { panelConfigCloud.style.display = 'none'; panelConfigCloud.classList.remove('open'); }
+      [panelConfigParams, panelConfigCreate, panelConfigCloud].forEach(p => { if (p) { p.style.display = 'none'; p.classList.remove('open'); } });
     }
-
     function attachConfigClick(el) {
       el.addEventListener('click', () => {
         document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
         el.classList.add('selected');
-        
         hideAllConfigSidePanels();
-        const name = el.dataset.cfgname || el.textContent;
-        if (cfgActiveTitle) cfgActiveTitle.textContent = name;
-        if (panelConfigParams) {
-          panelConfigParams.style.display = 'flex';
-          panelConfigParams.classList.add('open');
-        }
+        if (cfgActiveTitle) cfgActiveTitle.textContent = el.dataset.cfgname || el.textContent;
+        if (panelConfigParams) { panelConfigParams.style.display = 'flex'; panelConfigParams.classList.add('open'); }
       });
     }
-
     document.querySelectorAll('.config-item').forEach(attachConfigClick);
+    document.getElementById('btn-show-create-cfg')?.addEventListener('click', () => {
+      hideAllConfigSidePanels();
+      document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+      if (panelConfigCreate) { panelConfigCreate.style.display = 'flex'; panelConfigCreate.classList.add('open'); }
+    });
+    document.getElementById('btn-show-cloud-cfg')?.addEventListener('click', () => {
+      hideAllConfigSidePanels();
+      document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+      if (panelConfigCloud) { panelConfigCloud.style.display = 'flex'; panelConfigCloud.classList.add('open'); }
+    });
+    document.getElementById('btn-submit-create-cfg')?.addEventListener('click', () => {
+      const inp = document.getElementById('cfg-create-input');
+      const name = inp?.value.trim();
+      if (!name || !configContainer) return;
+      const newEl = document.createElement('div');
+      newEl.className = 'config-item selected';
+      newEl.textContent = name;
+      newEl.dataset.cfgname = name;
+      document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
+      configContainer.appendChild(newEl);
+      attachConfigClick(newEl);
+      inp.value = '';
+      hideAllConfigSidePanels();
+      if (cfgActiveTitle) cfgActiveTitle.textContent = name;
+      if (panelConfigParams) { panelConfigParams.style.display = 'flex'; panelConfigParams.classList.add('open'); }
+    });
 
-    if (btnShowCreateCfg) {
-      btnShowCreateCfg.addEventListener('click', () => {
-        hideAllConfigSidePanels();
-        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
-        if (panelConfigCreate) {
-          panelConfigCreate.style.display = 'flex';
-          panelConfigCreate.classList.add('open');
-        }
-      });
-    }
-
-    if (btnShowCloudCfg) {
-      btnShowCloudCfg.addEventListener('click', () => {
-        hideAllConfigSidePanels();
-        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
-        if (panelConfigCloud) {
-          panelConfigCloud.style.display = 'flex';
-          panelConfigCloud.classList.add('open');
-        }
-      });
-    }
-
-    if (btnSubmitCreateCfg && cfgCreateInput && configContainer) {
-      btnSubmitCreateCfg.addEventListener('click', () => {
-        const name = cfgCreateInput.value.trim();
-        if (!name) return;
-        const newEl = document.createElement('div');
-        newEl.className = 'config-item selected';
-        newEl.textContent = name;
-        newEl.dataset.cfgname = name;
-        document.querySelectorAll('.config-item').forEach(c => c.classList.remove('selected'));
-        configContainer.appendChild(newEl);
-        attachConfigClick(newEl);
-        cfgCreateInput.value = '';
-
-        hideAllConfigSidePanels();
-        if (cfgActiveTitle) cfgActiveTitle.textContent = name;
-        if (panelConfigParams) {
-          panelConfigParams.style.display = 'flex';
-          panelConfigParams.classList.add('open');
-        }
-      });
-    }
-
-    // ================= SPAM =================
-    const btnAddSpam = document.getElementById('btn-add-spam');
-    const spamMsgInput = document.getElementById('spam-msg-input');
-    const spamMessagesList = document.getElementById('spam-messages-list');
-    if (btnAddSpam && spamMsgInput && spamMessagesList) {
-      btnAddSpam.addEventListener('click', () => {
-        const text = spamMsgInput.value.trim();
+    // ================= SPAM, RUN METHOD, ТЕМЫ =================
+    function setupListAdder(btnId, inputId, listId) {
+      const btn = document.getElementById(btnId), inp = document.getElementById(inputId), lst = document.getElementById(listId);
+      if (btn && inp && lst) btn.addEventListener('click', () => {
+        const text = inp.value.trim();
         if (!text) return;
-        const newRow = document.createElement('div');
-        newRow.className = 'spam-entry-row';
-        newRow.textContent = text;
-        spamMessagesList.appendChild(newRow);
-        spamMsgInput.value = '';
+        const row = document.createElement('div');
+        row.className = 'spam-entry-row';
+        row.textContent = text;
+        lst.appendChild(row);
+        inp.value = '';
       });
     }
+    setupListAdder('btn-add-spam', 'spam-msg-input', 'spam-messages-list');
+    setupListAdder('btn-add-killsay', 'killsay-msg-input', 'killsay-messages-list');
 
-    const btnAddKillsay = document.getElementById('btn-add-killsay');
-    const killsayMsgInput = document.getElementById('killsay-msg-input');
-    const killsayMessagesList = document.getElementById('killsay-messages-list');
-    if (btnAddKillsay && killsayMsgInput && killsayMessagesList) {
-      btnAddKillsay.addEventListener('click', () => {
-        const text = killsayMsgInput.value.trim();
-        if (!text) return;
-        const newRow = document.createElement('div');
-        newRow.className = 'spam-entry-row';
-        newRow.textContent = text;
-        killsayMessagesList.appendChild(newRow);
-        killsayMsgInput.value = '';
-      });
-    }
-
-    // ================= RUN METHOD =================
     const runMethodLabel = document.getElementById('run-method-label');
     const methodItems = document.querySelectorAll('#panel-run-method .method-item');
     methodItems.forEach(item => {
       item.addEventListener('click', () => {
         methodItems.forEach(m => m.classList.remove('selected'));
         item.classList.add('selected');
-        const methodName = item.dataset.method;
-        if (runMethodLabel) runMethodLabel.textContent = `Run Method (${methodName})`;
+        if (runMethodLabel) runMethodLabel.textContent = `Run Method (${item.dataset.method})`;
       });
     });
 
-    // ================= ТЕМЫ: CUSTOM, DARK, LIGHT =================
     const themeBtnCustom = document.getElementById('theme-btn-custom');
     const themeBtnDark = document.getElementById('theme-btn-dark');
     const themeBtnLight = document.getElementById('theme-btn-light');
     const customThemeSubpanel = document.getElementById('custom-theme-subpanel');
     const mainMenuTitle = document.getElementById('main-menu-title');
     const customTitleField = document.getElementById('custom-title-field');
-
-    function resetThemeButtons() {
-      [themeBtnCustom, themeBtnDark, themeBtnLight].forEach(b => b.classList.remove('selected'));
-    }
-
-    // Клик на Custom
-    if (themeBtnCustom) {
-      themeBtnCustom.addEventListener('click', () => {
-        resetThemeButtons();
-        themeBtnCustom.classList.add('selected');
-        document.body.classList.remove('theme-light');
-        if (customThemeSubpanel) customThemeSubpanel.style.display = 'flex';
-      });
-    }
-
-    // Клик на Dark
-    if (themeBtnDark) {
-      themeBtnDark.addEventListener('click', () => {
-        resetThemeButtons();
-        themeBtnDark.classList.add('selected');
-        document.body.classList.remove('theme-light');
-        if (customThemeSubpanel) customThemeSubpanel.style.display = 'none';
-      });
-    }
-
-    // Клик на Light (как на фото 2)
-    if (themeBtnLight) {
-      themeBtnLight.addEventListener('click', () => {
-        resetThemeButtons();
-        themeBtnLight.classList.add('selected');
-        document.body.classList.add('theme-light');
-        if (customThemeSubpanel) customThemeSubpanel.style.display = 'none';
-      });
-    }
-
-    // Custom Title динамическое изменение
-    if (customTitleField && mainMenuTitle) {
-      customTitleField.addEventListener('input', (e) => {
-        mainMenuTitle.textContent = e.target.value || 'exechack.cc';
-      });
-    }
-
-    // Интерактивные бейджи выбора цвета в Custom Theme
-    document.querySelectorAll('.theme-color-input').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const badge = e.target.closest('.theme-color-badge');
-        if (badge) badge.style.backgroundColor = e.target.value;
-      });
-    });
-
-    document.querySelectorAll('#panel-anim-bg .method-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.parentElement.querySelectorAll('.method-item').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      });
-    });
+    function resetThemeButtons() { [themeBtnCustom, themeBtnDark, themeBtnLight].forEach(b => b?.classList.remove('selected')); }
+    themeBtnCustom?.addEventListener('click', () => { resetThemeButtons(); themeBtnCustom.classList.add('selected'); document.body.classList.remove('theme-light'); if (customThemeSubpanel) customThemeSubpanel.style.display = 'flex'; });
+    themeBtnDark?.addEventListener('click', () => { resetThemeButtons(); themeBtnDark.classList.add('selected'); document.body.classList.remove('theme-light'); if (customThemeSubpanel) customThemeSubpanel.style.display = 'none'; });
+    themeBtnLight?.addEventListener('click', () => { resetThemeButtons(); themeBtnLight.classList.add('selected'); document.body.classList.add('theme-light'); if (customThemeSubpanel) customThemeSubpanel.style.display = 'none'; });
+    customTitleField?.addEventListener('input', e => { if (mainMenuTitle) mainMenuTitle.textContent = e.target.value || 'exechack.cc'; });
+    document.querySelectorAll('.theme-color-input').forEach(inp => inp.addEventListener('input', e => {
+      const badge = e.target.closest('.theme-color-badge');
+      if (badge) badge.style.backgroundColor = e.target.value;
+    }));
+    document.querySelectorAll('#panel-anim-bg .method-item').forEach(btn => btn.addEventListener('click', () => {
+      btn.parentElement.querySelectorAll('.method-item').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }));
 
     // ================= ЧЕКБОКСЫ & VISUALS =================
     const previewElements = {
-      name: document.getElementById('preview-name'),
-      rank: document.getElementById('preview-rank'),
-      team: document.getElementById('preview-team'),
-      weapon: document.getElementById('preview-weapon'),
-      money: document.getElementById('preview-money'),
-      armor: document.getElementById('preview-armor'),
-      health: document.getElementById('preview-health'),
-      box: document.getElementById('preview-box'),
+      name: document.getElementById('preview-name'), rank: document.getElementById('preview-rank'),
+      team: document.getElementById('preview-team'), weapon: document.getElementById('preview-weapon'),
+      money: document.getElementById('preview-money'), armor: document.getElementById('preview-armor'),
+      health: document.getElementById('preview-health'), box: document.getElementById('preview-box'),
       skeleton: document.getElementById('preview-skeleton')
     };
-
     const characterImg = document.getElementById('preview-character');
-
     document.querySelectorAll('#vis-player .checkbox-row').forEach(row => {
       row.addEventListener('click', (e) => {
         if (e.target.classList.contains('dots-btn')) return;
-
         const isChecked = row.classList.toggle('checked');
         const feature = row.dataset.feature;
-
-        if (feature === 'chams') {
-          if (characterImg) characterImg.classList.toggle('chams-active', isChecked);
-        } else if (previewElements[feature]) {
-          previewElements[feature].style.display = isChecked ? 'block' : 'none';
-        }
+        if (feature === 'chams') { if (characterImg) characterImg.classList.toggle('chams-active', isChecked); }
+        else if (previewElements[feature]) previewElements[feature].style.display = isChecked ? 'block' : 'none';
       });
     });
 
-    // MONEY PRINTER в Visuals -> Entity
     const printer3dModel = document.getElementById('printer-3d-model');
     const printerTextTop = document.getElementById('printer-text-top');
     const printerTitleHp = document.getElementById('printer-title-hp');
+    document.getElementById('ent-chk-name')?.addEventListener('click', e => {
+      if (e.target.classList.contains('dots-btn')) return;
+      const c = e.currentTarget.classList.toggle('checked');
+      if (printerTextTop) printerTextTop.style.display = c ? 'block' : 'none';
+      if (printerTitleHp) printerTitleHp.style.display = c ? 'block' : 'none';
+    });
+    document.getElementById('ent-chk-box')?.addEventListener('click', e => {
+      if (e.target.classList.contains('dots-btn')) return;
+      const c = e.currentTarget.classList.toggle('checked');
+      if (printer3dModel) printer3dModel.classList.toggle('no-box', !c);
+    });
+    document.getElementById('ent-chk-chams')?.addEventListener('click', e => {
+      if (e.target.classList.contains('dots-btn')) return;
+      const c = e.currentTarget.classList.toggle('checked');
+      if (printer3dModel) printer3dModel.classList.toggle('chams-active', c);
+    });
 
-    const entChkName = document.getElementById('ent-chk-name');
-    const entChkBox = document.getElementById('ent-chk-box');
-    const entChkChams = document.getElementById('ent-chk-chams');
-
-    if (entChkName) {
-      entChkName.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dots-btn')) return;
-        const isChecked = entChkName.classList.toggle('checked');
-        if (printerTextTop) printerTextTop.style.display = isChecked ? 'block' : 'none';
-        if (printerTitleHp) printerTitleHp.style.display = isChecked ? 'block' : 'none';
-      });
-    }
-
-    if (entChkBox) {
-      entChkBox.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dots-btn')) return;
-        const isChecked = entChkBox.classList.toggle('checked');
-        if (printer3dModel) printer3dModel.classList.toggle('no-box', !isChecked);
-      });
-    }
-
-    if (entChkChams) {
-      entChkChams.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dots-btn')) return;
-        const isChecked = entChkChams.classList.toggle('checked');
-        if (printer3dModel) printer3dModel.classList.toggle('chams-active', isChecked);
-      });
-    }
-
-    // Все остальные чекбоксы
     document.querySelectorAll('.checkbox-row:not(#vis-player .checkbox-row):not(#ent-chk-name):not(#ent-chk-box):not(#ent-chk-chams)').forEach(row => {
       row.addEventListener('click', (e) => {
         if (e.target.classList.contains('dots-btn')) return;
         row.classList.toggle('checked');
       });
     });
-
-    document.querySelectorAll('.target-show').forEach(item => {
-      item.addEventListener('click', () => item.classList.toggle('checked'));
-    });
+    document.querySelectorAll('.target-show').forEach(item => item.addEventListener('click', () => item.classList.toggle('checked')));
 
     // ================= КЛАВИШИ =================
     const keyButtons = document.querySelectorAll('.key-btn');
     let listeningBtn = null;
-
-    keyButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (listeningBtn && listeningBtn !== btn) {
-          listeningBtn.textContent = listeningBtn.dataset.key;
-          listeningBtn.classList.remove('listening');
-        }
-        listeningBtn = btn;
-        btn.classList.add('listening');
-        btn.textContent = '[PRESS KEY]';
-      });
-    });
-
-    window.addEventListener('keydown', (e) => {
+    keyButtons.forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (listeningBtn && listeningBtn !== btn) { listeningBtn.textContent = listeningBtn.dataset.key; listeningBtn.classList.remove('listening'); }
+      listeningBtn = btn;
+      btn.classList.add('listening');
+      btn.textContent = '[PRESS KEY]';
+    }));
+    window.addEventListener('keydown', e => {
       if (listeningBtn) {
         e.preventDefault();
-        if (e.key === 'Escape') {
-          listeningBtn.textContent = 'NONE';
-          listeningBtn.dataset.key = 'NONE';
-        } else {
-          let keyName = e.key.toUpperCase();
-          if (keyName === ' ') keyName = 'SPACE';
-          listeningBtn.textContent = keyName;
-          listeningBtn.dataset.key = keyName;
-        }
+        let k = e.key === 'Escape' ? 'NONE' : (e.key === ' ' ? 'SPACE' : e.key.toUpperCase());
+        listeningBtn.textContent = k; listeningBtn.dataset.key = k;
         listeningBtn.classList.remove('listening');
         listeningBtn = null;
       }
     });
-
-    window.addEventListener('mousedown', (e) => {
+    window.addEventListener('mousedown', e => {
       if (listeningBtn) {
         if (e.target === listeningBtn && listeningBtn.textContent === '[PRESS KEY]') return;
-        let mouseKey = null;
-        if (e.button === 1) mouseKey = 'MOUSE3';
-        else if (e.button === 2) mouseKey = 'MOUSE2';
-        else if (e.button === 3) mouseKey = 'MOUSE4';
-        else if (e.button === 4) mouseKey = 'MOUSE5';
-
-        if (mouseKey) {
-          listeningBtn.textContent = mouseKey;
-          listeningBtn.dataset.key = mouseKey;
+        const map = { 1: 'MOUSE3', 2: 'MOUSE2', 3: 'MOUSE4', 4: 'MOUSE5' };
+        if (map[e.button]) {
+          listeningBtn.textContent = map[e.button]; listeningBtn.dataset.key = map[e.button];
           listeningBtn.classList.remove('listening');
           listeningBtn = null;
         }
       }
     });
 
-    // ================= MISC БАН/КИК =================
+    // ================= MISC & ПОИСКИ =================
     const kickBtn = document.getElementById('btn-kick-ban');
-    if (kickBtn) {
-      kickBtn.addEventListener('click', () => {
-        const origText = kickBtn.textContent;
-        kickBtn.textContent = 'Disconnect: Kicked by Server';
-        kickBtn.style.borderColor = '#ff4444';
-        setTimeout(() => {
-          kickBtn.textContent = origText;
-          kickBtn.style.borderColor = '#242424';
-        }, 1400);
-      });
-    }
+    kickBtn?.addEventListener('click', () => {
+      const orig = kickBtn.textContent;
+      kickBtn.textContent = 'Disconnect: Kicked by Server';
+      kickBtn.style.borderColor = '#ff4444';
+      setTimeout(() => { kickBtn.textContent = orig; kickBtn.style.borderColor = '#242424'; }, 1400);
+    });
+    document.getElementById('target-search-input')?.addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('#target-entity-list .target-row').forEach(r => r.style.display = r.dataset.name.toLowerCase().includes(q) ? 'flex' : 'none');
+    });
+    document.getElementById('net-search-input')?.addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('#net-items-container .net-entry-row').forEach(r => r.style.display = r.querySelector('.net-name').textContent.toLowerCase().includes(q) ? 'flex' : 'none');
+    });
+    document.getElementById('lua-search-input')?.addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.lua-item').forEach(i => i.style.display = i.textContent.toLowerCase().includes(q) ? 'flex' : 'none');
+    });
 
-    // ================= ПОИСК TARGET ENTITY =================
-    const targetSearch = document.getElementById('target-search-input');
-    const targetRows = document.querySelectorAll('#target-entity-list .target-row');
-    if (targetSearch) {
-      targetSearch.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        targetRows.forEach(row => {
-          const name = row.dataset.name.toLowerCase();
-          row.style.display = name.includes(query) ? 'flex' : 'none';
-        });
-      });
-    }
+    // =========================================================================
+    // ================= 3D МИНИ-ИГРА GM_FLATGRASS (THREE.JS) ===================
+    // =========================================================================
+    (function () {
+      const gmodMenuEls = [
+        'gmod-bg-container', 'gmod-top-notice', 'gmod-header-logo',
+        'gmod-main-nav', 'gmod-news-card', 'gmod-bottom-toolbar'
+      ].map(id => document.getElementById(id));
 
-    // ================= ПОИСК TARGET NET =================
-    const netSearch = document.getElementById('net-search-input');
-    const netRows = document.querySelectorAll('#net-items-container .net-entry-row');
-    if (netSearch) {
-      netSearch.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        netRows.forEach(row => {
-          const name = row.querySelector('.net-name').textContent.toLowerCase();
-          row.style.display = name.includes(query) ? 'flex' : 'none';
-        });
-      });
-    }
+      const gameContainer = document.getElementById('gmod-game-container');
+      const webglCanvas = document.getElementById('game-webgl-canvas');
+      const espCanvas = document.getElementById('game-esp-canvas');
+      const espCtx = espCanvas.getContext('2d');
+      const pauseOverlay = document.getElementById('game-pause-overlay');
+      const killfeedEl = document.getElementById('hl2-killfeed');
+      const hudClipEl = document.getElementById('hud-ammo-clip');
+      const hudResEl = document.getElementById('hud-ammo-res');
 
-    // ================= ПОИСК LUA =================
-    const luaSearch = document.getElementById('lua-search-input');
-    if (luaSearch) {
-      luaSearch.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        document.querySelectorAll('.lua-item').forEach(item => {
-          item.style.display = item.textContent.toLowerCase().includes(query) ? 'flex' : 'none';
+      let gameActive = false;
+      let gameInitialized = false;
+      let cheatMenuOpenInGame = false;
+      let renderer, scene, camera, animFrameId;
+      let akGroup, akMuzzleFlash;
+      let bots = [];
+      let tracers = [];
+      let audioCtx = null;
+
+      const player = {
+        pos: new THREE.Vector3(0, 1.75, 24),
+        vel: new THREE.Vector3(0, 0, 0),
+        yaw: 0,
+        pitch: 0,
+        onGround: true,
+        noclip: false,
+        clip: 30,
+        reserve: 90,
+        reloading: false,
+        reloadTimer: 0,
+        fireCooldown: 0,
+        recoilPitch: 0,
+        recoilKickZ: 0,
+        bobPhase: 0,
+        mouseDown: false
+      };
+
+      const keys = {};
+
+      // Синхронизация состояния чита с вашим меню exechack.cc
+      function getCheatState() {
+        const isChecked = (sel) => {
+          const el = document.querySelector(sel);
+          return el ? el.classList.contains('checked') : false;
+        };
+        return {
+          aimEnabled: isChecked('#chk-aim-enabled'),
+          aimSilent: isChecked('#chk-aim-silent'),
+          aimFov: Number(document.getElementById('fovSlider')?.value ?? 30),
+          fovCircle: isChecked('#chk-vis-fov'),
+          fovFill: isChecked('#chk-vis-fov-fill'),
+          snapline: isChecked('#chk-vis-snapline'),
+          espName: isChecked('#vis-player .checkbox-row[data-feature="name"]'),
+          espBox: isChecked('#vis-player .checkbox-row[data-feature="box"]'),
+          espHealth: isChecked('#vis-player .checkbox-row[data-feature="health"]'),
+          espWeapon: isChecked('#vis-player .checkbox-row[data-feature="weapon"]'),
+          espSkeleton: isChecked('#vis-player .checkbox-row[data-feature="skeleton"]'),
+          espChams: isChecked('#vis-player .checkbox-row[data-feature="chams"]'),
+          boxType: document.getElementById('esp-box-type-select')?.value || 'Full 2D Box',
+          hitSound: isChecked('#chk-hvh-hitsound')
+        };
+      }
+
+      // ---- Web Audio API: звук выстрела АК-47 и Hit Sound ----
+      function ensureAudio() {
+        if (!audioCtx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) audioCtx = new AC();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      }
+
+      function playAKShotSound() {
+        ensureAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        const dur = 0.14;
+        const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.032));
+        }
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buf;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1100, now);
+        filter.frequency.exponentialRampToValueAtTime(240, now + dur);
+        filter.Q.value = 0.8;
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+        noise.connect(filter).connect(gain).connect(audioCtx.destination);
+        noise.start(now);
+
+        const osc = audioCtx.createOscillator();
+        const oscGain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(165, now);
+        osc.frequency.exponentialRampToValueAtTime(42, now + 0.09);
+        oscGain.gain.setValueAtTime(0.35, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(oscGain).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.095);
+      }
+
+      function playHitSound() {
+        ensureAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1320, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.11);
+        g.gain.setValueAtTime(0.22, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.connect(g).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.13);
+      }
+
+      // ---- Процедурные текстуры ----
+      function makeGrassTexture() {
+        const c = document.createElement('canvas');
+        c.width = 256; c.height = 256;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#5c7c2c';
+        ctx.fillRect(0, 0, 256, 256);
+        for (let i = 0; i < 6500; i++) {
+          const x = Math.random() * 256, y = Math.random() * 256;
+          const v = Math.random();
+          ctx.fillStyle = v > 0.65 ? '#6d8e38' : (v > 0.3 ? '#4f6d24' : '#73953d');
+          ctx.fillRect(x, y, 2, 2 + Math.random() * 2);
+        }
+        const tex = new THREE.CanvasTexture(c);
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(95, 95);
+        return tex;
+      }
+
+function makeBrickTexture() {
+        const c = document.createElement('canvas');
+        c.width = 256; c.height = 256;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#5b3a2e';
+        ctx.fillRect(0, 0, 256, 256);
+        const rows = 12, cols = 6;
+        const bh = 256 / rows, bw = 256 / cols;
+        for (let r = 0; r < rows; r++) {
+          const offset = (r % 2) * (bw * 0.5);
+          for (let col = -1; col <= cols; col++) {
+            const shade = (Math.random() - 0.5) * 16;
+            ctx.fillStyle = `rgb(${102 + shade}, ${65 + shade * 0.6}, ${52 + shade * 0.5})`;
+            ctx.fillRect(col * bw + offset + 1.5, r * bh + 1.5, bw - 3, bh - 3);
+          }
+        }
+        const tex = new THREE.CanvasTexture(c);
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(0.32, 0.35);
+        return tex;
+      }
+
+      function makeConcreteTopTexture() {
+        const c = document.createElement('canvas');
+        c.width = 256; c.height = 256;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#c4c5be';
+        ctx.fillRect(0, 0, 256, 256);
+        for (let i = 0; i < 4000; i++) {
+          const g = 175 + Math.floor(Math.random() * 40);
+          ctx.fillStyle = `rgb(${g},${g},${g - 4})`;
+          ctx.fillRect(Math.random() * 256, Math.random() * 256, 2, 2);
+        }
+        ctx.strokeStyle = 'rgba(130, 132, 126, 0.35)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i <= 256; i += 64) {
+          ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 256); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(256, i); ctx.stroke();
+        }
+        const tex = new THREE.CanvasTexture(c);
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(0.16, 0.16);
+        return tex;
+      }
+
+      function makeKleinerFaceTexture() {
+        const c = document.createElement('canvas');
+        c.width = 128; c.height = 128;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#e7bca1';
+        ctx.fillRect(0, 0, 128, 128);
+        // Седые волосы по бокам/на висках
+        ctx.fillStyle = '#c9cbcf';
+        ctx.fillRect(0, 22, 20, 48);
+        ctx.fillRect(108, 22, 20, 48);
+        // Брови
+        ctx.fillStyle = '#9aa0a6';
+        ctx.fillRect(28, 42, 24, 5);
+        ctx.fillRect(76, 42, 24, 5);
+        // Глаза
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(32, 52, 18, 10);
+        ctx.fillRect(78, 52, 18, 10);
+        ctx.fillStyle = '#2d4a5e';
+        ctx.fillRect(38, 54, 7, 7);
+        ctx.fillRect(83, 54, 7, 7);
+        // Оправа круглых очков
+        ctx.strokeStyle = '#1f2328';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(41, 57, 13, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(87, 57, 13, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(54, 56); ctx.lineTo(74, 56); ctx.stroke();
+        // Нос и рот
+        ctx.fillStyle = '#d39f83';
+        ctx.fillRect(60, 62, 8, 18);
+        ctx.fillStyle = '#8b5e4d';
+        ctx.fillRect(50, 92, 28, 4);
+        return new THREE.CanvasTexture(c);
+      }
+
+      function makeKleinerCoatTexture() {
+        const c = document.createElement('canvas');
+        c.width = 128; c.height = 128;
+        const ctx = c.getContext('2d');
+        // Белый халат учёного
+        ctx.fillStyle = '#eceef1';
+        ctx.fillRect(0, 0, 128, 128);
+        // V-вырез с голубой рубашкой и галстуком
+        ctx.fillStyle = '#4e7999';
+        ctx.beginPath();
+        ctx.moveTo(42, 0); ctx.lineTo(86, 0); ctx.lineTo(64, 54);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#25323d';
+        ctx.beginPath();
+        ctx.moveTo(59, 6); ctx.lineTo(69, 6); ctx.lineTo(67, 46); ctx.lineTo(64, 52); ctx.lineTo(61, 46);
+        ctx.closePath(); ctx.fill();
+        // Лацканы халата и пуговицы
+        ctx.strokeStyle = '#c8cdd4';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(42, 0); ctx.lineTo(64, 54); ctx.lineTo(86, 0); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(64, 54); ctx.lineTo(64, 128); ctx.stroke();
+        ctx.fillStyle = '#8f96a0';
+        ctx.fillRect(14, 78, 28, 30);
+        ctx.fillRect(86, 78, 28, 30);
+        return new THREE.CanvasTexture(c);
+      }
+
+      // ---- Построение карты gm_flatgrass ----
+      function createRoundedRectShape(w, h, r) {
+        const s = new THREE.Shape();
+        const x = -w / 2, y = -h / 2;
+        s.moveTo(x + r, y);
+        s.lineTo(x + w - r, y);
+        s.quadraticCurveTo(x + w, y, x + w, y + r);
+        s.lineTo(x + w, y + h - r);
+        s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        s.lineTo(x + r, y + h);
+        s.quadraticCurveTo(x, y + h, x, y + h - r);
+        s.lineTo(x, y + r);
+        s.quadraticCurveTo(x, y, x + r, y);
+        return s;
+      }
+
+      function buildFlatgrassMap() {
+        // Небо-сфера с градиентом
+        const skyCanvas = document.createElement('canvas');
+        skyCanvas.width = 16; skyCanvas.height = 256;
+        const sctx = skyCanvas.getContext('2d');
+        const grad = sctx.createLinearGradient(0, 0, 0, 256);
+        grad.addColorStop(0.0, '#4ca2db');
+        grad.addColorStop(0.45, '#89c9eb');
+        grad.addColorStop(0.62, '#c8e9f8');
+        grad.addColorStop(1.0, '#c8e9f8');
+        sctx.fillStyle = grad;
+        sctx.fillRect(0, 0, 16, 256);
+        const skyTex = new THREE.CanvasTexture(skyCanvas);
+        const skyDome = new THREE.Mesh(
+          new THREE.SphereGeometry(290, 24, 16),
+          new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false })
+        );
+        scene.add(skyDome);
+
+        // Бескрайнее травяное поле
+        const ground = new THREE.Mesh(
+          new THREE.PlaneGeometry(340, 340),
+          new THREE.MeshLambertMaterial({ map: makeGrassTexture() })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Далёкие холмы по горизонту (как на скриншоте gm_flatgrass)
+        const hillMat = new THREE.MeshLambertMaterial({ color: 0x526e2d, flatShading: true });
+        const hillGeo = new THREE.RingGeometry(132, 200, 64, 5);
+        hillGeo.rotateX(-Math.PI / 2);
+        const posAttr = hillGeo.attributes.position;
+        for (let i = 0; i < posAttr.count; i++) {
+          const x = posAttr.getX(i), z = posAttr.getZ(i);
+          const dist = Math.hypot(x, z);
+          if (dist > 136 && dist < 194) {
+            const ang = Math.atan2(z, x);
+            const t = Math.sin(((dist - 136) / 58) * Math.PI);
+            const h = (Math.sin(ang * 5) * 3.5 + Math.cos(ang * 9) * 2.5 + 7.5) * t;
+            posAttr.setY(i, Math.max(0, h));
+          }
+        }
+        hillGeo.computeVertexNormals();
+        scene.add(new THREE.Mesh(hillGeo, hillMat));
+
+        // Центральная платформа gm_flatgrass (26x26, скруглённые углы, кирпич + туннель)
+// Центральная постройка gm_flatgrass (64x64 м, высота 15 м, скруглённые углы, туннель 22 м)
+        const platformGroup = new THREE.Group();
+        const brickMat = new THREE.MeshLambertMaterial({ map: makeBrickTexture() });
+        const trimMat = new THREE.MeshLambertMaterial({ color: 0x26292c });
+        const baseTrimMat = new THREE.MeshLambertMaterial({ color: 0x8d8f8b });
+        const topMat = new THREE.MeshLambertMaterial({ map: makeConcreteTopTexture() });
+        const innerConcreteMat = new THREE.MeshLambertMaterial({ color: 0x9c9e98 });
+
+        const HALF = 32.0;       // полуширина постройки (всего 64x64 м)
+        const TUNNEL_HW = 11.0;  // полуширина туннеля (всего 22 м)
+        const WALL_H = 13.8;     // высота кирпичной части
+        const TOP_Y = 15.0;      // общая высота крыши (15 м)
+
+        // Верхняя бетонная плита крыши (от 13.8 до 15.0 м, слегка нависает)
+        const topShape = createRoundedRectShape(HALF * 2 + 1.4, HALF * 2 + 1.4, 9.5);
+        const topGeo = new THREE.ExtrudeGeometry(topShape, { depth: TOP_Y - WALL_H, bevelEnabled: false, curveSegments: 14 });
+        topGeo.rotateX(Math.PI / 2);
+        const topMesh = new THREE.Mesh(topGeo, topMat);
+        topMesh.position.y = TOP_Y;
+        topMesh.castShadow = true;
+        topMesh.receiveShadow = true;
+        platformGroup.add(topMesh);
+
+        // Левая и правая кирпичные опоры (по сторонам от туннеля)
+        function createPierShape(sideSign) {
+          const s = new THREE.Shape();
+          const ix = sideSign * TUNNEL_HW;
+          const ox = sideSign * HALF;
+          const r = 9.0;
+          const hz = HALF;
+          if (sideSign < 0) {
+            s.moveTo(ix, -hz);
+            s.lineTo(ox + r, -hz);
+            s.quadraticCurveTo(ox, -hz, ox, -hz + r);
+            s.lineTo(ox, hz - r);
+            s.quadraticCurveTo(ox, hz, ox + r, hz);
+            s.lineTo(ix, hz);
+            s.closePath();
+          } else {
+            s.moveTo(ix, -hz);
+            s.lineTo(ox - r, -hz);
+            s.quadraticCurveTo(ox, -hz, ox, -hz + r);
+            s.lineTo(ox, hz - r);
+            s.quadraticCurveTo(ox, hz, ox - r, hz);
+            s.lineTo(ix, hz);
+            s.closePath();
+          }
+          return s;
+        }
+
+        [-1, 1].forEach(side => {
+          const pierShape = createPierShape(side);
+
+          // Основная кирпичная опора
+          const pierGeo = new THREE.ExtrudeGeometry(pierShape, { depth: WALL_H, bevelEnabled: false, curveSegments: 14 });
+          pierGeo.rotateX(-Math.PI / 2);
+          const pierMesh = new THREE.Mesh(pierGeo, brickMat);
+          pierMesh.castShadow = true;
+          pierMesh.receiveShadow = true;
+          platformGroup.add(pierMesh);
+
+          // Тёмный поясок посередине стены (~6.8 м)
+          const midGeo = new THREE.ExtrudeGeometry(pierShape, { depth: 0.65, bevelEnabled: false, curveSegments: 14 });
+          midGeo.rotateX(-Math.PI / 2);
+          const midMesh = new THREE.Mesh(midGeo, trimMat);
+          midMesh.scale.set(1.006, 1, 1.006);
+          midMesh.position.y = 6.6;
+          platformGroup.add(midMesh);
+
+          // Серый каменный цоколь у земли
+          const baseGeo = new THREE.ExtrudeGeometry(pierShape, { depth: 0.85, bevelEnabled: false, curveSegments: 14 });
+          baseGeo.rotateX(-Math.PI / 2);
+          const baseMesh = new THREE.Mesh(baseGeo, baseTrimMat);
+          baseMesh.scale.set(1.008, 1, 1.008);
+          platformGroup.add(baseMesh);
         });
+
+        // Арочный пролёт над туннелем (высота свода до ~9.2 м, верх до 13.8 м)
+        const archShape = new THREE.Shape();
+        archShape.moveTo(-(TUNNEL_HW + 0.05), 6.5);
+        archShape.quadraticCurveTo(-(TUNNEL_HW - 0.5), 9.2, -5.5, 9.2);
+        archShape.lineTo(5.5, 9.2);
+        archShape.quadraticCurveTo(TUNNEL_HW - 0.5, 9.2, TUNNEL_HW + 0.05, 6.5);
+        archShape.lineTo(TUNNEL_HW + 0.05, WALL_H);
+        archShape.lineTo(-(TUNNEL_HW + 0.05), WALL_H);
+        archShape.closePath();
+
+        const archGeo = new THREE.ExtrudeGeometry(archShape, { depth: HALF * 2, bevelEnabled: false, curveSegments: 14 });
+        archGeo.translate(0, 0, -HALF);
+        const archMesh = new THREE.Mesh(archGeo, brickMat);
+        archMesh.castShadow = true;
+        archMesh.receiveShadow = true;
+        platformGroup.add(archMesh);
+
+        // Пол внутри туннеля
+        const tunnelFloor = new THREE.Mesh(new THREE.PlaneGeometry(TUNNEL_HW * 2, HALF * 2), innerConcreteMat);
+        tunnelFloor.rotation.x = -Math.PI / 2;
+        tunnelFloor.position.y = 0.02;
+        tunnelFloor.receiveShadow = true;
+        platformGroup.add(tunnelFloor);
+
+        scene.add(platformGroup);
+      }
+
+      // ---- 3D-модель игрока АК-47 (Viewmodel) ----
+      function buildAK47Viewmodel() {
+        const g = new THREE.Group();
+        const woodMat = new THREE.MeshLambertMaterial({ color: 0x8b451c });
+        const metalMat = new THREE.MeshLambertMaterial({ color: 0x25282c });
+        const darkMetalMat = new THREE.MeshLambertMaterial({ color: 0x16181b });
+
+        // Приклад
+        const stock = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.085, 0.28), woodMat);
+        stock.position.set(0, -0.025, 0.24);
+        stock.rotation.x = 0.12;
+        g.add(stock);
+
+        // Ствольная коробка
+        const receiver = new THREE.Mesh(new THREE.BoxGeometry(0.058, 0.08, 0.30), metalMat);
+        receiver.position.set(0, 0, 0);
+        g.add(receiver);
+
+        // Рукоятка
+        const grip = new THREE.Mesh(new THREE.BoxGeometry(0.042, 0.11, 0.05), woodMat);
+        grip.position.set(0, -0.08, 0.08);
+        grip.rotation.x = -0.28;
+        g.add(grip);
+
+        // Изогнутый рожок (магазин)
+        const mag1 = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.12, 0.065), darkMetalMat);
+        mag1.position.set(0, -0.09, -0.05);
+        mag1.rotation.x = 0.25;
+        g.add(mag1);
+        const mag2 = new THREE.Mesh(new THREE.BoxGeometry(0.038, 0.11, 0.06), darkMetalMat);
+        mag2.position.set(0, -0.18, -0.085);
+        mag2.rotation.x = 0.5;
+        g.add(mag2);
+
+        // Деревянное цевьё
+        const handguard = new THREE.Mesh(new THREE.BoxGeometry(0.056, 0.068, 0.22), woodMat);
+        handguard.position.set(0, 0.005, -0.25);
+        g.add(handguard);
+
+        // Газовая трубка и ствол
+        const gasTube = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.22, 8), metalMat);
+        gasTube.rotation.x = Math.PI / 2;
+        gasTube.position.set(0, 0.042, -0.24);
+        g.add(gasTube);
+
+        const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.013, 0.44, 8), darkMetalMat);
+        barrel.rotation.x = Math.PI / 2;
+        barrel.position.set(0, 0.015, -0.44);
+        g.add(barrel);
+
+        // Мушка
+        const frontSight = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.042, 0.02), darkMetalMat);
+        frontSight.position.set(0, 0.04, -0.60);
+        g.add(frontSight);
+
+        // Вспышка выстрела
+        akMuzzleFlash = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.07, 0),
+          new THREE.MeshBasicMaterial({ color: 0xffd54f, transparent: true, opacity: 0.9 })
+        );
+        akMuzzleFlash.position.set(0, 0.015, -0.68);
+        akMuzzleFlash.visible = false;
+        g.add(akMuzzleFlash);
+
+        g.position.set(0.28, -0.24, -0.46);
+        g.rotation.y = 0.04;
+        camera.add(g);
+        akGroup = g;
+      }
+
+      // ---- Создание бота Айзека Кляйнера с монтировкой ----
+      const sharedKleinerFaceTex = makeKleinerFaceTexture();
+      const sharedKleinerCoatTex = makeKleinerCoatTexture();
+
+      function createKleinerBot(botName, startX, startZ) {
+        const root = new THREE.Group();
+        const normalMaterials = [];
+        const chamsMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        function trackMat(mat) { normalMaterials.push(mat); return mat; }
+
+        const skinMat = trackMat(new THREE.MeshLambertMaterial({ color: 0xe7bca1 }));
+        const faceMat = trackMat(new THREE.MeshLambertMaterial({ map: sharedKleinerFaceTex }));
+        const coatMat = trackMat(new THREE.MeshLambertMaterial({ color: 0xeceef1 }));
+        const chestMat = trackMat(new THREE.MeshLambertMaterial({ map: sharedKleinerCoatTex }));
+        const pantsMat = trackMat(new THREE.MeshLambertMaterial({ color: 0x3b4048 }));
+        const shoeMat = trackMat(new THREE.MeshLambertMaterial({ color: 0x1e1b18 }));
+        const hairMat = trackMat(new THREE.MeshLambertMaterial({ color: 0xc9cbcf }));
+        const glassesMat = trackMat(new THREE.MeshLambertMaterial({ color: 0x1a1c20 }));
+        const crowbarRedMat = trackMat(new THREE.MeshLambertMaterial({ color: 0xb91c1c }));
+        const crowbarMetalMat = trackMat(new THREE.MeshLambertMaterial({ color: 0xd1d5db }));
+
+        const bodyMeshes = [];
+        function addPart(parent, geo, mat, x, y, z, rx = 0, ry = 0, rz = 0) {
+          const m = new THREE.Mesh(geo, mat);
+          m.position.set(x, y, z);
+          m.rotation.set(rx, ry, rz);
+          m.castShadow = true;
+          m.userData.normalMat = mat;
+          bodyMeshes.push(m);
+          parent.add(m);
+          return m;
+        }
+
+        // Ноги
+        const leftLegPivot = new THREE.Group();
+        leftLegPivot.position.set(-0.13, 0.82, 0);
+        addPart(leftLegPivot, new THREE.BoxGeometry(0.19, 0.72, 0.21), pantsMat, 0, -0.36, 0);
+        addPart(leftLegPivot, new THREE.BoxGeometry(0.20, 0.12, 0.29), shoeMat, 0, -0.76, 0.04);
+        root.add(leftLegPivot);
+
+        const rightLegPivot = new THREE.Group();
+        rightLegPivot.position.set(0.13, 0.82, 0);
+        addPart(rightLegPivot, new THREE.BoxGeometry(0.19, 0.72, 0.21), pantsMat, 0, -0.36, 0);
+        addPart(rightLegPivot, new THREE.BoxGeometry(0.20, 0.12, 0.29), shoeMat, 0, -0.76, 0.04);
+        root.add(rightLegPivot);
+
+        // Торс (белый халат с рубашкой и галстуком спереди)
+        const torsoMats = [coatMat, coatMat, coatMat, coatMat, chestMat, coatMat];
+        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.72, 0.28), torsoMats);
+        torso.position.set(0, 1.18, 0);
+        torso.castShadow = true;
+        torso.userData.normalMat = torsoMats;
+        bodyMeshes.push(torso);
+        root.add(torso);
+
+        // Полы халата
+        addPart(root, new THREE.BoxGeometry(0.56, 0.24, 0.29), coatMat, 0, 0.74, 0);
+
+        // Левая рука
+        const leftArmPivot = new THREE.Group();
+        leftArmPivot.position.set(-0.36, 1.50, 0);
+        addPart(leftArmPivot, new THREE.BoxGeometry(0.16, 0.56, 0.17), coatMat, 0, -0.28, 0);
+        addPart(leftArmPivot, new THREE.BoxGeometry(0.13, 0.14, 0.13), skinMat, 0, -0.60, 0);
+        root.add(leftArmPivot);
+
+        // Правая рука + МОНТИРОВКА (Crowbar)
+        const rightArmPivot = new THREE.Group();
+        rightArmPivot.position.set(0.36, 1.50, 0);
+        addPart(rightArmPivot, new THREE.BoxGeometry(0.16, 0.56, 0.17), coatMat, 0, -0.28, 0);
+        addPart(rightArmPivot, new THREE.BoxGeometry(0.13, 0.14, 0.13), skinMat, 0, -0.60, 0);
+
+        const crowbar = new THREE.Group();
+        crowbar.position.set(0, -0.62, 0.14);
+        crowbar.rotation.x = 1.18;
+        addPart(crowbar, new THREE.BoxGeometry(0.04, 0.56, 0.04), crowbarRedMat, 0, 0.10, 0);
+        // Изогнутый крюк монтировки
+        addPart(crowbar, new THREE.BoxGeometry(0.042, 0.12, 0.045), crowbarMetalMat, 0, 0.41, -0.03, -0.65, 0, 0);
+        addPart(crowbar, new THREE.BoxGeometry(0.042, 0.09, 0.038), crowbarMetalMat, 0, 0.45, -0.10, -1.45, 0, 0);
+        addPart(crowbar, new THREE.BoxGeometry(0.042, 0.10, 0.036), crowbarMetalMat, 0, -0.21, 0.02, 0.45, 0, 0);
+        rightArmPivot.add(crowbar);
+        root.add(rightArmPivot);
+
+        // Голова Айзека Кляйнера (лысина + седой венец волос + 3D очки)
+        const headGroup = new THREE.Group();
+        headGroup.position.set(0, 1.72, 0);
+        const headMats = [skinMat, skinMat, skinMat, skinMat, faceMat, hairMat];
+        const headMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.36, 0.32), headMats);
+        headMesh.castShadow = true;
+        headMesh.userData.normalMat = headMats;
+        bodyMeshes.push(headMesh);
+        headGroup.add(headMesh);
+
+        // Окантовка седых волос сзади и по бокам
+        addPart(headGroup, new THREE.BoxGeometry(0.34, 0.15, 0.16), hairMat, 0, -0.02, -0.09);
+        // Выступающая оправа очков
+        addPart(headGroup, new THREE.BoxGeometry(0.11, 0.09, 0.02), glassesMat, -0.07, 0.01, 0.165);
+        addPart(headGroup, new THREE.BoxGeometry(0.11, 0.09, 0.02), glassesMat, 0.07, 0.01, 0.165);
+        addPart(headGroup, new THREE.BoxGeometry(0.06, 0.02, 0.02), glassesMat, 0, 0.02, 0.168);
+        root.add(headGroup);
+
+        root.position.set(startX, 0, startZ);
+        scene.add(root);
+
+        return {
+          name: botName,
+          root,
+          headGroup,
+          leftLegPivot,
+          rightLegPivot,
+          leftArmPivot,
+          rightArmPivot,
+          bodyMeshes,
+          chamsMat,
+          usingChams: false,
+          alive: true,
+          hp: 100,
+          deathTimer: 0,
+          respawnTimer: 0,
+          walkPhase: Math.random() * 6,
+          speed: 2.8 + Math.random() * 0.8,
+          target: pickRandomPoint(),
+          waitTimer: 0
+        };
+      }
+
+function isBlockedByPlatform(x, z, margin = 0.8) {
+        const inZ = Math.abs(z) < 32.0 + margin;
+        if (!inZ) return false;
+        const inLeftPier = x > -32.0 - margin && x < -11.0 + margin;
+        const inRightPier = x > 11.0 - margin && x < 32.0 + margin;
+        return inLeftPier || inRightPier;
+      }
+
+      function pickRandomPoint() {
+        for (let i = 0; i < 25; i++) {
+          const x = (Math.random() - 0.5) * 110;
+          const z = (Math.random() - 0.5) * 110;
+          if (!isBlockedByPlatform(x, z, 1.5)) return new THREE.Vector3(x, 0, z);
+        }
+        return new THREE.Vector3(0, 0, 42);
+      }
+
+      // ---- Инициализация сцены ----
+      function initGameScene() {
+        if (gameInitialized) return;
+        gameInitialized = true;
+
+        renderer = new THREE.WebGLRenderer({ canvas: webglCanvas, antialias: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x88c8ea);
+        scene.fog = new THREE.Fog(0xb6dff2, 85, 225);
+
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 400);
+        camera.rotation.order = 'YXZ';
+        scene.add(camera);
+
+        // Освещение как на gm_flatgrass
+        const hemi = new THREE.HemisphereLight(0xdff4ff, 0x4b6326, 0.85);
+        scene.add(hemi);
+
+        const dirLight = new THREE.DirectionalLight(0xfff8e6, 0.9);
+        dirLight.position.set(45, 70, 35);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.set(1024, 1024);
+        dirLight.shadow.camera.near = 5;
+        dirLight.shadow.camera.far = 180;
+		dirLight.shadow.camera.left = -65;
+        dirLight.shadow.camera.right = 65;
+        dirLight.shadow.camera.top = 65;
+        dirLight.shadow.camera.bottom = -65;
+        scene.add(dirLight);
+
+        buildFlatgrassMap();
+        buildAK47Viewmodel();
+
+        bots = [
+          createKleinerBot('Bot1', -9, 40),
+          createKleinerBot('Bot2', 10, 38)
+        ];
+
+        window.addEventListener('resize', onResize);
+        onResize();
+      }
+
+      function onResize() {
+        if (!renderer || !camera) return;
+        const w = window.innerWidth, h = window.innerHeight;
+        renderer.setSize(w, h);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        espCanvas.width = w;
+        espCanvas.height = h;
+      }
+
+      // ---- Киллфид и логи ----
+      function pushKillfeed(botName) {
+        const row = document.createElement('div');
+        row.className = 'hl2-kill-row';
+        row.innerHTML = `<span style="color:#66b3ff">You</span> <span style="color:#ffcc00">[AK-47]</span> <span style="color:#ff6666">${botName}</span>`;
+        killfeedEl.appendChild(row);
+        while (killfeedEl.children.length > 5) killfeedEl.firstChild.remove();
+        setTimeout(() => row.remove(), 4000);
+
+        const logsWin = document.getElementById('misc-logs-output');
+        if (logsWin) {
+          const line = document.createElement('div');
+          line.className = 'log-line';
+          const d = new Date().toTimeString().slice(0, 8);
+          line.textContent = `[${d}] You killed ${botName} with #weapon_ak47 (Silent Aimbot)`;
+          logsWin.appendChild(line);
+          logsWin.scrollTop = logsWin.scrollHeight;
+        }
+      }
+
+      // ---- Трассер пули ----
+      function spawnTracer(startWorld, endWorld) {
+        const geo = new THREE.BufferGeometry().setFromPoints([startWorld, endWorld]);
+        const mat = new THREE.LineBasicMaterial({ color: 0xffe066, transparent: true, opacity: 0.95 });
+        const line = new THREE.Line(geo, mat);
+        scene.add(line);
+        tracers.push({ line, life: 0.16 });
+      }
+
+      // ---- Стрельба и Aimbot FOV check ----
+      function getAimbotCircleRadiusPx(fovDeg, screenHeight) {
+        const camFovRad = THREE.MathUtils.degToRad(camera.fov);
+        const halfAimRad = THREE.MathUtils.degToRad(Math.max(0.5, fovDeg) * 0.5);
+        return (Math.tan(halfAimRad) / Math.tan(camFovRad * 0.5)) * (screenHeight * 0.5);
+      }
+
+      const _projVec = new THREE.Vector3();
+      const _camDir = new THREE.Vector3();
+      const _toTarget = new THREE.Vector3();
+
+      function projectToScreen(worldPos, w, h) {
+        _projVec.copy(worldPos).project(camera);
+        if (_projVec.z > 1) return null;
+        return {
+          x: (_projVec.x * 0.5 + 0.5) * w,
+          y: (-_projVec.y * 0.5 + 0.5) * h
+        };
+      }
+
+      function computeBotScreenBox(bot, w, h) {
+        const pos = bot.root.position;
+        camera.getWorldDirection(_camDir);
+        _toTarget.set(pos.x, pos.y + 1.0, pos.z).sub(camera.position);
+        if (_toTarget.dot(_camDir) <= 0.1) return null;
+
+        const hw = 0.36, hd = 0.32, ht = 2.02;
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        let validCount = 0;
+
+        for (let dx of [-hw, hw]) {
+          for (let dy of [0, ht]) {
+            for (let dz of [-hd, hd]) {
+              const p = projectToScreen(new THREE.Vector3(pos.x + dx, pos.y + dy, pos.z + dz), w, h);
+              if (p) {
+                validCount++;
+                if (p.x < minX) minX = p.x;
+                if (p.y < minY) minY = p.y;
+                if (p.x > maxX) maxX = p.x;
+                if (p.y > maxY) maxY = p.y;
+              }
+            }
+          }
+        }
+        if (validCount < 2) return null;
+
+        const headWorld = new THREE.Vector3(pos.x, pos.y + 1.72, pos.z);
+        const headScr = projectToScreen(headWorld, w, h);
+        return { minX, minY, maxX, maxY, headWorld, headScr };
+      }
+
+      function findBotInAimbotFov(cheat, w, h) {
+        const cx = w * 0.5, cy = h * 0.5;
+        const radiusPx = getAimbotCircleRadiusPx(cheat.aimFov, h);
+        let best = null;
+        let bestDist = Infinity;
+
+        for (const bot of bots) {
+          if (!bot.alive) continue;
+          const box = computeBotScreenBox(bot, w, h);
+          if (!box) continue;
+
+          // Ближайшая точка на 2D боксе или голове к центру экрана
+          const nearX = Math.max(box.minX, Math.min(cx, box.maxX));
+          const nearY = Math.max(box.minY, Math.min(cy, box.maxY));
+          let dist = Math.hypot(nearX - cx, nearY - cy);
+          if (box.headScr) {
+            dist = Math.min(dist, Math.hypot(box.headScr.x - cx, box.headScr.y - cy));
+          }
+
+          if (dist <= radiusPx && dist < bestDist) {
+            bestDist = dist;
+            best = { bot, box, dist };
+          }
+        }
+        return best;
+      }
+
+      function killBot(bot) {
+        if (!bot.alive) return;
+        bot.alive = false;
+        bot.hp = 0;
+        bot.deathTimer = 0.55;
+        bot.respawnTimer = 1.25;
+        pushKillfeed(bot.name);
+      }
+
+      function fireAK47() {
+        if (player.reloading || player.fireCooldown > 0) return;
+        if (player.clip <= 0) {
+          startReload();
+          return;
+        }
+
+        player.clip--;
+        hudClipEl.textContent = player.clip;
+        player.fireCooldown = 0.11;
+        player.recoilPitch = Math.min(0.06, player.recoilPitch + 0.018);
+        player.recoilKickZ = 0.075;
+
+        akMuzzleFlash.visible = true;
+        akMuzzleFlash.rotation.z = Math.random() * Math.PI;
+        setTimeout(() => { if (akMuzzleFlash) akMuzzleFlash.visible = false; }, 45);
+        playAKShotSound();
+
+        const muzzleWorld = new THREE.Vector3();
+        akMuzzleFlash.getWorldPosition(muzzleWorld);
+
+        const cheat = getCheatState();
+        const w = espCanvas.width, h = espCanvas.height;
+
+        if (cheat.aimEnabled) {
+          const targetInfo = findBotInAimbotFov(cheat, w, h);
+          if (targetInfo) {
+            spawnTracer(muzzleWorld, targetInfo.box.headWorld);
+            if (cheat.hitSound) playHitSound();
+            killBot(targetInfo.bot);
+            if (player.clip === 0) startReload();
+            return;
+          }
+        }
+
+        // Обычный выстрел (если Aimbot выключен или бот вне FOV)
+        const dir = new THREE.Vector3();
+        camera.getWorldDirection(dir);
+        const endPoint = camera.position.clone().addScaledVector(dir, 140);
+
+        if (!cheat.aimEnabled) {
+          const ray = new THREE.Ray(camera.position, dir);
+          for (const bot of bots) {
+            if (!bot.alive) continue;
+            const center = new THREE.Vector3(bot.root.position.x, bot.root.position.y + 1.1, bot.root.position.z);
+            if (ray.distanceToPoint(center) < 0.65) {
+              spawnTracer(muzzleWorld, center);
+              if (cheat.hitSound) playHitSound();
+              killBot(bot);
+              if (player.clip === 0) startReload();
+              return;
+            }
+          }
+        }
+        spawnTracer(muzzleWorld, endPoint);
+        if (player.clip === 0) startReload();
+      }
+
+      function startReload() {
+        if (player.reloading || player.clip === 30) return;
+        player.reloading = true;
+        player.reloadTimer = 0.9;
+      }
+
+      // ---- Физика и столкновения игрока ----
+function getPlatformFloorHeight(x, z, curFeetY) {
+        if (Math.abs(x) <= 32.7 && Math.abs(z) <= 32.7 && curFeetY >= 14.5) {
+          return 15.0;
+        }
+        return 0;
+      }
+
+      function resolvePlayerCollision(pos) {
+        const r = 0.5;
+        const feetY = pos.y - 1.75;
+
+        pos.x = THREE.MathUtils.clamp(pos.x, -125, 125);
+        pos.z = THREE.MathUtils.clamp(pos.z, -125, 125);
+
+        if (feetY < 14.5) {
+          const piers = [
+            { minX: -32.0 - r, maxX: -11.0 + r, minZ: -32.0 - r, maxZ: 32.0 + r },
+            { minX: 11.0 - r, maxX: 32.0 + r, minZ: -32.0 - r, maxZ: 32.0 + r }
+          ];
+          for (const p of piers) {
+            if (pos.x > p.minX && pos.x < p.maxX && pos.z > p.minZ && pos.z < p.maxZ) {
+              const dl = Math.abs(pos.x - p.minX);
+              const dr = Math.abs(p.maxX - pos.x);
+              const df = Math.abs(pos.z - p.minZ);
+              const db = Math.abs(p.maxZ - pos.z);
+              const m = Math.min(dl, dr, df, db);
+              if (m === dl) pos.x = p.minX;
+              else if (m === dr) pos.x = p.maxX;
+              else if (m === df) pos.z = p.minZ;
+              else pos.z = p.maxZ;
+            }
+          }
+          // Потолок внутри туннеля
+          if (Math.abs(pos.x) < 11.0 && Math.abs(pos.z) < 32.2 && pos.y > 7.5) {
+            pos.y = 7.5;
+            if (player.vel.y > 0) player.vel.y = 0;
+          }
+        }
+      }
+
+      function resolvePlayerCollision(pos) {
+        const r = 0.5;
+        const feetY = pos.y - 1.75;
+
+        // Границы карты
+        pos.x = THREE.MathUtils.clamp(pos.x, -125, 125);
+        pos.z = THREE.MathUtils.clamp(pos.z, -125, 125);
+
+        if (feetY < 4.4) {
+          // Левая опора [-13..-4.6, -13..13] и правая [4.6..13, -13..13]
+          const piers = [
+            { minX: -13 - r, maxX: -4.6 + r, minZ: -13 - r, maxZ: 13 + r },
+            { minX: 4.6 - r, maxX: 13 + r, minZ: -13 - r, maxZ: 13 + r }
+          ];
+          for (const p of piers) {
+            if (pos.x > p.minX && pos.x < p.maxX && pos.z > p.minZ && pos.z < p.maxZ) {
+              const dl = Math.abs(pos.x - p.minX);
+              const dr = Math.abs(p.maxX - pos.x);
+              const df = Math.abs(pos.z - p.minZ);
+              const db = Math.abs(p.maxZ - pos.z);
+              const m = Math.min(dl, dr, df, db);
+              if (m === dl) pos.x = p.minX;
+              else if (m === dr) pos.x = p.maxX;
+              else if (m === df) pos.z = p.minZ;
+              else pos.z = p.maxZ;
+            }
+          }
+          // Потолок внутри туннеля
+          if (Math.abs(pos.x) < 4.6 && Math.abs(pos.z) < 13.2 && pos.y > 3.0) {
+            pos.y = 3.0;
+            if (player.vel.y > 0) player.vel.y = 0;
+          }
+        }
+      }
+
+      // ---- Обновление ботов ----
+      function updateBots(dt, cheat) {
+        for (const bot of bots) {
+          // Chams синхронизация
+          if (bot.usingChams !== cheat.espChams) {
+            bot.usingChams = cheat.espChams;
+            for (const m of bot.bodyMeshes) {
+              m.material = cheat.espChams ? bot.chamsMat : m.userData.normalMat;
+            }
+          }
+
+          if (!bot.alive) {
+            if (bot.deathTimer > 0) {
+              bot.deathTimer -= dt;
+              const p = 1 - Math.max(0, bot.deathTimer / 0.55);
+              bot.root.rotation.x = -p * (Math.PI / 2);
+              bot.root.position.y = Math.max(0.15, (1 - p) * 0.25);
+            } else {
+              bot.root.visible = false;
+              bot.respawnTimer -= dt;
+              if (bot.respawnTimer <= 0) {
+                const spawn = pickRandomPoint();
+                bot.root.position.copy(spawn);
+                bot.root.rotation.set(0, Math.random() * Math.PI * 2, 0);
+                bot.root.visible = true;
+                bot.alive = true;
+                bot.hp = 100;
+                bot.target = pickRandomPoint();
+              }
+            }
+            continue;
+          }
+
+          if (bot.waitTimer > 0) {
+            bot.waitTimer -= dt;
+            bot.leftLegPivot.rotation.x *= 0.85;
+            bot.rightLegPivot.rotation.x *= 0.85;
+            bot.leftArmPivot.rotation.x *= 0.85;
+            bot.rightArmPivot.rotation.x *= 0.85;
+            continue;
+          }
+
+          const dx = bot.target.x - bot.root.position.x;
+          const dz = bot.target.z - bot.root.position.z;
+          const dist = Math.hypot(dx, dz);
+
+          if (dist < 1.2) {
+            bot.target = pickRandomPoint();
+            bot.waitTimer = 0.3 + Math.random() * 1.1;
+            continue;
+          }
+
+          const dirX = dx / dist, dirZ = dz / dist;
+          const nextX = bot.root.position.x + dirX * bot.speed * dt;
+          const nextZ = bot.root.position.z + dirZ * bot.speed * dt;
+
+          if (isBlockedByPlatform(nextX, nextZ, 0.7)) {
+            bot.target = pickRandomPoint();
+            continue;
+          }
+
+          bot.root.position.x = nextX;
+          bot.root.position.z = nextZ;
+
+          const desiredYaw = Math.atan2(dirX, dirZ);
+          let diff = desiredYaw - bot.root.rotation.y;
+          while (diff > Math.PI) diff -= Math.PI * 2;
+          while (diff < -Math.PI) diff += Math.PI * 2;
+          bot.root.rotation.y += diff * Math.min(1, dt * 8);
+
+          bot.walkPhase += dt * bot.speed * 3.1;
+          const swing = Math.sin(bot.walkPhase) * 0.65;
+          bot.leftLegPivot.rotation.x = swing;
+          bot.rightLegPivot.rotation.x = -swing;
+          bot.leftArmPivot.rotation.x = -swing * 0.7;
+          bot.rightArmPivot.rotation.x = swing * 0.5 - 0.35;
+        }
+      }
+
+      // ---- Отрисовка 2D ESP (Box + Player Name) и FOV-круга ----
+      function drawESPAndFov(cheat) {
+        const w = espCanvas.width, h = espCanvas.height;
+        espCtx.clearRect(0, 0, w, h);
+
+        const cx = w * 0.5, cy = h * 0.5;
+        const radiusPx = getAimbotCircleRadiusPx(cheat.aimFov, h);
+        const activeTarget = cheat.aimEnabled ? findBotInAimbotFov(cheat, w, h) : null;
+
+        // ESP на каждом боте
+        for (const bot of bots) {
+          if (!bot.alive) continue;
+          const b = computeBotScreenBox(bot, w, h);
+          if (!b) continue;
+
+          const bw = Math.max(18, b.maxX - b.minX);
+          const bh = Math.max(36, b.maxY - b.minY);
+          const bx = Math.round(b.minX) + 0.5;
+          const by = Math.round(b.minY) + 0.5;
+
+          // Box ESP
+          if (cheat.espBox) {
+            if (cheat.boxType === 'Corner Box') {
+              const cw = bw * 0.28, ch = bh * 0.22;
+              const drawCorners = (color, lw) => {
+                espCtx.strokeStyle = color;
+                espCtx.lineWidth = lw;
+                espCtx.beginPath();
+                espCtx.moveTo(bx, by + ch); espCtx.lineTo(bx, by); espCtx.lineTo(bx + cw, by);
+                espCtx.moveTo(bx + bw - cw, by); espCtx.lineTo(bx + bw, by); espCtx.lineTo(bx + bw, by + ch);
+                espCtx.moveTo(bx, by + bh - ch); espCtx.lineTo(bx, by + bh); espCtx.lineTo(bx + cw, by + bh);
+                espCtx.moveTo(bx + bw - cw, by + bh); espCtx.lineTo(bx + bw, by + bh); espCtx.lineTo(bx + bw, by + bh - ch);
+                espCtx.stroke();
+              };
+              drawCorners('#000000', 3);
+              drawCorners('#edff00', 1.4);
+            } else {
+              espCtx.strokeStyle = '#000000';
+              espCtx.lineWidth = 3;
+              espCtx.strokeRect(bx, by, bw, bh);
+              espCtx.strokeStyle = '#edff00';
+              espCtx.lineWidth = 1.2;
+              espCtx.strokeRect(bx, by, bw, bh);
+            }
+          }
+
+          // Player Name ESP
+          if (cheat.espName) {
+            espCtx.font = 'bold 12px Tahoma, Segoe UI, sans-serif';
+            espCtx.textAlign = 'center';
+            espCtx.lineWidth = 3;
+            espCtx.strokeStyle = '#000000';
+            espCtx.strokeText(bot.name, bx + bw * 0.5, by - 6);
+            espCtx.fillStyle = '#ffffff';
+            espCtx.fillText(bot.name, bx + bw * 0.5, by - 6);
+          }
+
+          // Health bar (если включен в меню)
+          if (cheat.espHealth) {
+            espCtx.fillStyle = '#000000';
+            espCtx.fillRect(bx - 7, by - 1, 4, bh + 2);
+            espCtx.fillStyle = '#29f500';
+            espCtx.fillRect(bx - 6, by, 2, bh * (bot.hp / 100));
+          }
+
+          // Weapon text (если включен в меню)
+          if (cheat.espWeapon) {
+            espCtx.font = 'bold 11px Tahoma, Segoe UI, sans-serif';
+            espCtx.textAlign = 'center';
+            espCtx.lineWidth = 3;
+            espCtx.strokeStyle = '#000000';
+            espCtx.strokeText('weapon_crowbar', bx + bw * 0.5, by + bh + 13);
+            espCtx.fillStyle = '#ecff00';
+            espCtx.fillText('weapon_crowbar', bx + bw * 0.5, by + bh + 13);
+          }
+
+          // Skeleton (если включен в меню)
+          if (cheat.espSkeleton) {
+            const pHead = projectToScreen(new THREE.Vector3(bot.root.position.x, bot.root.position.y + 1.72, bot.root.position.z), w, h);
+            const pNeck = projectToScreen(new THREE.Vector3(bot.root.position.x, bot.root.position.y + 1.48, bot.root.position.z), w, h);
+            const pPelvis = projectToScreen(new THREE.Vector3(bot.root.position.x, bot.root.position.y + 0.85, bot.root.position.z), w, h);
+            if (pHead && pNeck && pPelvis) {
+              espCtx.strokeStyle = '#ffffff';
+              espCtx.lineWidth = 1.5;
+              espCtx.beginPath();
+              espCtx.moveTo(pHead.x, pHead.y);
+              espCtx.lineTo(pNeck.x, pNeck.y);
+              espCtx.lineTo(pPelvis.x, pPelvis.y);
+              espCtx.stroke();
+            }
+          }
+        }
+
+        // Snapline к активной цели
+        if (cheat.snapline && activeTarget && activeTarget.box.headScr) {
+          espCtx.strokeStyle = 'rgba(255, 60, 60, 0.85)';
+          espCtx.lineWidth = 1.4;
+          espCtx.beginPath();
+          espCtx.moveTo(cx, cy);
+          espCtx.lineTo(activeTarget.box.headScr.x, activeTarget.box.headScr.y);
+          espCtx.stroke();
+        }
+
+        // Визуальный круг радиуса Aimbot (FOV 30)
+        if (cheat.aimEnabled && cheat.fovCircle) {
+          if (cheat.fovFill) {
+            espCtx.fillStyle = activeTarget ? 'rgba(237, 255, 0, 0.07)' : 'rgba(255, 255, 255, 0.05)';
+            espCtx.beginPath();
+            espCtx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+            espCtx.fill();
+          }
+          espCtx.strokeStyle = 'rgba(0, 0, 0, 0.65)';
+          espCtx.lineWidth = 3;
+          espCtx.beginPath();
+          espCtx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+          espCtx.stroke();
+
+          espCtx.strokeStyle = activeTarget ? '#edff00' : 'rgba(255, 255, 255, 0.9)';
+          espCtx.lineWidth = 1.4;
+          espCtx.beginPath();
+          espCtx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+          espCtx.stroke();
+        }
+
+        // Маленький прицел HL2 в центре
+        espCtx.fillStyle = 'rgba(255, 204, 0, 0.9)';
+        espCtx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
+        espCtx.fillRect(cx - 9, cy - 0.5, 4, 1);
+        espCtx.fillRect(cx + 5, cy - 0.5, 4, 1);
+        espCtx.fillRect(cx - 0.5, cy - 9, 1, 4);
+        espCtx.fillRect(cx - 0.5, cy + 5, 1, 4);
+      }
+
+      // ---- Главный игровой цикл ----
+      let lastTime = performance.now();
+      function gameLoop(now) {
+        if (!gameActive) return;
+        animFrameId = requestAnimationFrame(gameLoop);
+
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        const locked = document.pointerLockElement === webglCanvas;
+        const cheat = getCheatState();
+
+        // Движение игрока
+        let moving = false;
+        if (locked && !cheatMenuOpenInGame) {
+          const forward = new THREE.Vector3(-Math.sin(player.yaw), 0, -Math.cos(player.yaw));
+          const right = new THREE.Vector3(Math.cos(player.yaw), 0, -Math.sin(player.yaw));
+          const wish = new THREE.Vector3();
+          if (keys['KeyW']) wish.add(forward);
+          if (keys['KeyS']) wish.sub(forward);
+          if (keys['KeyD']) wish.add(right);
+          if (keys['KeyA']) wish.sub(right);
+          if (wish.lengthSq() > 0) { wish.normalize(); moving = true; }
+
+          const speed = (keys['ShiftLeft'] || keys['ShiftRight']) ? 10.5 : 6.2;
+
+          if (player.noclip) {
+            const camDir = new THREE.Vector3();
+            camera.getWorldDirection(camDir);
+            const move = new THREE.Vector3();
+            if (keys['KeyW']) move.add(camDir);
+            if (keys['KeyS']) move.sub(camDir);
+            if (keys['KeyD']) move.add(right);
+            if (keys['KeyA']) move.sub(right);
+            if (keys['Space']) move.y += 1;
+            if (move.lengthSq() > 0) move.normalize();
+            player.pos.addScaledVector(move, speed * 1.6 * dt);
+          } else {
+            player.pos.x += wish.x * speed * dt;
+            player.pos.z += wish.z * speed * dt;
+
+            if (keys['Space'] && player.onGround) {
+              player.vel.y = 6.6;
+              player.onGround = false;
+            }
+            player.vel.y -= 18.5 * dt;
+            player.pos.y += player.vel.y * dt;
+
+            resolvePlayerCollision(player.pos);
+            const floorY = getPlatformFloorHeight(player.pos.x, player.pos.z, player.pos.y - 1.75);
+            if (player.pos.y <= floorY + 1.75) {
+              player.pos.y = floorY + 1.75;
+              player.vel.y = 0;
+              player.onGround = true;
+            } else {
+              player.onGround = false;
+            }
+          }
+
+          if (player.mouseDown) fireAK47();
+        }
+
+        // Таймеры оружия и отдачи
+        if (player.fireCooldown > 0) player.fireCooldown -= dt;
+        if (player.reloading) {
+          player.reloadTimer -= dt;
+          if (player.reloadTimer <= 0) {
+            const take = Math.min(30 - player.clip, player.reserve);
+            player.clip += take;
+            player.reserve = Math.max(30, player.reserve - take + 30); // бесконечный боезапас для мини-игры
+            hudClipEl.textContent = player.clip;
+            hudResEl.textContent = player.reserve;
+            player.reloading = false;
+          }
+        }
+        player.recoilPitch *= Math.pow(0.01, dt);
+        player.recoilKickZ *= Math.pow(0.004, dt);
+
+        if (moving && player.onGround) player.bobPhase += dt * 10;
+        const bobX = moving && player.onGround ? Math.cos(player.bobPhase * 0.5) * 0.008 : 0;
+        const bobY = moving && player.onGround ? Math.abs(Math.sin(player.bobPhase)) * 0.010 : 0;
+        const reloadTilt = player.reloading ? Math.sin((1 - player.reloadTimer / 0.9) * Math.PI) * -0.45 : 0;
+
+        akGroup.position.set(0.28 + bobX, -0.24 - bobY + reloadTilt * 0.12, -0.46 + player.recoilKickZ);
+        akGroup.rotation.set(player.recoilPitch * 2.2 + reloadTilt, 0.04, 0);
+
+        camera.position.copy(player.pos);
+        camera.rotation.set(player.pitch + player.recoilPitch, player.yaw, 0);
+
+        // Обновление трассеров
+        for (let i = tracers.length - 1; i >= 0; i--) {
+          tracers[i].life -= dt;
+          if (tracers[i].life <= 0) {
+            scene.remove(tracers[i].line);
+            tracers[i].line.geometry.dispose();
+            tracers[i].line.material.dispose();
+            tracers.splice(i, 1);
+          } else {
+            tracers[i].line.material.opacity = tracers[i].life / 0.16;
+          }
+        }
+
+        updateBots(dt, cheat);
+        renderer.render(scene, camera);
+        drawESPAndFov(cheat);
+      }
+
+      // ---- Управление меню чита в игре & Pointer Lock ----
+      function setCheatMenuInGame(open) {
+        cheatMenuOpenInGame = open;
+        menuWindow.style.display = open ? 'flex' : 'none';
+        if (open) {
+          if (document.pointerLockElement) document.exitPointerLock();
+          pauseOverlay.style.display = 'none';
+          bringToFront(menuWindow);
+        } else if (gameActive) {
+          webglCanvas.requestPointerLock();
+        }
+      }
+
+      function startMiniGame() {
+        if (typeof THREE === 'undefined') {
+          alert('Three.js не загрузился. Проверьте подключение к интернету.');
+          return;
+        }
+        initGameScene();
+        gmodMenuEls.forEach(el => { if (el) el.style.display = 'none'; });
+        menuWindow.style.display = 'none';
+        editorWindow.style.display = 'none';
+        lualistWindow.style.display = 'none';
+        gameContainer.style.display = 'block';
+
+        gameActive = true;
+        cheatMenuOpenInGame = false;
+        player.pos.set(0, 1.75, 56);
+        player.yaw = 0;
+        player.pitch = 0;
+        lastTime = performance.now();
+
+        onResize();
+        pauseOverlay.style.display = 'none';
+        webglCanvas.requestPointerLock();
+        animFrameId = requestAnimationFrame(gameLoop);
+      }
+
+      function disconnectToMainMenu() {
+        gameActive = false;
+        cancelAnimationFrame(animFrameId);
+        if (document.pointerLockElement) document.exitPointerLock();
+        gameContainer.style.display = 'none';
+        gmodMenuEls.forEach(el => { if (el) el.style.display = ''; });
+        menuWindow.style.display = 'flex';
+        cheatMenuOpenInGame = false;
+      }
+
+      document.getElementById('btn-start-new-game')?.addEventListener('click', startMiniGame);
+      document.getElementById('btn-resume-game')?.addEventListener('click', () => {
+        pauseOverlay.style.display = 'none';
+        webglCanvas.requestPointerLock();
       });
-    }
+      document.getElementById('btn-toggle-cheat-menu')?.addEventListener('click', () => setCheatMenuInGame(true));
+      document.getElementById('btn-disconnect-game')?.addEventListener('click', disconnectToMainMenu);
+      document.getElementById('main-menu-close-btn')?.addEventListener('click', () => {
+        if (gameActive) setCheatMenuInGame(false);
+        else menuWindow.style.display = 'none';
+      });
+
+      document.addEventListener('pointerlockchange', () => {
+        if (!gameActive) return;
+        const locked = document.pointerLockElement === webglCanvas;
+        if (!locked && !cheatMenuOpenInGame) {
+          pauseOverlay.style.display = 'flex';
+        } else {
+          pauseOverlay.style.display = 'none';
+        }
+      });
+
+      webglCanvas.addEventListener('mousedown', e => {
+        if (!gameActive || cheatMenuOpenInGame) return;
+        if (document.pointerLockElement !== webglCanvas) {
+          webglCanvas.requestPointerLock();
+          return;
+        }
+        if (e.button === 0) {
+          player.mouseDown = true;
+          fireAK47();
+        }
+      });
+      window.addEventListener('mouseup', e => { if (e.button === 0) player.mouseDown = false; });
+
+      window.addEventListener('mousemove', e => {
+        if (!gameActive || document.pointerLockElement !== webglCanvas) return;
+        const sens = 0.0022;
+        player.yaw -= e.movementX * sens;
+        player.pitch = THREE.MathUtils.clamp(player.pitch - e.movementY * sens, -1.48, 1.48);
+      });
+
+      window.addEventListener('keydown', e => {
+        if (!gameActive) return;
+        keys[e.code] = true;
+
+        const boundKey = (document.getElementById('bind-menu-key')?.dataset.key || ']').toUpperCase();
+        const pressed = e.key.toUpperCase();
+        if (pressed === boundKey || e.key === 'Delete' || e.code === 'BracketRight') {
+          e.preventDefault();
+          setCheatMenuInGame(!cheatMenuOpenInGame);
+          return;
+        }
+        if (e.code === 'KeyR' && !cheatMenuOpenInGame) startReload();
+        if (e.code === 'KeyV' && !cheatMenuOpenInGame) player.noclip = !player.noclip;
+      });
+      window.addEventListener('keyup', e => { keys[e.code] = false; });
+    })();
   </script>
 
 </body></html>
